@@ -1,3 +1,36 @@
+// SPDX-FileCopyrightText: 2021 E F R <602406+Efruit@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Paul Ritter <ritter.paul1@googlemail.com>
+// SPDX-FileCopyrightText: 2021 T <tomeno@lulzsec.co.uk>
+// SPDX-FileCopyrightText: 2021 Tomeno <Tomeno@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 20kdc <asdd2808@gmail.com>
+// SPDX-FileCopyrightText: 2022 Kara D <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2022 Moony <moonheart08@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 LankLTE <135308300+LankLTE@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 ShadowCommander <10494922+ShadowCommander@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Simon <63975668+Simyon264@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Kara <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2024 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 LordCarve <27449516+LordCarve@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Myzumi <34660019+Myzumi@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2024 Repo <47093363+Titian3@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 Whatstone <166147148+whatston3@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 dffdff2423 <57052305+dffdff2423@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 sleepyyapril <123355664+sleepyyapril@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 to4no_fix <156101927+chavonadelal@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -651,7 +684,7 @@ namespace Content.Server.Administration.Systems
                 true,
                 body.RoleName,
                 body.RoleColor);
-            OnBwoinkInternal(bwoinkParams);
+            OnBwoinkInternal(message, bwoinkParams);
         }
 
         protected override void OnBwoinkTextMessage(BwoinkTextMessage message, EntitySessionEventArgs eventArgs)
@@ -665,7 +698,7 @@ namespace Content.Server.Administration.Systems
             var personalChannel = senderSession.UserId == message.UserId;
             var senderAdmin = _adminManager.GetAdminData(senderSession);
             var senderAHelpAdmin = senderAdmin?.HasFlag(AdminFlags.Adminhelp) ?? false;
-            var authorized = personalChannel || senderAHelpAdmin;
+            var authorized = personalChannel && !message.AdminOnly || senderAHelpAdmin;
             if (!authorized)
             {
                 // Unauthorized bwoink (log?)
@@ -683,18 +716,19 @@ namespace Content.Server.Administration.Systems
                 false,
                 true,
                 false);
-            OnBwoinkInternal(bwoinkParams);
+            OnBwoinkInternal(message, bwoinkParams);
         }
 
         /// <summary>
         /// Sends a bwoink. Common to both internal messages (sent via the ahelp or admin interface) and webhook messages (sent through the webhook, e.g. via Discord)
         /// </summary>
+        /// <param name="message">idk</param>
         /// <param name="bwoinkParams">The parameters of the message being sent.</param>
-        private void OnBwoinkInternal(BwoinkParams bwoinkParams)
+        private void OnBwoinkInternal(BwoinkTextMessage message, BwoinkParams bwoinkParams)
         {
             _activeConversations[bwoinkParams.Message.UserId] = DateTime.Now;
-
             var escapedText = FormattedMessage.EscapeText(bwoinkParams.Message.Text);
+            var senderAHelpAdmin = bwoinkParams.SenderAdmin?.HasFlag(AdminFlags.Adminhelp) ?? false;
             var adminColor = _config.GetCVar(CCVars.AdminBwoinkColor);
             var adminPrefix = "";
             var bwoinkText = $"{bwoinkParams.SenderName}";
@@ -736,11 +770,11 @@ namespace Content.Server.Administration.Systems
             if (bwoinkParams.FromWebhook)
                 bwoinkText = $"{_config.GetCVar(CCVars.DiscordReplyPrefix)}{bwoinkText}";
 
-            bwoinkText = $"{(bwoinkParams.Message.PlaySound ? "" : "(S) ")}{bwoinkText}: {escapedText}";
+            bwoinkText = $"{(message.AdminOnly ? Loc.GetString("bwoink-message-admin-only") : !message.PlaySound ? Loc.GetString("bwoink-message-silent") : "")} {bwoinkText}: {escapedText}";
 
-            // If it's not an admin / admin chooses to keep the sound then play it.
-            var playSound = bwoinkParams.SenderAdmin == null || bwoinkParams.Message.PlaySound;
-            var msg = new BwoinkTextMessage(bwoinkParams.Message.UserId, bwoinkParams.SenderId, bwoinkText, playSound: playSound);
+            // If it's not an admin / admin chooses to keep the sound and message is not an admin only message, then play it.
+            var playSound = (!senderAHelpAdmin || message.PlaySound) && !message.AdminOnly;
+            var msg = new BwoinkTextMessage(message.UserId, bwoinkParams.SenderId, bwoinkText, playSound: playSound, adminOnly: message.AdminOnly);
 
             LogBwoink(msg);
 
@@ -763,7 +797,7 @@ namespace Content.Server.Administration.Systems
             }
 
             // Notify player
-            if (_playerManager.TryGetSessionById(bwoinkParams.Message.UserId, out var session))
+            if (_playerManager.TryGetSessionById(message.UserId, out var session) && !message.AdminOnly)
             {
                 if (!admins.Contains(session.Channel))
                 {
@@ -855,7 +889,7 @@ namespace Content.Server.Administration.Systems
                 .ToList();
         }
 
-        private static DiscordRelayedData GenerateAHelpMessage(AHelpMessageParams parameters)
+        private DiscordRelayedData GenerateAHelpMessage(AHelpMessageParams parameters)
         {
             var config = IoCManager.Resolve<IConfigurationManager>();
             var stringbuilder = new StringBuilder();
@@ -874,8 +908,12 @@ namespace Content.Server.Administration.Systems
             if (!parameters.PlayedSound)
                 stringbuilder.Append(" **(S)**");
 
+            if (parameters.AdminOnly)
+                stringbuilder.Append($" **{parameters.AdminOnly}**");
+
             if (parameters.IsDiscord) // Frontier - Discord Indicator
                 stringbuilder.Append($" **{config.GetCVar(CCVars.DiscordReplyPrefix)}**");
+
 
             if (parameters.Icon == null)
                 stringbuilder.Append($" **{parameters.Username}:** ");
@@ -939,6 +977,7 @@ namespace Content.Server.Administration.Systems
         public string RoundTime { get; set; }
         public GameRunLevel RoundState { get; set; }
         public bool PlayedSound { get; set; }
+        public readonly bool AdminOnly;
         public bool NoReceivers { get; set; }
         public bool IsDiscord { get; set; } // Frontier
         public string? Icon { get; set; }
@@ -950,6 +989,7 @@ namespace Content.Server.Administration.Systems
             string roundTime,
             GameRunLevel roundState,
             bool playedSound,
+            bool adminOnly = false,
             bool isDiscord = false, // Frontier
             bool noReceivers = false,
             string? icon = null)
@@ -961,6 +1001,7 @@ namespace Content.Server.Administration.Systems
             RoundState = roundState;
             IsDiscord = isDiscord; // Frontier
             PlayedSound = playedSound;
+            AdminOnly = adminOnly;
             NoReceivers = noReceivers;
             Icon = icon;
         }

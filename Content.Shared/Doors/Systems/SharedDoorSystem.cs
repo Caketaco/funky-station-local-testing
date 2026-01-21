@@ -1,3 +1,40 @@
+// SPDX-FileCopyrightText: 2022 Alex Evgrashin <aevgrashin@yandex.ru>
+// SPDX-FileCopyrightText: 2022 Fishfish458 <47410468+Fishfish458@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Flipp Syder <76629141+vulppine@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Mervill <mervills.email@gmail.com>
+// SPDX-FileCopyrightText: 2022 Paul Ritter <ritter.paul1@googlemail.com>
+// SPDX-FileCopyrightText: 2022 ShadowCommander <10494922+ShadowCommander@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 TekuNut <13456422+TekuNut@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 fishfish458 <fishfish458>
+// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Arendian <137322659+Arendian@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Dawid Bla <46636558+DawBla@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Kevin Zheng <kevinz5000@gmail.com>
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Pieter-Jan Briers <pieterjan.briers@gmail.com>
+// SPDX-FileCopyrightText: 2023 Repo <47093363+Titian3@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Slava0135 <40753025+Slava0135@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 TemporalOroboros <TemporalOroboros@gmail.com>
+// SPDX-FileCopyrightText: 2023 Tom Leys <tom@crump-leys.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <comedian_vs_clown@hotmail.com>
+// SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Fildrance <fildrance@gmail.com>
+// SPDX-FileCopyrightText: 2024 Kot <1192090+koteq@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 PJBot <pieterjan.briers+bot@gmail.com>
+// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2024 Plykiya <58439124+Plykiya@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 exincore <me@exin.xyz>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 nikthechampiongr <32041239+nikthechampiongr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Linq;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
@@ -23,7 +60,6 @@ using Robust.Shared.Timing;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Network;
 using Robust.Shared.Map.Components;
-using Robust.Shared.Physics;
 
 namespace Content.Shared.Doors.Systems;
 
@@ -34,6 +70,7 @@ public abstract partial class SharedDoorSystem : EntitySystem
     [Dependency] private readonly INetManager _net = default!;
     [Dependency] protected readonly SharedPhysicsSystem PhysicsSystem = default!;
     [Dependency] private readonly DamageableSystem _damageableSystem = default!;
+    [Dependency] private readonly EmagSystem _emag = default!;
     [Dependency] private readonly SharedStunSystem _stunSystem = default!;
     [Dependency] protected readonly TagSystem Tags = default!;
     [Dependency] protected readonly SharedAudioSystem Audio = default!;
@@ -77,8 +114,6 @@ public abstract partial class SharedDoorSystem : EntitySystem
         SubscribeLocalEvent<DoorComponent, WeldableAttemptEvent>(OnWeldAttempt);
         SubscribeLocalEvent<DoorComponent, WeldableChangedEvent>(OnWeldChanged);
         SubscribeLocalEvent<DoorComponent, GetPryTimeModifierEvent>(OnPryTimeModifier);
-
-        SubscribeLocalEvent<DoorComponent, OnAttemptEmagEvent>(OnAttemptEmag);
         SubscribeLocalEvent<DoorComponent, GotEmaggedEvent>(OnEmagged);
     }
 
@@ -118,31 +153,24 @@ public abstract partial class SharedDoorSystem : EntitySystem
         _activeDoors.Remove(door);
     }
 
-    private void OnAttemptEmag(EntityUid uid, DoorComponent door, ref OnAttemptEmagEvent args)
-    {
-        if (!TryComp<AirlockComponent>(uid, out var airlock))
-        {
-            args.Handled = true;
-            return;
-        }
-
-        if (IsBolted(uid) || !airlock.Powered)
-        {
-            args.Handled = true;
-            return;
-        }
-
-        if (door.State != DoorState.Closed)
-        {
-            args.Handled = true;
-        }
-    }
-
     private void OnEmagged(EntityUid uid, DoorComponent door, ref GotEmaggedEvent args)
     {
+        if (!_emag.CompareFlag(args.Type, EmagType.Access))
+            return;
+
+        if (!TryComp<AirlockComponent>(uid, out var airlock))
+            return;
+
+        if (IsBolted(uid) || !airlock.Powered)
+            return;
+
+        if (door.State != DoorState.Closed)
+            return;
+
         if (!SetState(uid, DoorState.Emagging, door))
             return;
-        Audio.PlayPredicted(door.SparkSound, uid, args.UserUid, AudioParams.Default.WithVolume(8));
+
+        args.Repeatable = true;
         args.Handled = true;
     }
 
@@ -158,7 +186,7 @@ public abstract partial class SharedDoorSystem : EntitySystem
         RaiseLocalEvent(ent, new DoorStateChangedEvent(door.State));
     }
 
-    protected bool SetState(EntityUid uid, DoorState state, DoorComponent? door = null)
+    public bool SetState(EntityUid uid, DoorState state, DoorComponent? door = null)
     {
         if (!Resolve(uid, ref door))
             return false;
@@ -436,7 +464,7 @@ public abstract partial class SharedDoorSystem : EntitySystem
     /// <param name="uid"> The uid of the door</param>
     /// <param name="door"> The doorcomponent of the door</param>
     /// <param name="user"> The user (if any) opening the door</param>
-    public bool CanClose(EntityUid uid, DoorComponent? door = null, EntityUid? user = null)
+    public bool CanClose(EntityUid uid, DoorComponent? door = null, EntityUid? user = null, bool partial = false)
     {
         if (!Resolve(uid, ref door))
             return false;
@@ -446,7 +474,7 @@ public abstract partial class SharedDoorSystem : EntitySystem
         if (door.State is DoorState.Welded or DoorState.Closed)
             return false;
 
-        var ev = new BeforeDoorClosedEvent(door.PerformCollisionCheck);
+        var ev = new BeforeDoorClosedEvent(door.PerformCollisionCheck, partial);
         RaiseLocalEvent(uid, ev);
         if (ev.Cancelled)
             return false;
@@ -481,7 +509,7 @@ public abstract partial class SharedDoorSystem : EntitySystem
             return false;
 
         // Make sure no entity walked into the airlock when it started closing.
-        if (!CanClose(uid, door))
+        if (!CanClose(uid, door, partial: true))
         {
             door.NextStateChange = GameTiming.CurTime + door.OpenTimeTwo;
             door.State = DoorState.Open;
@@ -589,8 +617,8 @@ public abstract partial class SharedDoorSystem : EntitySystem
             if (otherPhysics.Comp.CollisionLayer == (int) CollisionGroup.GlassLayer || otherPhysics.Comp.CollisionLayer == (int) CollisionGroup.GlassAirlockLayer || otherPhysics.Comp.CollisionLayer == (int) CollisionGroup.TableLayer)
                 continue;
 
-            //If the colliding entity is a slippable item ignore it by the airlock
-            if (otherPhysics.Comp.CollisionLayer == (int) CollisionGroup.SlipLayer && otherPhysics.Comp.CollisionMask == (int) CollisionGroup.ItemMask)
+            // Ignore low-passable entities.
+            if ((otherPhysics.Comp.CollisionMask & (int)CollisionGroup.LowImpassable) == 0)
                 continue;
 
             //For when doors need to close over conveyor belts

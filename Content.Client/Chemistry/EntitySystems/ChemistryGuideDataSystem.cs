@@ -1,4 +1,13 @@
-﻿using System.Linq;
+// SPDX-FileCopyrightText: 2023 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Cojoke <83733158+Cojoke-dot@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
+using System.Linq;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Atmos.Prototypes;
 using Content.Shared.Body.Part;
@@ -94,7 +103,7 @@ public sealed class ChemistryGuideDataSystem : SharedChemistryGuideDataSystem
             if (entProto.Abstract || usedNames.Contains(entProto.Name))
                 continue;
 
-            if (!entProto.TryGetComponent<ExtractableComponent>(out var extractableComponent))
+            if (!entProto.TryGetComponent<ExtractableComponent>(out var extractableComponent, EntityManager.ComponentFactory))
                 continue;
 
             //these bloat the hell out of blood/fat
@@ -121,7 +130,7 @@ public sealed class ChemistryGuideDataSystem : SharedChemistryGuideDataSystem
 
 
             if (extractableComponent.GrindableSolution is { } grindableSolutionId &&
-                entProto.TryGetComponent<SolutionContainerManagerComponent>(out var manager) &&
+                entProto.TryGetComponent<SolutionContainerManagerComponent>(out var manager, EntityManager.ComponentFactory) &&
                 _solutionContainer.TryGetSolution(manager, grindableSolutionId, out var grindableSolution))
             {
                 var data = new ReagentEntitySourceData(
@@ -140,6 +149,11 @@ public sealed class ChemistryGuideDataSystem : SharedChemistryGuideDataSystem
     public List<ReagentSourceData> GetReagentSources(string id)
     {
         return _reagentSources.GetValueOrDefault(id) ?? new List<ReagentSourceData>();
+    }
+
+    // Is handled on server and updated on client via ReagentGuideRegistryChangedEvent
+    public override void ReloadAllReagentPrototypes()
+    {
     }
 }
 

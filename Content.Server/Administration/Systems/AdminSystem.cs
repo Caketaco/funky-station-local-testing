@@ -1,3 +1,42 @@
+// SPDX-FileCopyrightText: 2021 Acruid <shatter66@gmail.com>
+// SPDX-FileCopyrightText: 2021 Javier Guardia Fernández <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Paul <ritter.paul1+git@googlemail.com>
+// SPDX-FileCopyrightText: 2021 Paul <ritter.paul1@googlemail.com>
+// SPDX-FileCopyrightText: 2021 Paul Ritter <ritter.paul1@googlemail.com>
+// SPDX-FileCopyrightText: 2021 Vera Aguilera Puerto <gradientvera@outlook.com>
+// SPDX-FileCopyrightText: 2021 metalgearsloth <comedian_vs_clown@hotmail.com>
+// SPDX-FileCopyrightText: 2021 metalgearsloth <metalgearsloth@gmail.com>
+// SPDX-FileCopyrightText: 2022 Kara <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2022 Moony <moonheart08@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Pieter-Jan Briers <pieterjan.briers@gmail.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Arendian <137322659+Arendian@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Chief-Engineer <119664036+Chief-Engineer@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Errant <35878406+Errant-4@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Hannah Giovanna Dawson <karakkaraz@gmail.com>
+// SPDX-FileCopyrightText: 2024 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 LordCarve <27449516+LordCarve@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 MilenVolf <63782763+MilenVolf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+// SPDX-FileCopyrightText: 2024 ShadowCommander <10494922+ShadowCommander@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Simon <63975668+Simyon264@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 Vasilis <vasilis@pikachu.systems>
+// SPDX-FileCopyrightText: 2024 deltanedas <39013340+deltanedas@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 nikthechampiongr <32041239+nikthechampiongr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Crude Oil <124208219+CroilBird@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Linq;
 using Content.Server.Administration.Managers;
 using Content.Server.Chat.Managers;
@@ -11,13 +50,13 @@ using Content.Server.StationRecords.Systems;
 using Content.Shared.Administration;
 using Content.Shared.Administration.Events;
 using Content.Shared.CCVar;
+using Content.Shared.Forensics.Components;
 using Content.Shared.GameTicking;
 using Content.Shared.Hands.Components;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Inventory;
 using Content.Shared.Mind;
 using Content.Shared.PDA;
-using Content.Shared.Players;
 using Content.Shared.Players.PlayTimeTracking;
 using Content.Shared.Popups;
 using Content.Shared.Roles;
@@ -32,6 +71,7 @@ using Robust.Shared.Configuration;
 using Robust.Shared.Enums;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Administration.Systems;
 
@@ -48,6 +88,7 @@ public sealed class AdminSystem : EntitySystem
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly PhysicsSystem _physics = default!;
     [Dependency] private readonly PlayTimeTrackingManager _playTime = default!;
+    [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly SharedRoleSystem _role = default!;
     [Dependency] private readonly GameTicker _gameTicker = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
@@ -63,7 +104,6 @@ public sealed class AdminSystem : EntitySystem
 
     private readonly HashSet<NetUserId> _roundActivePlayers = new();
     public readonly PanicBunkerStatus PanicBunker = new();
-    public readonly BabyJailStatus BabyJail = new();
 
     public override void Initialize()
     {
@@ -82,23 +122,14 @@ public sealed class AdminSystem : EntitySystem
         Subs.CVar(_config, CCVars.PanicBunkerMinAccountAge, OnPanicBunkerMinAccountAgeChanged, true);
         Subs.CVar(_config, CCVars.PanicBunkerMinOverallMinutes, OnPanicBunkerMinOverallMinutesChanged, true);
 
-        /*
-         * TODO: Remove baby jail code once a more mature gateway process is established. This code is only being issued as a stopgap to help with potential tiding in the immediate future.
-         */
-
-        // Baby Jail Settings
-        Subs.CVar(_config, CCVars.BabyJailEnabled, OnBabyJailChanged, true);
-        Subs.CVar(_config, CCVars.BabyJailShowReason, OnBabyJailShowReasonChanged, true);
-        Subs.CVar(_config, CCVars.BabyJailMaxAccountAge, OnBabyJailMaxAccountAgeChanged, true);
-        Subs.CVar(_config, CCVars.BabyJailMaxOverallMinutes, OnBabyJailMaxOverallMinutesChanged, true);
-
-        SubscribeLocalEvent<IdentityChangedEvent>(OnIdentityChanged);
         SubscribeLocalEvent<PlayerAttachedEvent>(OnPlayerAttached);
         SubscribeLocalEvent<PlayerDetachedEvent>(OnPlayerDetached);
         SubscribeLocalEvent<RoleAddedEvent>(OnRoleEvent);
         SubscribeLocalEvent<RoleRemovedEvent>(OnRoleEvent);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
+
         SubscribeLocalEvent<ActorComponent, EntityRenamedEvent>(OnPlayerRenamed);
+        SubscribeLocalEvent<ActorComponent, IdentityChangedEvent>(OnIdentityChanged);
     }
 
     private void OnRoundRestartCleanup(RoundRestartCleanupEvent ev)
@@ -154,18 +185,16 @@ public sealed class AdminSystem : EntitySystem
         return value ?? null;
     }
 
-    private void OnIdentityChanged(ref IdentityChangedEvent ev)
+    private void OnIdentityChanged(Entity<ActorComponent> ent, ref IdentityChangedEvent ev)
     {
-        if (!TryComp<ActorComponent>(ev.CharacterEntity, out var actor))
-            return;
-
-        UpdatePlayerList(actor.PlayerSession);
+        UpdatePlayerList(ent.Comp.PlayerSession);
     }
 
     private void OnRoleEvent(RoleEvent ev)
     {
         var session = _minds.GetSession(ev.Mind);
-        if (!ev.Antagonist || session == null)
+
+        if (!ev.RoleTypeUpdate || session == null)
             return;
 
         UpdatePlayerList(session);
@@ -231,6 +260,7 @@ public sealed class AdminSystem : EntitySystem
         var name = data.UserName;
         var entityName = string.Empty;
         var identityName = string.Empty;
+        var sortWeight = 0;
 
         if (session?.AttachedEntity != null)
         {
@@ -239,9 +269,18 @@ public sealed class AdminSystem : EntitySystem
         }
 
         var antag = false;
+
+        RoleTypePrototype roleType = new();
         var startingRole = string.Empty;
-        if (_minds.TryGetMind(session, out var mindId, out _))
+        if (_minds.TryGetMind(session, out var mindId, out var mindComp) && mindComp is not null)
         {
+            sortWeight = _role.GetRoleCompByTime(mindComp)?.Comp.SortWeight ?? 0;
+
+            if (_proto.TryIndex(mindComp.RoleType, out var role))
+                roleType = role;
+            else
+                Log.Error($"{ToPrettyString(mindId)} has invalid Role Type '{mindComp.RoleType}'. Displaying '{Loc.GetString(roleType.Name)}' instead");
+
             antag = _role.MindIsAntagonist(mindId);
             startingRole = _jobs.MindTryGetJobName(mindId);
         }
@@ -255,8 +294,19 @@ public sealed class AdminSystem : EntitySystem
             overallPlaytime = playTime;
         }
 
-        return new PlayerInfo(name, entityName, identityName, startingRole, antag, GetNetEntity(session?.AttachedEntity), data.UserId,
-            connected, _roundActivePlayers.Contains(data.UserId), overallPlaytime);
+        return new PlayerInfo(
+            name,
+            entityName,
+            identityName,
+            startingRole,
+            antag,
+            roleType,
+            sortWeight,
+            GetNetEntity(session?.AttachedEntity),
+            data.UserId,
+            connected,
+            _roundActivePlayers.Contains(data.UserId),
+            overallPlaytime);
     }
 
     private void OnPanicBunkerChanged(bool enabled)
@@ -268,17 +318,6 @@ public sealed class AdminSystem : EntitySystem
         ));
 
         SendPanicBunkerStatusAll();
-    }
-
-    private void OnBabyJailChanged(bool enabled)
-    {
-        BabyJail.Enabled = enabled;
-        _chat.SendAdminAlert(Loc.GetString(enabled
-            ? "admin-ui-baby-jail-enabled-admin-alert"
-            : "admin-ui-baby-jail-disabled-admin-alert"
-        ));
-
-        SendBabyJailStatusAll();
     }
 
     private void OnPanicBunkerDisableWithAdminsChanged(bool enabled)
@@ -305,34 +344,16 @@ public sealed class AdminSystem : EntitySystem
         SendPanicBunkerStatusAll();
     }
 
-    private void OnBabyJailShowReasonChanged(bool enabled)
-    {
-        BabyJail.ShowReason = enabled;
-        SendBabyJailStatusAll();
-    }
-
     private void OnPanicBunkerMinAccountAgeChanged(int minutes)
     {
         PanicBunker.MinAccountAgeMinutes = minutes;
         SendPanicBunkerStatusAll();
     }
 
-    private void OnBabyJailMaxAccountAgeChanged(int minutes)
-    {
-        BabyJail.MaxAccountAgeMinutes = minutes;
-        SendBabyJailStatusAll();
-    }
-
     private void OnPanicBunkerMinOverallMinutesChanged(int minutes)
     {
         PanicBunker.MinOverallMinutes = minutes;
         SendPanicBunkerStatusAll();
-    }
-
-    private void OnBabyJailMaxOverallMinutesChanged(int minutes)
-    {
-        BabyJail.MaxOverallMinutes = minutes;
-        SendBabyJailStatusAll();
     }
 
     private void UpdatePanicBunker()
@@ -381,15 +402,6 @@ public sealed class AdminSystem : EntitySystem
         }
     }
 
-    private void SendBabyJailStatusAll()
-    {
-        var ev = new BabyJailChangedEvent(BabyJail);
-        foreach (var admin in _adminManager.AllAdmins)
-        {
-            RaiseNetworkEvent(ev, admin);
-        }
-    }
-
         /// <summary>
         ///     Erases a player from the round.
         ///     This removes them and any trace of them from the round, deleting their
@@ -400,8 +412,13 @@ public sealed class AdminSystem : EntitySystem
         {
             _chat.DeleteMessagesBy(uid);
 
+            var eraseEvent = new EraseEvent(uid);
+
             if (!_minds.TryGetMind(uid, out var mindId, out var mind) || mind.OwnedEntity == null || TerminatingOrDeleted(mind.OwnedEntity.Value))
+            {
+                RaiseLocalEvent(ref eraseEvent);
                 return;
+            }
 
             var entity = mind.OwnedEntity.Value;
 
@@ -461,6 +478,8 @@ public sealed class AdminSystem : EntitySystem
 
             if (_playerManager.TryGetSessionById(uid, out var session))
                 _gameTicker.SpawnObserver(session);
+
+            RaiseLocalEvent(ref eraseEvent);
         }
 
     private void OnSessionPlayTimeUpdated(ICommonSession session)
@@ -468,3 +487,10 @@ public sealed class AdminSystem : EntitySystem
         UpdatePlayerList(session);
     }
 }
+
+/// <summary>
+/// Event fired after a player is erased by an admin
+/// </summary>
+/// <param name="PlayerNetUserId">NetUserId of the player that was the target of the Erase</param>
+[ByRefEvent]
+public record struct EraseEvent(NetUserId PlayerNetUserId);

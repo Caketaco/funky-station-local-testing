@@ -1,3 +1,12 @@
+# SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+# SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2024 a_person <40855173+a-person5660@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Fenn <162015305+TooSillyFennec@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 corresp0nd <46357632+corresp0nd@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 - type: entity
   name: advanced combat medipen
   parent: ChemicalMedipen
@@ -16,10 +25,12 @@
   - type: SolutionContainerManager
     solutions:
       pen:
-        maxVol: 40
+        maxVol: 25 # Funkychem
         reagents:
         - ReagentId: Ichor
-          Quantity: 35
+          Quantity: 12 # Heals very fast- 90~ Damage all types in 60s. - Funkychem
+        - ReagentId: Revivopine # Funkychem
+          Quantity: 8 # Heals 20~ Damage all types when crit
         - ReagentId: TranexamicAcid
           Quantity: 5
   - type: Hypospray

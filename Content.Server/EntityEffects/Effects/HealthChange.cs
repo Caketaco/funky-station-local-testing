@@ -1,3 +1,26 @@
+// SPDX-FileCopyrightText: 2021 Fortune117 <fortune11709@gmail.com>
+// SPDX-FileCopyrightText: 2021 Javier Guardia Fernández <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Silver <silvertorch5@gmail.com>
+// SPDX-FileCopyrightText: 2021 Ygg01 <y.laughing.man.y@gmail.com>
+// SPDX-FileCopyrightText: 2022 Moony <moonheart08@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Rane <60792108+Elijahrane@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Sam Weaver <weaversam8@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 ShadowCommander <10494922+ShadowCommander@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Emisse <99158783+Emisse@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 TemporalOroboros <TemporalOroboros@gmail.com>
+// SPDX-FileCopyrightText: 2024 KrasnoshchekovPavel <119816022+KrasnoshchekovPavel@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2024 SlamBamActionman <83650252+SlamBamActionman@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.EntityEffects;
@@ -44,6 +67,26 @@ namespace Content.Server.EntityEffects.Effects
             var deals = false;
 
             var damageSpec = new DamageSpecifier(Damage);
+
+            var universalReagentDamageModifier = entSys.GetEntitySystem<DamageableSystem>().UniversalReagentDamageModifier;
+            var universalReagentHealModifier = entSys.GetEntitySystem<DamageableSystem>().UniversalReagentHealModifier;
+
+            if (universalReagentDamageModifier != 1 || universalReagentHealModifier != 1)
+            {
+                foreach (var (type, val) in damageSpec.DamageDict)
+                {
+                    if (val < 0f)
+                    {
+                        damageSpec.DamageDict[type] = val * universalReagentHealModifier;
+                    }
+                    if (val > 0f)
+                    {
+                        damageSpec.DamageDict[type] = val * universalReagentDamageModifier;
+                    }
+                }
+            }
+
+            damageSpec = entSys.GetEntitySystem<DamageableSystem>().ApplyUniversalAllModifiers(damageSpec);
 
             foreach (var group in prototype.EnumeratePrototypes<DamageGroupPrototype>())
             {
@@ -115,10 +158,29 @@ namespace Content.Server.EntityEffects.Effects
         public override void Effect(EntityEffectBaseArgs args)
         {
             var scale = FixedPoint2.New(1);
+            var damageSpec = new DamageSpecifier(Damage);
 
             if (args is EntityEffectReagentArgs reagentArgs)
             {
                 scale = ScaleByQuantity ? reagentArgs.Quantity * reagentArgs.Scale : reagentArgs.Scale;
+            }
+
+            var universalReagentDamageModifier = args.EntityManager.System<DamageableSystem>().UniversalReagentDamageModifier;
+            var universalReagentHealModifier = args.EntityManager.System<DamageableSystem>().UniversalReagentHealModifier;
+
+            if (universalReagentDamageModifier != 1 || universalReagentHealModifier != 1)
+            {
+                foreach (var (type, val) in damageSpec.DamageDict)
+                {
+                    if (val < 0f)
+                    {
+                        damageSpec.DamageDict[type] = val * universalReagentHealModifier;
+                    }
+                    if (val > 0f)
+                    {
+                        damageSpec.DamageDict[type] = val * universalReagentDamageModifier;
+                    }
+                }
             }
 
             args.EntityManager.System<DamageableSystem>().TryChangeDamage(

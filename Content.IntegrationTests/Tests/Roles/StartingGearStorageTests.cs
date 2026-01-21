@@ -1,8 +1,17 @@
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Mr. 27 <45323883+Dutch-VanDerLinde@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Linq;
 using Content.Shared.Roles;
 using Content.Server.Storage.EntitySystems;
 using Robust.Shared.GameObjects;
-using Robust.Shared.Map;
 using Robust.Shared.Collections;
 
 namespace Content.IntegrationTests.Tests.Roles;
@@ -19,7 +28,7 @@ public sealed class StartingGearPrototypeStorageTest
         var settings = new PoolSettings { Connected = true, Dirty = true };
         await using var pair = await PoolManager.GetServerClient(settings);
         var server = pair.Server;
-        var mapManager = server.ResolveDependency<IMapManager>();
+        var mapSystem = server.System<SharedMapSystem>();
         var storageSystem = server.System<StorageSystem>();
 
         var protos = server.ProtoMan
@@ -64,7 +73,7 @@ public sealed class StartingGearPrototypeStorageTest
                 }
             }
 
-            mapManager.DeleteMap(testMap.MapId);
+            mapSystem.DeleteMap(testMap.MapId);
         });
 
         await pair.CleanReturnAsync();

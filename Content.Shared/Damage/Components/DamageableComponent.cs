@@ -1,3 +1,26 @@
+// SPDX-FileCopyrightText: 2021 Javier Guardia Fernández <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Vera Aguilera Puerto <gradientvera@outlook.com>
+// SPDX-FileCopyrightText: 2021 metalgearsloth <comedian_vs_clown@hotmail.com>
+// SPDX-FileCopyrightText: 2022 Alex Evgrashin <aevgrashin@yandex.ru>
+// SPDX-FileCopyrightText: 2022 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Moony <moonheart08@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Paul Ritter <ritter.paul1@googlemail.com>
+// SPDX-FileCopyrightText: 2022 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2022 Vera Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 DoutorWhite <68350815+DoutorWhite@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 DrSmugleaf <10968691+DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 YaraaraY <158123176+YaraaraY@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.FixedPoint;
 using Content.Shared.Mobs;
@@ -70,6 +93,8 @@ namespace Content.Shared.Damage
         {
             { MobState.Alive, "HealthIconFine" },
             { MobState.Critical, "HealthIconCritical" },
+            { MobState.SoftCritical, "HealthIconCritical" },
+            { MobState.HardCritical, "HealthIconCritical" },
             { MobState.Dead, "HealthIconDead" },
         };
 
@@ -84,15 +109,18 @@ namespace Content.Shared.Damage
     public sealed class DamageableComponentState : ComponentState
     {
         public readonly Dictionary<string, FixedPoint2> DamageDict;
+        public readonly string? DamageContainerId;
         public readonly string? ModifierSetId;
         public readonly FixedPoint2? HealthBarThreshold;
 
         public DamageableComponentState(
             Dictionary<string, FixedPoint2> damageDict,
+            string? damageContainerId,
             string? modifierSetId,
             FixedPoint2? healthBarThreshold)
         {
             DamageDict = damageDict;
+            DamageContainerId = damageContainerId;
             ModifierSetId = modifierSetId;
             HealthBarThreshold = healthBarThreshold;
         }

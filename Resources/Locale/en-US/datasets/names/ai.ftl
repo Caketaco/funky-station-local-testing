@@ -1,3 +1,11 @@
+# SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
 names-ai-dataset-1 = 16-20
 names-ai-dataset-2 = 512k
 
@@ -73,7 +81,7 @@ names-ai-dataset-55 = Hivebot Overmind
 names-ai-dataset-56 = Huey
 
 # A play on the fad apple spawned of putting "i" infront of your tech products name
-names-ai-dataset-57 = iAI
+names-ai-dataset-57 = iCore
 
 # Hell on earth (web browser)
 names-ai-dataset-58 = I.E. 6
@@ -99,7 +107,7 @@ names-ai-dataset-70 = Max 404
 names-ai-dataset-71 = Metalhead
 names-ai-dataset-72 = M.I.M.I
 names-ai-dataset-73 = MK ULTRA
-names-ai-dataset-74 = MoMMI
+names-ai-dataset-74 = Monarch
 names-ai-dataset-75 = Mugsy3000
 names-ai-dataset-76 = Multivac
 names-ai-dataset-77 = NCH

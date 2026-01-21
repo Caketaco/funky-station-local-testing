@@ -1,8 +1,43 @@
+// SPDX-FileCopyrightText: 2021 Alex Evgrashin <aevgrashin@yandex.ru>
+// SPDX-FileCopyrightText: 2021 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Flipp Syder <76629141+vulppine@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Paul Ritter <ritter.paul1@googlemail.com>
+// SPDX-FileCopyrightText: 2021 Vera Aguilera Puerto <gradientvera@outlook.com>
+// SPDX-FileCopyrightText: 2021 Wrexbe <wrexbe@protonmail.com>
+// SPDX-FileCopyrightText: 2022 20kdc <asdd2808@gmail.com>
+// SPDX-FileCopyrightText: 2022 Rane <60792108+Elijahrane@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 keronshb <54602815+keronshb@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 0x6273 <0x40@keemail.me>
+// SPDX-FileCopyrightText: 2023 AJCM-git <60196617+AJCM-git@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Chief-Engineer <119664036+Chief-Engineer@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Julian Giebel <juliangiebel@live.de>
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 PrPleGoo <PrPleGoo@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 TemporalOroboros <TemporalOroboros@gmail.com>
+// SPDX-FileCopyrightText: 2023 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <comedian_vs_clown@hotmail.com>
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Fildrance <fildrance@gmail.com>
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 c4llv07e <38111072+c4llv07e@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 deltanedas <39013340+deltanedas@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 deltanedas <@deltanedas:kde.org>
+// SPDX-FileCopyrightText: 2024 lzk <124214523+lzk228@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared.Access.Components;
 using Content.Shared.DeviceLinking.Events;
-using Content.Shared.Emag.Components;
 using Content.Shared.Emag.Systems;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Inventory;
@@ -13,6 +48,7 @@ using Robust.Shared.Containers;
 using Robust.Shared.GameStates;
 using Content.Shared.GameTicking;
 using Content.Shared.IdentityManagement;
+using Content.Shared.Tag;
 using Robust.Shared.Collections;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
@@ -24,10 +60,14 @@ public sealed class AccessReaderSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly InventorySystem _inventorySystem = default!;
     [Dependency] private readonly IGameTiming _gameTiming = default!;
+    [Dependency] private readonly EmagSystem _emag = default!;
+    [Dependency] private readonly TagSystem _tag = default!;
     [Dependency] private readonly SharedGameTicker _gameTicker = default!;
     [Dependency] private readonly SharedHandsSystem _handsSystem = default!;
     [Dependency] private readonly SharedContainerSystem _containerSystem = default!;
     [Dependency] private readonly SharedStationRecordsSystem _recordsSystem = default!;
+
+    private static readonly ProtoId<TagPrototype> PreventAccessLoggingTag = "PreventAccessLogging";
 
     public override void Initialize()
     {
@@ -71,17 +111,28 @@ public sealed class AccessReaderSystem : EntitySystem
     {
         if (args.User == null) // AutoLink (and presumably future external linkers) have no user.
             return;
-        if (!HasComp<EmaggedComponent>(uid) && !IsAllowed(args.User.Value, uid, component))
+        if (!IsAllowed(args.User.Value, uid, component))
             args.Cancel();
     }
 
     private void OnEmagged(EntityUid uid, AccessReaderComponent reader, ref GotEmaggedEvent args)
     {
-        if (!reader.BreakOnEmag)
+        if (!_emag.CompareFlag(args.Type, EmagType.Access))
             return;
+
+        if (!reader.BreakOnAccessBreaker)
+            return;
+
+        if (!GetMainAccessReader(uid, out var accessReader))
+            return;
+
+        if (accessReader.Value.Comp.AccessLists.Count < 1)
+            return;
+
+        args.Repeatable = true;
         args.Handled = true;
-        reader.Enabled = false;
-        reader.AccessLog.Clear();
+        accessReader.Value.Comp.AccessLists.Clear();
+        accessReader.Value.Comp.AccessLog.Clear();
         Dirty(uid, reader);
     }
 
@@ -104,37 +155,38 @@ public sealed class AccessReaderSystem : EntitySystem
         var access = FindAccessTags(user, accessSources);
         FindStationRecordKeys(user, out var stationKeys, accessSources);
 
-        if (IsAllowed(access, stationKeys, target, reader))
-        {
-            LogAccess((target, reader), user);
-            return true;
-        }
-
-        return false;
-    }
-
-    public bool GetMainAccessReader(EntityUid uid, [NotNullWhen(true)] out AccessReaderComponent? component)
-    {
-        component = null;
-        if (!TryComp(uid, out AccessReaderComponent? accessReader))
+        if (!IsAllowed(access, stationKeys, target, reader))
             return false;
 
-        component = accessReader;
+        if (!_tag.HasTag(user, PreventAccessLoggingTag))
+            LogAccess((target, reader), user);
 
-        if (component.ContainerAccessProvider == null)
+        return true;
+    }
+
+    public bool GetMainAccessReader(EntityUid uid, [NotNullWhen(true)] out Entity<AccessReaderComponent>? ent)
+    {
+        ent = null;
+        if (!TryComp<AccessReaderComponent>(uid, out var accessReader))
+            return false;
+
+        ent = (uid, accessReader);
+
+        if (ent.Value.Comp.ContainerAccessProvider == null)
             return true;
 
-        if (!_containerSystem.TryGetContainer(uid, component.ContainerAccessProvider, out var container))
+        if (!_containerSystem.TryGetContainer(uid, ent.Value.Comp.ContainerAccessProvider, out var container))
             return true;
 
         foreach (var entity in container.ContainedEntities)
         {
-            if (TryComp(entity, out AccessReaderComponent? containedReader))
+            if (TryComp<AccessReaderComponent>(entity, out var containedReader))
             {
-                component = containedReader;
+                ent = (entity, containedReader);
                 return true;
             }
         }
+
         return true;
     }
 

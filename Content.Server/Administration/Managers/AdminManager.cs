@@ -1,13 +1,41 @@
+// SPDX-FileCopyrightText: 2021 Acruid <shatter66@gmail.com>
+// SPDX-FileCopyrightText: 2021 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Galactic Chimp <63882831+GalacticChimp@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Paul <ritter.paul1+git@googlemail.com>
+// SPDX-FileCopyrightText: 2021 Paul Ritter <ritter.paul1@googlemail.com>
+// SPDX-FileCopyrightText: 2021 mirrorcult <notzombiedude@gmail.com>
+// SPDX-FileCopyrightText: 2022 Vera Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Moony <moony@hellomouse.net>
+// SPDX-FileCopyrightText: 2023 Ygg01 <y.laughing.man.y@gmail.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 AJCM-git <60196617+AJCM-git@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 LordCarve <27449516+LordCarve@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 MilenVolf <63782763+MilenVolf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 Winkarst <74284083+Winkarst-cpu@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 nikthechampiongr <32041239+nikthechampiongr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 to4no_fix <156101927+chavonadelal@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Content.Server.Chat.Managers;
 using Content.Server.Database;
-using Content.Server.Players;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
-using Content.Shared.Info;
 using Content.Shared.Players;
 using Robust.Server.Console;
 using Robust.Server.Player;
@@ -91,12 +119,27 @@ namespace Content.Server.Administration.Managers
             _chat.SendAdminAnnouncement(Loc.GetString("admin-manager-self-de-admin-message", ("exAdminName", session.Name)));
             _chat.DispatchServerMessage(session, Loc.GetString("admin-manager-became-normal-player-message"));
 
-            var plyData = session.ContentData()!;
-            plyData.ExplicitlyDeadminned = true;
+            UpdateDatabaseDeadminnedState(session, true);
             reg.Data.Active = false;
 
             SendPermsChangedEvent(session);
             UpdateAdminStatus(session);
+        }
+
+        private async void UpdateDatabaseDeadminnedState(ICommonSession player, bool newState)
+        {
+            try
+            {
+                // NOTE: This function gets called if you deadmin/readmin from a transient admin status.
+                // (e.g. loginlocal)
+                // In which case there may not be a database record.
+                // The DB function handles this scenario fine, but it's worth noting.
+                await _dbManager.UpdateAdminDeadminnedAsync(player.UserId, newState);
+            }
+            catch (Exception)
+            {
+                _sawmill.Error("Failed to save deadmin state to database for {Admin}", player.UserId);
+            }
         }
 
         public void Stealth(ICommonSession session)
@@ -151,8 +194,7 @@ namespace Content.Server.Administration.Managers
 
             _chat.DispatchServerMessage(session, Loc.GetString("admin-manager-became-admin-message"));
 
-            var plyData = session.ContentData()!;
-            plyData.ExplicitlyDeadminned = false;
+            UpdateDatabaseDeadminnedState(session, false);
             reg.Data.Active = true;
 
             if (!reg.Data.Stealth)
@@ -208,13 +250,13 @@ namespace Content.Server.Administration.Managers
                     curAdmin.IsSpecialLogin = special;
                     curAdmin.RankId = rankId;
                     curAdmin.Data = aData;
-                }
 
-                if (!player.ContentData()!.ExplicitlyDeadminned)
-                {
-                    aData.Active = true;
+                    if (curAdmin.Data.Active)
+                    {
+                        aData.Active = true;
 
-                    _chat.DispatchServerMessage(player, Loc.GetString("admin-manager-admin-permissions-updated-message"));
+                        _chat.DispatchServerMessage(player, Loc.GetString("admin-manager-admin-permissions-updated-message"));
+                    }
                 }
 
                 if (player.ContentData()!.Stealthed)
@@ -381,10 +423,8 @@ namespace Content.Server.Administration.Managers
             if (session.ContentData()!.Stealthed)
                 reg.Data.Stealth = true;
 
-            if (!session.ContentData()!.ExplicitlyDeadminned)
+            if (reg.Data.Active)
             {
-                reg.Data.Active = true;
-
                 if (_cfg.GetCVar(CCVars.AdminAnnounceLogin))
                 {
                     if (reg.Data.Stealth)
@@ -430,6 +470,7 @@ namespace Content.Server.Administration.Managers
                 {
                     Title = Loc.GetString("admin-manager-admin-data-host-title"),
                     Flags = AdminFlagsHelper.Everything,
+                    Active = true,
                 };
 
                 return (data, null, true);
@@ -441,6 +482,12 @@ namespace Content.Server.Administration.Managers
                 if (dbData == null)
                 {
                     // Not an admin!
+                    return null;
+                }
+
+                if (dbData.Suspended)
+                {
+                    // Suspended admins don't count.
                     return null;
                 }
 
@@ -466,7 +513,8 @@ namespace Content.Server.Administration.Managers
 
                 var data = new AdminData
                 {
-                    Flags = flags
+                    Flags = flags,
+                    Active = !dbData.Deadminned,
                 };
 
                 if (dbData.Title != null  && _cfg.GetCVar(CCVars.AdminUseCustomNamesAdminRank))

@@ -1,3 +1,14 @@
+// SPDX-FileCopyrightText: 2022 metalgearsloth <metalgearsloth@gmail.com>
+// SPDX-FileCopyrightText: 2023 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 TemporalOroboros <TemporalOroboros@gmail.com>
+// SPDX-FileCopyrightText: 2024 eoineoineoin <github@eoinrul.es>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Numerics;
 using Content.Shared.Shuttles.Events;
 using Content.Shared.Shuttles.Systems;
@@ -23,7 +34,7 @@ public sealed partial class ShuttleSystem : SharedShuttleSystem
 
             if (_enableShuttlePosition)
             {
-                _overlay = new EmergencyShuttleOverlay(EntityManager);
+                _overlay = new EmergencyShuttleOverlay(EntityManager.TransformQuery, XformSystem);
                 overlayManager.AddOverlay(_overlay);
                 RaiseNetworkEvent(new EmergencyShuttleRequestPositionMessage());
             }
@@ -57,23 +68,26 @@ public sealed partial class ShuttleSystem : SharedShuttleSystem
 /// </summary>
 public sealed class EmergencyShuttleOverlay : Overlay
 {
-    private IEntityManager _entManager;
+    private readonly EntityQuery<TransformComponent> _transformQuery;
+    private readonly SharedTransformSystem _transformSystem;
 
     public override OverlaySpace Space => OverlaySpace.WorldSpace;
 
     public EntityUid? StationUid;
     public Box2? Position;
 
-    public EmergencyShuttleOverlay(IEntityManager entManager)
+    public EmergencyShuttleOverlay(EntityQuery<TransformComponent> transformQuery, SharedTransformSystem transformSystem)
     {
-        _entManager = entManager;
+        _transformQuery = transformQuery;
+        _transformSystem = transformSystem;
     }
 
     protected override void Draw(in OverlayDrawArgs args)
     {
-        if (Position == null || !_entManager.TryGetComponent<TransformComponent>(StationUid, out var xform)) return;
+        if (Position == null || !_transformQuery.TryGetComponent(StationUid, out var xform))
+            return;
 
-        args.WorldHandle.SetTransform(xform.WorldMatrix);
+        args.WorldHandle.SetTransform(_transformSystem.GetWorldMatrix(xform));
         args.WorldHandle.DrawRect(Position.Value, Color.Red.WithAlpha(100));
         args.WorldHandle.SetTransform(Matrix3x2.Identity);
     }

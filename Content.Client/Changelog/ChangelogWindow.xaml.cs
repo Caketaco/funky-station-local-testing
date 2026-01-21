@@ -1,3 +1,24 @@
+// SPDX-FileCopyrightText: 2021 E F R <602406+Efruit@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Paul Ritter <ritter.paul1@googlemail.com>
+// SPDX-FileCopyrightText: 2021 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2021 Vera Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Jezithyr <Jezithyr.@gmail.com>
+// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Ygg01 <y.laughing.man.y@gmail.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 y7o4ka <56449763+4310V343k@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 DrSmugleaf <10968691+DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Brandon Li <48413902+aspiringLich@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Linq;
 using Content.Client.Administration.Managers;
 using Content.Client.Stylesheets;
@@ -15,14 +36,13 @@ namespace Content.Client.Changelog
     [GenerateTypedNameReferences]
     public sealed partial class ChangelogWindow : FancyWindow
     {
-        [Dependency] private readonly IClientAdminManager _adminManager = default!;
         [Dependency] private readonly ChangelogManager _changelog = default!;
+        [Dependency] private readonly IClientAdminManager _adminManager = default!;
 
         public ChangelogWindow()
         {
             RobustXamlLoader.Load(this);
-            WindowTitle.AddStyleClass(StyleBase.StyleClassLabelHeading);
-            Stylesheet = IoCManager.Resolve<IStylesheetManager>().SheetSpace;
+            WindowTitle.AddStyleClass(StyleClass.LabelHeading);
         }
 
         protected override void Opened()
@@ -67,8 +87,7 @@ namespace Content.Client.Changelog
                 Tabs.SetTabTitle(i++, Loc.GetString($"changelog-tab-title-{changelog.Name}"));
             }
 
-            var version = typeof(ChangelogWindow).Assembly.GetName().Version ?? new Version(1, 0);
-            VersionLabel.Text = Loc.GetString("changelog-version-tag", ("version", version.ToString()));
+            VersionLabel.Text = _changelog.GetClientVersion();
 
             TabsUpdated();
         }

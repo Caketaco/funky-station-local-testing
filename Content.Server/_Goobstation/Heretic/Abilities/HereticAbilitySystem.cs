@@ -1,14 +1,32 @@
+// SPDX-FileCopyrightText: 2024 PJBot <pieterjan.briers+bot@gmail.com>
+// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 username <113782077+whateverusername0@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 whateverusername0 <whateveremail>
+// SPDX-FileCopyrightText: 2025 Amethyst <52829582+jackel234@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Drywink <hugogrethen@gmail.com>
+// SPDX-FileCopyrightText: 2025 Kandiyaki <106633914+Kandiyaki@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 V <97265903+formlessnameless@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 jackel234 <jackel234@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 misghast <51974455+misterghast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 mqole <113324899+mqole@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Chat.Systems;
 using Content.Server.DoAfter;
 using Content.Server.Flash;
 using Content.Server.Hands.Systems;
+using Content.Server.Heretic.Components;
 using Content.Server.Magic;
 using Content.Server.Polymorph.Systems;
 using Content.Server.Popups;
 using Content.Server.Radio.Components;
 using Content.Server.Store.Systems;
 using Content.Shared.Actions;
+using Content.Server.Damage.Systems;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
 using Content.Shared.DoAfter;
@@ -32,6 +50,7 @@ using Content.Shared.Localizations;
 using Robust.Shared.Audio;
 using Content.Shared.Mobs.Components;
 using Robust.Shared.Prototypes;
+using Content.Shared.Eye.Blinding.Systems;
 
 namespace Content.Server.Heretic.Abilities;
 
@@ -65,6 +84,8 @@ public sealed partial class HereticAbilitySystem : EntitySystem
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly IMapManager _mapMan = default!;
     [Dependency] private readonly IPrototypeManager _prot = default!;
+    [Dependency] private readonly BlindableSystem _blindable = default!;
+    [Dependency] private readonly StatusEffectsSystem _statusEffect = default!;
 
     private List<EntityUid> GetNearbyPeople(Entity<HereticComponent> ent, float range)
     {
@@ -145,7 +166,16 @@ public sealed partial class HereticAbilitySystem : EntitySystem
 
         if (ent.Comp.MansusGraspActive)
         {
-            _popup.PopupEntity(Loc.GetString("heretic-ability-fail"), ent, ent);
+            foreach (var hand in _hands.EnumerateHands(ent))
+            {
+                if (TryComp<MansusGraspComponent>(hand.HeldEntity, out var graspComp))
+                {
+                    QueueDel(hand.HeldEntity);
+                    ent.Comp.MansusGraspActive = false;
+                }
+            }
+
+            args.Handled = true;
             return;
         }
 

@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 
+# SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+# SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+# SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+import argparse
 import requests
 import os
 import subprocess
@@ -18,6 +28,12 @@ ROBUST_CDN_URL = "https://build.funkystation.org/"
 FORK_ID = "funkystation"
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--fork-id", default=FORK_ID)
+
+    args = parser.parse_args()
+    fork_id = args.fork_id
+
     session = requests.Session()
     session.headers = {
         "Authorization": f"Bearer {PUBLISH_TOKEN}",
@@ -32,7 +48,7 @@ def main():
     headers = {
         "Content-Type": "application/json"
     }
-    resp = session.post(f"{ROBUST_CDN_URL}fork/{FORK_ID}/publish/start", json=data, headers=headers)
+    resp = session.post(f"{ROBUST_CDN_URL}fork/{fork_id}/publish/start", json=data, headers=headers)
     resp.raise_for_status()
     print("Publish successfully started, adding files...")
 
@@ -44,7 +60,7 @@ def main():
                 "Robust-Cdn-Publish-File": os.path.basename(file),
                 "Robust-Cdn-Publish-Version": VERSION
             }
-            resp = session.post(f"{ROBUST_CDN_URL}fork/{FORK_ID}/publish/file", data=f, headers=headers)
+            resp = session.post(f"{ROBUST_CDN_URL}fork/{fork_id}/publish/file", data=f, headers=headers)
 
         resp.raise_for_status()
 
@@ -56,7 +72,7 @@ def main():
     headers = {
         "Content-Type": "application/json"
     }
-    resp = session.post(f"{ROBUST_CDN_URL}fork/{FORK_ID}/publish/finish", json=data, headers=headers)
+    resp = session.post(f"{ROBUST_CDN_URL}fork/{fork_id}/publish/finish", json=data, headers=headers)
     resp.raise_for_status()
 
     print("SUCCESS!")

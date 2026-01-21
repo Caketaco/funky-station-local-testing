@@ -1,4 +1,8 @@
-using Content.Shared.Kitchen;
+// SPDX-FileCopyrightText: 2024 deathride58 <deathride58@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
 
 namespace Content.Server.Kitchen.Components;
 
@@ -8,4 +12,9 @@ namespace Content.Server.Kitchen.Components;
 [RegisterComponent]
 public sealed partial class ActivelyMicrowavedComponent : Component
 {
+    /// <summary>
+    /// The microwave this entity is actively being microwaved by.
+    /// </summary>
+    [DataField]
+    public EntityUid? Microwave;
 }

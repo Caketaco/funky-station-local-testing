@@ -1,16 +1,30 @@
+# SPDX-FileCopyrightText: 2024 Aviu00 <93730715+Aviu00@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 John Space <bigdumb421@gmail.com>
+# SPDX-FileCopyrightText: 2024 gluesniffler <159397573+gluesniffler@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 IronDragoon <8961391+IronDragoon@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 IronDragoon <you@example.com>
+# SPDX-FileCopyrightText: 2025 McBosserson <148172569+McBosserson@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 Xcybitt <xcybitt@gmail.com>
+# SPDX-FileCopyrightText: 2025 starch <starchpersonal@gmail.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
+
 - type: latheRecipe
-  id: GrenadeFlashBang
-  result: GrenadeFlashBang
+  id: BolaEnergy
+  result: BolaEnergy
   completetime: 3
   materials:
-    Steel: 100
-    Plastic: 100
+    Steel: 200
 
 # Mech Weapons
 - type: latheRecipe
   id: WeaponMechCombatImmolationGun
   result: WeaponMechCombatImmolationGun
-  category: MechWeapons
+  categories:
+  - MechWeapons
   completetime: 10
   materials:
     Steel: 2800
@@ -21,7 +35,8 @@
 - type: latheRecipe
   id: WeaponMechCombatSolarisLaser
   result: WeaponMechCombatSolarisLaser
-  category: MechWeapons
+  categories:
+  - MechWeapons
   completetime: 10
   materials:
     Steel: 1650
@@ -32,7 +47,8 @@
 - type: latheRecipe
   id: WeaponMechCombatFiredartLaser
   result: WeaponMechCombatFiredartLaser
-  category: MechWeapons
+  categories:
+  - MechWeapons
   completetime: 10
   materials:
     Steel: 1200
@@ -43,7 +59,8 @@
 - type: latheRecipe
   id: WeaponMechCombatUltraRifle
   result: WeaponMechCombatUltraRifle
-  category: MechWeapons
+  categories:
+  - MechWeapons
   completetime: 10
   materials:
     Steel: 1000
@@ -52,7 +69,8 @@
 - type: latheRecipe
   id: WeaponMechCombatShotgun
   result: WeaponMechCombatShotgun
-  category: MechWeapons
+  categories:
+  - MechWeapons
   completetime: 10
   materials:
     Steel: 1600
@@ -61,7 +79,8 @@
 - type: latheRecipe
   id: WeaponMechCombatShotgunIncendiary
   result: WeaponMechCombatShotgunIncendiary
-  category: MechWeapons
+  categories:
+  - MechWeapons
   completetime: 10
   materials:
     Steel: 1500
@@ -71,7 +90,8 @@
 - type: latheRecipe
   id: WeaponMechCombatDisabler
   result: WeaponMechCombatDisabler
-  category: MechWeapons
+  categories:
+  - MechWeapons
   completetime: 10
   materials:
     Steel: 750
@@ -81,7 +101,8 @@
 - type: latheRecipe
   id: WeaponMechCombatFlashbangLauncher
   result: WeaponMechCombatFlashbangLauncher
-  category: MechWeapons
+  categories:
+  - MechWeapons
   completetime: 10
   materials:
     Steel: 1200
@@ -91,7 +112,8 @@
 - type: latheRecipe
   id: WeaponMechCombatMissileRack8
   result: WeaponMechCombatMissileRack8
-  category: MechWeapons
+  categories:
+  - MechWeapons
   completetime: 10
   materials:
     Steel: 2500
@@ -101,23 +123,125 @@
 - type: latheRecipe
   id: MechEquipmentKineticAccelerator
   result: WeaponMechIndustrialKineticAccelerator
-  category: MechEquipment
+  categories:
+  - MechWeapons
   completetime: 10
   materials:
     Steel: 1500
     Glass: 750
     Silver: 150
 
-- type: latheRecipe
-  id: CartridgeEpinephrine
-  result: CartridgeEpinephrine
-  completetime: 1
-  materials:
-    Glass: 100
+#Autoinjectors and Cartridges
 
 - type: latheRecipe
-  id: BolaEnergy
-  result: BolaEnergy
-  completetime: 3
+  id: CartridgeEmergency
+  result: CartridgeEmergency
+  completetime: 1
   materials:
     Steel: 200
+    Glass: 100
+    Plastic: 100
+    Plasma: 100
+
+
+- type: latheRecipe
+  id: CartridgeAirloss
+  result: CartridgeAirloss
+  completetime: 1
+  materials:
+    Steel: 200
+    Glass: 100
+    Plastic: 100
+    Plasma: 100
+
+- type: latheRecipe
+  id: CartridgeBrute
+  result: CartridgeBrute
+  completetime: 1
+  materials:
+    Steel: 200
+    Glass: 100
+    Plastic: 100
+    Plasma: 100
+
+- type: latheRecipe
+  id: CartridgeBurn
+  result: CartridgeBurn
+  completetime: 1
+  materials:
+    Steel: 200
+    Glass: 100
+    Plastic: 100
+    Plasma: 100
+
+- type: latheRecipe
+  id: CartridgePoison
+  result: CartridgePoison
+  completetime: 1
+  materials:
+    Steel: 200
+    Glass: 100
+    Plastic: 100
+    Plasma: 100
+
+- type: latheRecipe
+  id: SecHypo
+  result: SecHypo
+  completetime: 3
+  materials:
+    Steel: 1500
+    Plastic: 1000
+    Glass: 500
+    Plasma: 500
+
+# Ammo
+
+- type: latheRecipe
+  parent: BaseAmmoRecipe
+  id: MagazinePistolCaselessRifle
+  result: MagazinePistolCaselessRifle
+  materials:
+    Steel: 145
+
+- type: latheRecipe
+  parent: BaseAmmoRecipe
+  id: MagazineBoxCaselessRifle
+  result: MagazineBoxCaselessRifle
+  materials:
+    Steel: 720
+
+- type: latheRecipe
+  parent: BaseEmptyAmmoRecipe
+  id: MagazineLightRifleBoxEmpty
+  result: MagazineLightRifleBoxEmpty
+  materials:
+    Steel: 100
+
+- type: latheRecipe
+  parent: BaseAmmoRecipe
+  id: MagazineLightRifleBox
+  result: MagazineLightRifleBox
+  materials:
+    Steel: 1600
+
+# Burner not added yet
+#- type: latheRecipe
+#  parent: BaseEmptyAmmoRecipe
+#  id: MagazineHighCaliberEmpty
+#  result: MagazineHighCaliberEmpty
+#  materials:
+#    Steel: 25
+
+#- type: latheRecipe
+#  parent: BaseAmmoRecipe
+#  id: MagazineHighCaliber
+#  result: MagazineHighCaliber
+#  materials:
+#    Steel: 325
+
+#- type: latheRecipe
+#  parent: BaseAmmoRecipe
+#  id: MagazineBoxHighCaliber
+#  result: MagazineBoxHighCaliber
+#  materials:
+#    Steel: 600

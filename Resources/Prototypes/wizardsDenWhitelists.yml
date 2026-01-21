@@ -1,4 +1,13 @@
-﻿# This is the whitelist used for Wizard's Den Salamander
+# SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+# SPDX-FileCopyrightText: 2024 Simon <63975668+Simyon264@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
+# This is the whitelist used for Wizard's Den Salamander
 
 - type: playerConnectionWhitelist
   id: salamanderMrpWhitelist
@@ -12,28 +21,24 @@
     range: 30 # 30 days
     action: Deny
     includeSecret: false
-  - !type:ConditionNotesPlaytimeRange # Deny for >=2 medium severity notes in the last 14 days
+  - !type:ConditionNotesPlaytimeRange # Deny for >=3 medium severity notes in the last 90 days
     includeExpired: false
     minimumSeverity: 2 # Medium
-    minimumNotes: 1
-    range: 14 # 14 Days
-    action: Deny
-    includeSecret: false
-  - !type:ConditionNotesPlaytimeRange # Deny for >=3 low severity notes in the last 14 days
-    includeExpired: false
-    minimumSeverity: 1 # Low
     minimumNotes: 3
-    range: 14 # 14 Days
+    range: 90 # 90 Days
     action: Deny
     includeSecret: false
+#  - !type:ConditionNotesPlaytimeRange # Deny for >=3 low severity notes in the last 14 days
+#    includeExpired: false
+#    minimumSeverity: 1 # Low
+#    minimumNotes: 3
+#    range: 14 # 14 Days
+#    action: Deny
+#    includeSecret: false
   - !type:ConditionManualWhitelistMembership # Allow whitelisted players
     action: Allow
-  #- !type:ConditionPlayerCount # Allow when <= 15 players are online
-  #  minimumPlayers: 0
-  #  maximumPlayers: 15
-  #  action: Allow
   - !type:ConditionPlaytime
-    minimumPlaytime: 600 # 10 hours to be whitelisted
+    minimumPlaytime: 300 # 5 hours to be whitelisted
     action: Allow
   - !type:ConditionAlwaysMatch
     action: Deny

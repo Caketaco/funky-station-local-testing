@@ -1,3 +1,14 @@
+// SPDX-FileCopyrightText: 2023 Artjom <artjombebenin@gmail.com>
+// SPDX-FileCopyrightText: 2023 Morb <14136326+Morb0@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 DrSmugleaf <10968691+DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Numerics;
 using Content.Shared.Administration;
 using Content.Shared.Administration.Managers;
@@ -140,11 +151,29 @@ public abstract class SharedContentEyeSystem : EntitySystem
         Dirty(uid, component);
     }
 
-    public void UpdateEyeOffset(Entity<EyeComponent?> eye)
+    public void UpdateEyeOffset(Entity<EyeComponent> eye)
     {
         var ev = new GetEyeOffsetEvent();
         RaiseLocalEvent(eye, ref ev);
-        _eye.SetOffset(eye, ev.Offset, eye);
+
+        var evRelayed = new GetEyeOffsetRelayedEvent();
+        RaiseLocalEvent(eye, ref evRelayed);
+
+        _eye.SetOffset(eye, ev.Offset + evRelayed.Offset, eye);
+    }
+
+    public void UpdatePvsScale(EntityUid uid, ContentEyeComponent? contentEye = null, EyeComponent? eye = null)
+    {
+        if (!Resolve(uid, ref contentEye) || !Resolve(uid, ref eye))
+            return;
+
+        var ev = new GetEyePvsScaleEvent();
+        RaiseLocalEvent(uid, ref ev);
+
+        var evRelayed = new GetEyePvsScaleRelayedEvent();
+        RaiseLocalEvent(uid, ref evRelayed);
+
+        _eye.SetPvsScale((uid, eye), 1 + ev.Scale + evRelayed.Scale);
     }
 
     /// <summary>

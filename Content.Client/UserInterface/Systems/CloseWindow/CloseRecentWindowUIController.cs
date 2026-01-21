@@ -1,3 +1,10 @@
+// SPDX-FileCopyrightText: 2023 ShadowCommander <10494922+ShadowCommander@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Skye <22365940+Skyedra@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Client.Gameplay;
 using Content.Client.Info;
 using Robust.Client.Input;
@@ -74,7 +81,7 @@ public sealed class CloseRecentWindowUIController : UIController
     /// internal recentlyInteractedWindows tracking.
     /// </summary>
     /// <param name="window"></param>
-    private void SetMostRecentlyInteractedWindow(BaseWindow window)
+    public void SetMostRecentlyInteractedWindow(BaseWindow window)
     {
         // Search through the list and see if already added.
         // (This search is backwards since it's fairly common that the user is clicking the same
@@ -134,7 +141,6 @@ public sealed class CloseRecentWindowUIController : UIController
             if (window.IsOpen)
                 return true;
 
-            recentlyInteractedWindows.RemoveAt(i);
             // continue going down the list, hoping to find a still-open window
         }
 

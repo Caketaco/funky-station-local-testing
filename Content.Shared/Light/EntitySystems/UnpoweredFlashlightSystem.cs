@@ -1,7 +1,18 @@
+// SPDX-FileCopyrightText: 2024 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Shared.Actions;
 using Content.Shared.Emag.Systems;
 using Content.Shared.Light.Components;
 using Content.Shared.Mind.Components;
+using Content.Shared.Storage.Components;
 using Content.Shared.Toggleable;
 using Content.Shared.Verbs;
 using Robust.Shared.Audio.Systems;
@@ -22,6 +33,7 @@ public sealed class UnpoweredFlashlightSystem : EntitySystem
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly SharedAudioSystem _audioSystem = default!;
     [Dependency] private readonly SharedPointLightSystem _light = default!;
+    [Dependency] private readonly EmagSystem _emag = default!;
 
     public override void Initialize()
     {
@@ -78,6 +90,9 @@ public sealed class UnpoweredFlashlightSystem : EntitySystem
 
     private void OnGotEmagged(EntityUid uid, UnpoweredFlashlightComponent component, ref GotEmaggedEvent args)
     {
+        if (!_emag.CompareFlag(args.Type, EmagType.Interaction))
+            return;
+
         if (!_light.TryGetLight(uid, out var light))
             return;
 

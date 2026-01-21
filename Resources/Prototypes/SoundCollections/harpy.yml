@@ -1,3 +1,12 @@
+# SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
+# SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+# SPDX-FileCopyrightText: 2024 gluesniffler <159397573+gluesniffler@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 corresp0nd <46357632+corresp0nd@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 jackel234 <52829582+jackel234@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 - type: soundCollection
   id: HarpyScreams
   files:
@@ -53,6 +62,8 @@
     - /Audio/Machines/windoor_open.ogg
     - /Audio/Effects/spray.ogg
     - /Audio/Effects/spray2.ogg
+    - /Audio/_Impstation/Voice/Vox/voxhiss.ogg
+    - /Audio/_Impstation/Voice/Reptilian/reptillian_hiss1.ogg
 
 - type: soundCollection
   id: HarpySigh
@@ -92,12 +103,12 @@
   files:
     - /Audio/Nyanotrasen/Voice/Felinid/cat_growl1.ogg
     - /Audio/Animals/bear.ogg
-    - /Audio/DeltaV/Voice/Vulpkanin/dog_growl1.ogg
-    - /Audio/DeltaV/Voice/Vulpkanin/dog_growl2.ogg
-    - /Audio/DeltaV/Voice/Vulpkanin/dog_growl3.ogg
-    - /Audio/DeltaV/Voice/Vulpkanin/dog_growl4.ogg
-    - /Audio/DeltaV/Voice/Vulpkanin/dog_growl5.ogg
-    - /Audio/DeltaV/Voice/Vulpkanin/dog_growl6.ogg
+    - /Audio/_DV/Voice/Vulpkanin/dog_growl1.ogg
+    - /Audio/_DV/Voice/Vulpkanin/dog_growl2.ogg
+    - /Audio/_DV/Voice/Vulpkanin/dog_growl3.ogg
+    - /Audio/_DV/Voice/Vulpkanin/dog_growl4.ogg
+    - /Audio/_DV/Voice/Vulpkanin/dog_growl5.ogg
+    - /Audio/_DV/Voice/Vulpkanin/dog_growl6.ogg
 
 - type: soundCollection
   id: HarpyPurrs
@@ -217,28 +228,33 @@
 
 - type: soundCollection
   id: HarpyChitter
-  files: 
+  files:
     - /Audio/Voice/Moth/moth_chitter.ogg
     - /Audio/Machines/circuitprinter.ogg
     - /Audio/Machines/diagnoser_printing.ogg
     - /Audio/Machines/uniformprinter.ogg
     - /Audio/Machines/vaccinator_running.ogg
+    - /Audio/_Impstation/Voice/Vox/voxchitter1.ogg
+    - /Audio/_Impstation/Voice/Vox/voxchitter2.ogg
 
 - type: soundCollection
   id: HarpySqueak
-  files: 
+  files:
     - /Audio/Voice/Moth/moth_squeak.ogg
     - /Audio/Animals/mouse_squeak.ogg
 
 - type: soundCollection
   id: HarpyCaws
-  files: 
-    - /Audio/DeltaV/Voice/Harpy/caw1.ogg
+  files:
+    - /Audio/_DV/Voice/Harpy/caw1.ogg
 
 - type: soundCollection
   id: HarpyChirps
-  files: 
-    - /Audio/DeltaV/Voice/Harpy/chirp1.ogg
+  files:
+    - /Audio/_DV/Voice/Harpy/chirp1.ogg
     - /Audio/Voice/Talk/pai.ogg
     - /Audio/Voice/Talk/pai_ask.ogg
     - /Audio/Voice/Talk/pai_exclaim.ogg
+    - /Audio/_Funkystation/Voice/Reptilian/lizardchirp1.ogg
+    - /Audio/_Funkystation/Voice/Reptilian/lizardchirp2.ogg
+    - /Audio/_Funkystation/Voice/Reptilian/lizardchirp3.ogg

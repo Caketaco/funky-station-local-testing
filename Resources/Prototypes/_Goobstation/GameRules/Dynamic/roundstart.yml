@@ -1,3 +1,17 @@
+# SPDX-FileCopyrightText: 2024 Fenn <162015305+TooSillyFennec@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 PJBot <pieterjan.briers+bot@gmail.com>
+# SPDX-FileCopyrightText: 2024 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 username <113782077+whateverusername0@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Middleson5 <Chance@thethiers.com>
+# SPDX-FileCopyrightText: 2025 Mish <bluscout78@yahoo.com>
+# SPDX-FileCopyrightText: 2025 SlamBamActionman <83650252+SlamBamActionman@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 # major antags that get picked once during roundstart.
 # the max number of antags is so small because it's used for midround events too.
 # regards.
@@ -23,7 +37,7 @@
   - type: GameRule
     minPlayers: 45 # when the difference between low/med/high actually changes antag count
   - type: AntagSelection
-    selectionTime: BeforeJobs
+    selectionTime: IntraPlayerSpawn
     definitions:
     - prefRoles: [ Traitor ]
       max: 2
@@ -34,7 +48,7 @@
       lateJoinAdditional: true
       mindRoles:
       - MindRoleTraitor
-      
+
 - type: entity
   parent: BaseTraitorRuleDynamic
   id: TraitorDynamicMedium
@@ -45,7 +59,7 @@
     cost: 16
     scalingCost: 18
   - type: AntagSelection
-    selectionTime: BeforeJobs
+    selectionTime: IntraPlayerSpawn
     definitions:
     - prefRoles: [ Traitor ]
       max: 4
@@ -56,7 +70,7 @@
       lateJoinAdditional: true
       mindRoles:
       - MindRoleTraitor
-      
+
 - type: entity
   parent: BaseTraitorRuleDynamic
   id: TraitorDynamicHigh
@@ -69,7 +83,7 @@
   - type: GameRule
     minPlayers: 30
   - type: AntagSelection
-    selectionTime: BeforeJobs
+    selectionTime: IntraPlayerSpawn
     definitions:
     - prefRoles: [ Traitor ]
       max: 6
@@ -80,7 +94,7 @@
       lateJoinAdditional: true
       mindRoles:
       - MindRoleTraitor
-      
+
 # Thief (Spy wyci) - Low Threat Solo, Side Antag
 - type: entity
   parent: BaseGameRuleDynamic
@@ -104,7 +118,7 @@
       maxPicks: 10
     maxDifficulty: 2.5
   - type: AntagSelection
-    selectionTime: BeforeJobs
+    selectionTime: IntraPlayerSpawn
     agentName: thief-round-end-agent-name
     definitions:
     - prefRoles: [ Thief ]
@@ -116,10 +130,15 @@
       startingGear: ThiefGear
       mindRoles:
       - MindRoleThief
+      components:
+      - type: Pacified # funkystation - yeah
+      - type: Thieving
+        stripTimeReduction: 2
+        stealthy: true
       briefing:
         sound: "/Audio/Misc/thief_greeting.ogg"
 
-# Changeling - Medium Threat Solo 
+# Changeling - Medium Threat Solo
 - type: entity
   parent: BaseGameRuleDynamic
   id: ChangelingDynamicLow
@@ -138,7 +157,7 @@
     - EscapeIdentityObjective
     - ChangelingSurviveObjective
   - type: AntagSelection
-    selectionTime: BeforeJobs
+    selectionTime: IntraPlayerSpawn
     agentName: changeling-roundend-name
     definitions:
     - prefRoles: [ Changeling ]
@@ -164,14 +183,14 @@
     scalingCost: 23
   - type: ChangelingRule
   - type: GameRule
-    minPlayers: 20 # Changelings are great low pop antags but it doesn't work for dynamic that well :[ 
+    minPlayers: 20 # Changelings are great low pop antags but it doesn't work for dynamic that well :[
   - type: AntagObjectives
     objectives:
     - ChangelingStealDNAObjective
     - EscapeIdentityObjective
     - ChangelingSurviveObjective
   - type: AntagSelection
-    selectionTime: BeforeJobs
+    selectionTime: IntraPlayerSpawn
     agentName: changeling-roundend-name
     definitions:
     - prefRoles: [ Changeling ]
@@ -200,7 +219,7 @@
   - type: GameRule
     minPlayers: 40
   - type: AntagSelection
-    selectionTime: BeforeJobs
+    selectionTime: IntraPlayerSpawn
     agentName: heretic-roundend-name
     definitions:
     - prefRoles: [ Heretic ]
@@ -231,7 +250,7 @@
   - type: GameRule
     minPlayers: 20
   - type: AntagSelection
-    selectionTime: BeforeJobs
+    selectionTime: IntraPlayerSpawn
     agentName: heretic-roundend-name
     definitions:
     - prefRoles: [ Heretic ]
@@ -263,7 +282,7 @@
   - type: GameRule
     minPlayers: 20
   - type: AntagSelection
-    selectionTime: BeforeJobs
+    selectionTime: IntraPlayerSpawn
     definitions:
     - prefRoles: [ HeadRev ]
       max: 3
@@ -309,7 +328,9 @@
       components:
       - type: NukeOperative
       - type: RandomMetadata
-        nameSegments: [ names_death_commando ]
+        nameSegments: # Vocaloid Names Fix
+        - NamesNukieFirstCommander
+        - NamesSyndicateElite
       - type: NpcFactionMember
         factions:
         - Syndicate
@@ -324,7 +345,9 @@
       components:
       - type: NukeOperative
       - type: RandomMetadata
-        nameSegments: [ names_death_commando ]
+        nameSegments: # Vocaloid Names Fix
+        - NamesNukieFirstAgent
+        - NamesSyndicateNormal
       - type: NpcFactionMember
         factions:
         - Syndicate
@@ -341,7 +364,9 @@
       components:
       - type: NukeOperative
       - type: RandomMetadata
-        nameSegments: [ names_death_commando ]
+        nameSegments: # Vocaloid Names Fix
+        - NamesNukieFirstOperator
+        - NamesSyndicateNormal
       - type: NpcFactionMember
         factions:
         - Syndicate

@@ -1,3 +1,10 @@
+// SPDX-FileCopyrightText: 2024 V <97265903+formlessnameless@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 RadsammyT <32146976+RadsammyT@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 corresp0nd <46357632+corresp0nd@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 using System.Linq;
 using System.Numerics;
 using Content.Shared._EstacaoPirata.Cards.Deck;
@@ -132,7 +139,14 @@ public sealed class CardDeckSystem : EntitySystem
     }
     private void OnComponentStartupEvent(EntityUid uid, CardDeckComponent comp, ComponentStartup args)
     {
+        if (!TryComp(uid, out CardStackComponent? stack))
+        {
+            _notInitialized[(uid, comp)] = 0;
+            return;
+        }
 
+        if(stack.Cards.Count <= 0)
+            _notInitialized[(uid, comp)] = 0;
         UpdateSprite(uid, comp);
     }
 

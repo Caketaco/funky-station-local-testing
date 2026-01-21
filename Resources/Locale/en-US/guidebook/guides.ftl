@@ -1,18 +1,108 @@
+# SPDX-FileCopyrightText: 2023 /ʊniɹɑː/ <onoira@psiko.zone>
+# SPDX-FileCopyrightText: 2023 2013HORSEMEATSCANDAL <146540817+2013HORSEMEATSCANDAL@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 AjexRose <112997230+AjexRose@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Aru Moon <anton17082003@gmail.com>
+# SPDX-FileCopyrightText: 2023 BismarckShuffle <107375341+BismarckShuffle@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 CrigCrag <137215465+CrigCrag@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Derby <Derby@ss14>
+# SPDX-FileCopyrightText: 2023 DerbyX <50932435+DerbyX@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Julian Giebel <juliangiebel@live.de>
+# SPDX-FileCopyrightText: 2023 Kara <lunarautomaton6@gmail.com>
+# SPDX-FileCopyrightText: 2023 Kevin Zheng <kevinz5000@gmail.com>
+# SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 M3739 <47579354+M3739@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Nails+Tape <124523848+Nails-n-Tape@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 OttoMaticode <124523848+OttoMaticode@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+# SPDX-FileCopyrightText: 2023 Sir Winters <7543955+Owai-Seek@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 chromiumboy <50505512+chromiumboy@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 coolmankid12345 <55817627+coolmankid12345@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 deltanedas <@deltanedas:kde.org>
+# SPDX-FileCopyrightText: 2023 dribblydrone <119393097+dribblydrone@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 eclips_e <67359748+Just-a-Unity-Dev@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 faint <46868845+ficcialfaint@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 AJCM-git <60196617+AJCM-git@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
+# SPDX-FileCopyrightText: 2024 Ben Velie <veliebm@gmail.com>
+# SPDX-FileCopyrightText: 2024 Chief-Engineer <119664036+Chief-Engineer@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Errant <35878406+Errant-4@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Kira Bridgeton <161087999+Verbalase@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2024 Terraspark4941 <terraspark4941@gmail.com>
+# SPDX-FileCopyrightText: 2024 UBlueberry <161545003+UBlueberry@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 deltanedas <39013340+deltanedas@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 f0x-n3rd <150924715+f0x-n3rd@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 gluesniffler <159397573+gluesniffler@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 username <113782077+whateverusername0@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Fenn <162015305+TooSillyFennec@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Icepick <122653407+Icepicked@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Icepick <icepickedcyanide@gmail.com>
+# SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 corresp0nd <46357632+corresp0nd@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
 guide-entry-ss14 = Station and Shifts
 guide-entry-engineering = Engineering
 guide-entry-construction = Construction
+guide-entry-expandingrepairingstation = Expanding and Repairing Stations
 guide-entry-airlock-security = Airlock Upgrades
+guide-entry-wirepanels = Wire Panels
+guide-entry-airlocks = Airlocks
 guide-entry-atmospherics = Atmospherics
+guide-entry-pipes = Pipes
+guide-entry-pumps = Pumps
+guide-entry-gasmanipulation = Gas Manipulation
+guide-entry-atmosphereinout = Atmosphere In/Out
+guide-entry-airvent = Air Vent
+guide-entry-passivevent = Passive Vent
+guide-entry-airinjector = Air Injector
+guide-entry-airscrubber = Air Scrubber
+guide-entry-portablescrubber = Portable Scrubber
+guide-entry-valves = Valves
+guide-entry-manualvalve = Manual Valve
+guide-entry-signalvalve = Signal Valve
+guide-entry-pneumaticvalve = Pneumatic Valve
+guide-entry-passivegate = Passive Gate
+guide-entry-ressureregulator = Pressure Regulator
+guide-entry-mixingandfiltering = Mixing and Filtering
+guide-entry-gascanisters = Gas Canisters
+guide-entry-thermomachines = Thermomachines
+guide-entry-gascondensing = Gas Condensing
+guide-entry-radiators = Radiators
+guide-entry-atmosphericssystems = Atmospherics Systems
+guide-entry-pipenetworks = Pipe Networks
+guide-entry-devicemonitoringandcontrol = Device Monitoring and Control
+guide-entry-airalarms = Air Alarms
+guide-entry-atmosphericalertscomputer = Atmospheric Alerts Computer
+guide-entry-atmosphericnetworkmonitor = Atmospheric Network Monitor
+guide-entry-fireandgascontrol = Fire and Gas Control
+guide-entry-gasminingandstorage = Gas Mining and Storage
+guide-entry-atmosphericupsets = Atmospheric Upsets
+guide-entry-fires = Fires
+guide-entry-spacing = Spacing
+guide-entry-atmostools = Atmos Tools
+guide-entry-gasses = Gasses
 guide-entry-botany = Botany
-guide-entry-fires = Fires & Space
 guide-entry-shuttle-craft = Shuttle-craft
 guide-entry-networking = Networking
-guide-entry-network-configurator = Network Configurator
 guide-entry-access-configurator = Access Configurator
 guide-entry-power = Power
+guide-entry-inspectingpower = Inspecting Power
+guide-entry-powerstorage = Power Storage
+guide-entry-ramping = Ramping
+guide-entry-voltagenetworks = Voltage Networks
+guide-entry-generators = Generators
 guide-entry-portable-generator = Portable Generators
 guide-entry-ame = Antimatter Engine (AME)
-guide-entry-singularity = Singularity / Tesla
+guide-entry-singularityteslaengine = Singularity / Tesla
+guide-entry-singularityengine = Singularity Engine
+guide-entry-teslaengine = Tesla Engine
+guide-entry-solarpanels = Solar Panels
 guide-entry-teg = Thermo-electric Generator (TEG)
 guide-entry-rtg = RTG
 # GoobStation - Supermatter
@@ -28,7 +118,6 @@ guide-entry-chef = Chef
 guide-entry-medical = Medical
 guide-entry-medicaldoctor = Medical Doctor
 guide-entry-chemist = Chemist
-guide-entry-medicine = Medicine
 guide-entry-brute = Advanced Brute Medication
 guide-entry-botanicals = Botanicals
 guide-entry-cloning = Cloning
@@ -59,17 +148,38 @@ guide-entry-controls = Controls
 guide-entry-radio = Radio and Speech
 
 guide-entry-references = Tables & References
+guide-entry-chemicals = Chemicals
 guide-entry-drinks = Drinks
 guide-entry-foodrecipes = Food Recipes
-guide-entry-chemicals = Chemicals
+
 guide-entry-elements = Elements
+guide-entry-medicine = Medicine
 guide-entry-narcotics = Narcotics
 guide-entry-pyrotechnics = Pyrotechnic
 guide-entry-toxins = Toxins
 guide-entry-foods = Foods
 guide-entry-biological = Biological
-guide-entry-botanical = Botanicals
+guide-entry-botanical = Botanical
+guide-entry-special = Special
 guide-entry-others = Others
+# funky station
+guide-entry-exotic = Exotic
+
+guide-entry-pizza-recipes = Pizzas
+guide-entry-savory-recipes = Savory Foods
+guide-entry-bread-recipes = Breads
+guide-entry-breakfast-recipes = Breakfast Foods
+guide-entry-moth-recipes = Moth Foods
+guide-entry-pasta-recipes = Pastas & Noodles
+guide-entry-dessert-recipes = Desserts & Pastries
+guide-entry-soup-recipes = Soups & Stews
+guide-entry-pie-recipes = Pies & Tarts
+guide-entry-barsandcookies-recipes = Bars & Cookies
+guide-entry-cake-recipes = Cakes
+guide-entry-salad-recipes = Salads
+guide-entry-medicinal-recipes = Medicinal
+guide-entry-other-recipes = Other
+guide-entry-secret-recipes = Secret
 
 guide-entry-antagonists = Antagonists
 guide-entry-nuclear-operatives = Nuclear Operatives
@@ -79,6 +189,8 @@ guide-entry-revolutionaries = Revolutionaries
 guide-entry-minor-antagonists = Minor Antagonists
 guide-entry-space-ninja = Space Ninja
 guide-entry-thieves = Thieves
+guide-entry-wizard = Wizard
+guide-entry-malfunctioningai = Malfunctioning AI
 
 guide-entry-rules = Server Rules
 guide-entry-rules-core-only = Core Only Ruleset
@@ -100,6 +212,7 @@ guide-entry-rules-c11 = C11
 guide-entry-rules-c12 = C12
 guide-entry-rules-c13 = C13
 guide-entry-rules-c14 = C14
+guide-entry-rules-c15 = C15
 guide-entry-rules-roleplay = Roleplay Rules
 guide-entry-rules-r1 = R1
 guide-entry-rules-r2 = R2
@@ -139,6 +252,8 @@ guide-entry-rules-sl-restricted-gear = Restricted Gear
 guide-entry-rules-sl-restricted-weapons = Restricted Weapons
 guide-entry-rules-ban-types = Ban Types
 guide-entry-rules-ban-durations = Ban Durations
+guide-entry-metashield = Metashield
+guide-entry-namingscheme = Naming Scheme
 
 guide-entry-writing = Writing
 guide-entry-glossary = Glossary

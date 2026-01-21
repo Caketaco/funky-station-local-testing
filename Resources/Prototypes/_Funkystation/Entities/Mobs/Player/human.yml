@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 kbarkevich <24629810+kbarkevich@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
+- type: entity
+  categories: [ HideSpawnMenu ]
+  parent: MobHuman
+  id: MobHumanNeanderthal
+  name: Neanderthal
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+    hair: HumanHairBedheadv2  # figure out how to randomize this
+    facialHair: HumanFacialHairBrokenman
+  - type: Loadout
+    prototypes: [ NeanderthalGear ]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesNeanderthalNormal
+  - type: NeanderthalAccent
+  - type: Clumsy
+    clumsyDefaultCheck: 0.9
+    clumsySound:
+      path: /Audio/_Funkystation/Voice/Neanderthal/grunt.ogg
+      params:
+        volume: 1
+        pitch: 1
+        maxDistance: 15
+    gunShootFailSound:
+      path: /Audio/_Funkystation/Voice/Neanderthal/grunt.ogg
+      params:
+        volume: 1
+        pitch: 1
+        maxDistance: 15
+    clumsyVaulting: false

@@ -1,9 +1,18 @@
+# SPDX-FileCopyrightText: 2023 ChilbroBaggins <107660393+ChilbroBaggins@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Interrobang01 <113810873+Interrobang01@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Jeff <velcroboy333@hotmail.com>
+# SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 - type: vendingMachineInventory
   id: CondimentInventory
   startingInventory:
     FoodCondimentPacketAstrotame: 5
     FoodCondimentPacketBbq: 5
-    FoodCondimentPacketFrostoil: 5
+    FoodCondimentPacketColdsauce: 5
     FoodCondimentPacketHorseradish: 5
     FoodCondimentPacketHotsauce: 5
     FoodCondimentPacketKetchup: 5
@@ -18,3 +27,8 @@
     KnifePlastic: 10
     FoodPlatePlastic: 10
     FoodPlateSmallPlastic: 10
+  contrabandInventory:
+    FoodShakerSalt: 1
+    FoodShakerPepper: 1
+    FoodCondimentBottleKetchup: 1
+    ReagentContainerMayo: 1

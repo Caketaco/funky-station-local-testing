@@ -1,4 +1,14 @@
-﻿using Content.Shared.Administration;
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 nikthechampiongr <32041239+nikthechampiongr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
+using Content.Shared.Administration;
 using Content.Shared.GameTicking;
 using Content.Shared.Mind;
 using Robust.Shared.Network;
@@ -31,12 +41,6 @@ public sealed class ContentPlayerData
     /// </summary>
     [ViewVariables, Access(typeof(SharedMindSystem), typeof(SharedGameTicker))]
     public EntityUid? Mind { get; set; }
-
-    /// <summary>
-    ///     If true, the player is an admin and they explicitly de-adminned mid-game,
-    ///     so they should not regain admin if they reconnect.
-    /// </summary>
-    public bool ExplicitlyDeadminned { get; set; }
 
     /// <summary>
     /// If true, the admin will not show up in adminwho except to admins with the <see cref="AdminFlags.Stealth"/> flag.

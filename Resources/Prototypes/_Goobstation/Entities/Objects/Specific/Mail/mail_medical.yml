@@ -1,5 +1,15 @@
+# SPDX-FileCopyrightText: 2024 BombasterDS <115770678+BombasterDS@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+# SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 Fenn <162015305+TooSillyFennec@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 corresp0nd <46357632+corresp0nd@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 mkanke-real <mikekanke@gmail.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 - type: entity
-  parent: BaseMailLarge
+  parent: BaseMailSmall
   id: MailMedicalBasicSupplies
   suffix: Base Medics
   components:
@@ -12,8 +22,8 @@
     - id: Gauze
       maxAmount: 5
 
-- type: entity
-  parent: BaseMailLarge
+- type: entity # Funkychem
+  parent: BaseMail
   id: MailMedicalMedicinePills
   suffix: Pills
   components:
@@ -21,13 +31,15 @@
     contents:
     - id: PillTricordrazine
       maxAmount: 2
-    - id: PillDylovene
+    - id: PillGranibitulari
       maxAmount: 2
-    - id: PillKelotane
-      maxAmount: 2
+    - id: PillMultiver
+    - id: PillHyronalin
+    - id: PillAiuri
+    - id: PillLibital
 
 - type: entity
-  parent: BaseMailLarge
+  parent: BaseMail
   id: MailMedicalEmergencyPens
   suffix: Medipens
   components:
@@ -37,7 +49,7 @@
       maxAmount: 3
 
 - type: entity
-  parent: BaseMailLarge
+  parent: BaseMail
   id: MailMedicalStabilizers
   suffix: Stabilizers
   components:
@@ -49,10 +61,12 @@
       maxAmount: 2
     - id: SyringeTranexamicAcid
       maxAmount: 2
+    - id: SyringeSaline # Funkychem
+    - id: SyringeConvermol #
 
 # Chemist
 - type: entity
-  parent: BaseMailLarge
+  parent: BaseMailSmall
   id: MailMedicalChemistrySupplement
   suffix: Chemical Supplies
   components:

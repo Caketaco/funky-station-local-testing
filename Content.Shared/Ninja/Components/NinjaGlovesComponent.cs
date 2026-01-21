@@ -1,3 +1,12 @@
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 deltanedas <@deltanedas:kde.org>
+// SPDX-FileCopyrightText: 2023 keronshb <54602815+keronshb@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 deltanedas <39013340+deltanedas@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Shared.Ninja.Systems;
 using Content.Shared.Objectives.Components;
 using Robust.Shared.Audio;
@@ -33,7 +42,7 @@ public sealed partial class NinjaGlovesComponent : Component
 /// An ability that adds components to the user when the gloves are enabled.
 /// </summary>
 [DataRecord]
-public record struct NinjaGloveAbility()
+public partial record struct NinjaGloveAbility()
 {
     /// <summary>
     /// If not null, checks if an objective with this prototype has been completed.

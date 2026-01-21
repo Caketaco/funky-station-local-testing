@@ -1,3 +1,10 @@
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Robust.Shared.GameStates;
 
 namespace Content.Shared.Containers;
@@ -17,4 +24,16 @@ public sealed partial class DragInsertContainerComponent : Component
     /// </summary>
     [DataField, ViewVariables(VVAccess.ReadWrite)]
     public bool UseVerbs = true;
+
+    /// <summary>
+    /// The delay in seconds before a drag will be completed.
+    /// </summary>
+    [DataField]
+    public TimeSpan EntryDelay = TimeSpan.Zero;
+
+    /// <summary>
+    /// If entry delay isn't zero, this sets whether an entity dragging itself into the container should be delayed.
+    /// </summary>
+    [DataField]
+    public bool DelaySelfEntry = false;
 }

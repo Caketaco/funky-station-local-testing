@@ -1,3 +1,12 @@
+// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 chromiumboy <50505512+chromiumboy@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Server.Atmos.Monitor.Components;
 using Content.Server.DeviceNetwork.Components;
 using Content.Server.DeviceNetwork.Systems;
@@ -10,10 +19,8 @@ using Content.Shared.Atmos.Monitor;
 using Content.Shared.Atmos.Monitor.Components;
 using Content.Shared.DeviceNetwork.Components;
 using Content.Shared.Pinpointer;
-using Content.Shared.Tag;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map.Components;
-using Robust.Shared.Timing;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
@@ -25,11 +32,9 @@ public sealed class AtmosAlertsComputerSystem : SharedAtmosAlertsComputerSystem
     [Dependency] private readonly AirAlarmSystem _airAlarmSystem = default!;
     [Dependency] private readonly AtmosDeviceNetworkSystem _atmosDevNet = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-    [Dependency] private readonly TagSystem _tagSystem = default!;
     [Dependency] private readonly MapSystem _mapSystem = default!;
     [Dependency] private readonly TransformSystem _transformSystem = default!;
     [Dependency] private readonly NavMapSystem _navMapSystem = default!;
-    [Dependency] private readonly IGameTiming _gameTiming = default!;
     [Dependency] private readonly DeviceListSystem _deviceListSystem = default!;
 
     private const float UpdateTime = 1.0f;
@@ -54,7 +59,7 @@ public sealed class AtmosAlertsComputerSystem : SharedAtmosAlertsComputerSystem
         SubscribeLocalEvent<AtmosAlertsDeviceComponent, AnchorStateChangedEvent>(OnDeviceAnchorChanged);
     }
 
-    #region Event handling 
+    #region Event handling
 
     private void OnConsoleInit(EntityUid uid, AtmosAlertsComputerComponent component, ComponentInit args)
     {

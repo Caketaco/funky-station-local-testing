@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: 2025 SigmaTheDragon <162711378+SigmaTheDragon@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 thecopbennet <bennetgood@gmail.com>
+# SPDX-FileCopyrightText: 2025 thecopbennet <thecopbennet@proton.me>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
+- type: entity
+  id: ShellHypo
+  name: shell (12 gauge hypo)
+  parent: [BaseSyndicateContraband, BaseShellShotgun]
+  components:
+  - type: Sprite
+    sprite: _Funkystation/Objects/Weapons/Guns/Ammunition/Casings/shotgun_shell.rsi
+    layers:
+    - state: hypo
+      map: [ "enum.AmmoVisualLayers.Base" ]
+  - type: CartridgeAmmo
+    proto: PelletShotgunTranquilizer
+  - type: ChemicalAmmo
+  - type: SolutionContainerManager
+    solutions:
+      ammo:
+        maxVol: 7
+  - type: RefillableSolution
+    solution: ammo
+  - type: InjectableSolution
+    solution: ammo
+  - type: SolutionTransfer
+    maxTransferAmount: 7
+  - type: SpentAmmoVisuals
+    state: "hypo"

@@ -1,3 +1,17 @@
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Flipp Syder <76629141+vulppine@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Morb <14136326+Morb0@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 csqrb <56765288+CaptainSqrBeard@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 corresp0nd <46357632+corresp0nd@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 hivehum <ketchupfaced@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Markings;
 using Content.Shared.Humanoid.Prototypes;
@@ -298,7 +312,13 @@ public sealed class HumanoidAppearanceSystem : SharedHumanoidAppearanceSystem
                 sprite.LayerMapSet(layerId, layer);
                 sprite.LayerSetSprite(layerId, rsi);
             }
-
+		    // impstation edit begin - check if there's a shader defined in the markingPrototype's shader datafield, and if there is...
+			if (markingPrototype.Shader != null)
+			{
+			// use spriteComponent's layersetshader function to set the layer's shader to that which is specified.
+				sprite.LayerSetShader(layerId, markingPrototype.Shader);
+			}
+			// impstation edit end
             sprite.LayerSetVisible(layerId, visible);
 
             if (!visible || setting == null) // this is kinda implied

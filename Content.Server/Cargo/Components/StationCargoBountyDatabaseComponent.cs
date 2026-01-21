@@ -1,3 +1,16 @@
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Killerqu00 <47712032+Killerqu00@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 wafehling <wafehling@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Gansu <68031780+GansuLalan@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 aa5g21 <aa5g21@soton.ac.uk>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Shared.Cargo;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
@@ -12,14 +25,21 @@ public sealed partial class StationCargoBountyDatabaseComponent : Component
     /// <summary>
     /// Maximum amount of bounties a station can have.
     /// </summary>
-    [DataField, ViewVariables(VVAccess.ReadWrite)]
+    [DataField]
     public int MaxBounties = 6;
 
     /// <summary>
     /// A list of all the bounties currently active for a station.
     /// </summary>
-    [DataField, ViewVariables(VVAccess.ReadWrite)]
+    [DataField]
     public List<CargoBountyData> Bounties = new();
+
+    /// <summary>
+    /// A list of all the bounties that have been completed or
+    /// skipped for a station.
+    /// </summary>
+    [DataField]
+    public List<CargoBountyHistoryData> History = new();
 
     /// <summary>
     /// Used to determine unique order IDs
@@ -44,5 +64,5 @@ public sealed partial class StationCargoBountyDatabaseComponent : Component
     /// The time between skipping bounties.
     /// </summary>
     [DataField]
-    public TimeSpan SkipDelay = TimeSpan.FromMinutes(15);
+    public TimeSpan SkipDelay = TimeSpan.FromMinutes(3);
 }

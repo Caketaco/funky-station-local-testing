@@ -1,3 +1,20 @@
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <drsmugleaf@gmail.com>
+// SPDX-FileCopyrightText: 2023 Jezithyr <jezithyr@gmail.com>
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 deltanedas <39013340+deltanedas@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 keronshb <54602815+keronshb@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Simon <63975668+Simyon264@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 fishbait <gnesse@gmail.com>
+// SPDX-FileCopyrightText: 2024 nikthechampiongr <32041239+nikthechampiongr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Linq;
 using Content.Server.Popups;
 using Content.Shared.DoAfter;
@@ -78,6 +95,7 @@ public sealed partial class ImplanterSystem : SharedImplanterSystem
                 return;
             }
 
+
             //Implant self instantly, otherwise try to inject the target.
             if (args.User == target)
                 Implant(target, target, uid, component);
@@ -86,15 +104,6 @@ public sealed partial class ImplanterSystem : SharedImplanterSystem
         }
 
         args.Handled = true;
-    }
-
-    public bool CheckSameImplant(EntityUid target, EntityUid implant)
-    {
-        if (!TryComp<ImplantedComponent>(target, out var implanted))
-            return false;
-
-        var implantPrototype = Prototype(implant);
-        return implanted.ImplantContainer.ContainedEntities.Any(entity => Prototype(entity) == implantPrototype);
     }
 
     /// <summary>

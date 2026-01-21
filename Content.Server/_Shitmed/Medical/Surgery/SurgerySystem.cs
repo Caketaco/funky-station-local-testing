@@ -1,3 +1,12 @@
+// SPDX-FileCopyrightText: 2024 BombasterDS <115770678+BombasterDS@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 corresp0nd <46357632+corresp0nd@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 deltanedas <@deltanedas:kde.org>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2026 Carcc <225926381+carccborg@users.noreply.github.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 using Content.Server.Atmos.Rotting;
 using Content.Server.Body.Systems;
 using Content.Server.Chat.Systems;
@@ -11,6 +20,13 @@ using Content.Shared.Eye.Blinding.Components;
 using Content.Shared.Eye.Blinding.Systems;
 using Content.Shared.Interaction;
 using Content.Shared.Inventory;
+// Begin DeltaV Additions
+using Content.Shared._DV.Surgery;
+using Content.Shared.FixedPoint;
+using Content.Shared.Forensics.Components;
+using Content.Shared.Damage.Prototypes;
+// End DeltaV Additions
+using Content.Shared.Traits.Assorted;
 using Content.Shared._Shitmed.Medical.Surgery;
 using Content.Shared._Shitmed.Medical.Surgery.Conditions;
 using Content.Shared._Shitmed.Medical.Surgery.Effects.Step;
@@ -24,6 +40,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 using System.Linq;
 using Content.Shared.Verbs;
+using Content.Shared.Forensics.Components;
 
 namespace Content.Server._Shitmed.Medical.Surgery;
 
@@ -35,9 +52,13 @@ public sealed class SurgerySystem : SharedSurgerySystem
     [Dependency] private readonly DamageableSystem _damageable = default!;
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
+    [Dependency] private readonly SurgeryCleanSystem _clean = default!; // DeltaV
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly RottingSystem _rot = default!;
     [Dependency] private readonly BlindableSystem _blindableSystem = default!;
+    [Dependency] private readonly InventorySystem _inventory = default!; // DeltaV - surgery cross contamination
+
+    private readonly HashSet<string> _dirtyDnas = new(); // DeltaV
 
     public override void Initialize()
     {
@@ -45,10 +66,11 @@ public sealed class SurgerySystem : SharedSurgerySystem
 
         SubscribeLocalEvent<SurgeryToolComponent, GetVerbsEvent<UtilityVerb>>(OnUtilityVerb);
         SubscribeLocalEvent<SurgeryTargetComponent, SurgeryStepDamageEvent>(OnSurgeryStepDamage);
+        SubscribeLocalEvent<SurgeryContaminableComponent, SurgeryDirtinessEvent>(OnSurgeryDirtiness); // DeltaV
         // You might be wondering "why aren't we using StepEvent for these two?" reason being that StepEvent fires off regardless of success on the previous functions
         // so this would heal entities even if you had a used or incorrect organ.
         SubscribeLocalEvent<SurgerySpecialDamageChangeEffectComponent, SurgeryStepDamageChangeEvent>(OnSurgerySpecialDamageChange);
-        SubscribeLocalEvent<SurgeryDamageChangeEffectComponent, SurgeryStepDamageChangeEvent>(OnSurgeryDamageChange);
+        SubscribeLocalEvent<SurgeryDamageChangeEffectComponent, SurgeryStepEvent>(OnSurgeryDamageChange); // DeltaV - Use SurgeryStepEvent so steps can actually damage the patient
         SubscribeLocalEvent<SurgeryStepEmoteEffectComponent, SurgeryStepEvent>(OnStepScreamComplete);
         SubscribeLocalEvent<SurgeryStepSpawnEffectComponent, SurgeryStepEvent>(OnStepSpawnComplete);
     }
@@ -139,10 +161,96 @@ public sealed class SurgerySystem : SharedSurgerySystem
     private void OnSurgeryStepDamage(Entity<SurgeryTargetComponent> ent, ref SurgeryStepDamageEvent args) =>
         SetDamage(args.Body, args.Damage, args.PartMultiplier, args.User, args.Part);
 
-    private void OnSurgeryDamageChange(Entity<SurgeryDamageChangeEffectComponent> ent, ref SurgeryStepDamageChangeEvent args)
+    // Begin DeltaV Additions - surgery cross contamination
+    public FixedPoint2 TotalDirtiness(EntityUid user, List<EntityUid> tools, Entity<DnaComponent, SurgeryContaminableComponent> target)
+    {
+        var total = FixedPoint2.Zero;
+        _dirtyDnas.Clear();
+
+        // TODO: make this use event(s)
+        if (HasComp<SurgerySelfDirtyComponent>(user))
+        {
+            total += _clean.Dirtiness(user);
+            _dirtyDnas.UnionWith(_clean.CrossContaminants(user));
+        }
+        else
+        {
+            if (_inventory.TryGetSlotEntity(user, "gloves", out var glovesEntity))
+            {
+                total += _clean.Dirtiness(glovesEntity.Value);
+                _dirtyDnas.UnionWith(_clean.CrossContaminants(glovesEntity.Value));
+            }
+
+            foreach (var tool in tools)
+            {
+                total += _clean.Dirtiness(tool);
+                _dirtyDnas.UnionWith(_clean.CrossContaminants(tool));
+            }
+        }
+
+        if (target.Comp1.DNA is {} dna)
+            _dirtyDnas.Remove(dna);
+
+        return total + _dirtyDnas.Count * target.Comp2.CrossContaminationDirtinessLevel;
+    }
+
+    public FixedPoint2 DamageToBeDealt(Entity<SurgeryContaminableComponent> ent, FixedPoint2 dirtiness)
+    {
+        if (ent.Comp.DirtinessThreshold > dirtiness)
+            return 0;
+
+        var exceedsAmount = (dirtiness - ent.Comp.DirtinessThreshold).Float();
+        var additionalDamage = (1f / ent.Comp.InverseDamageCoefficient.Float()) * (exceedsAmount * exceedsAmount);
+
+        return FixedPoint2.Min(FixedPoint2.New(additionalDamage) + ent.Comp.BaseDamage, ent.Comp.ToxinStepLimit);
+    }
+
+    private void OnSurgeryDirtiness(Entity<SurgeryContaminableComponent> ent, ref SurgeryDirtinessEvent args)
+    {
+        if (!TryComp<DnaComponent>(ent, out var dnaComp))
+            return;
+
+        var dirtiness = TotalDirtiness(args.User, args.Tools, (ent, dnaComp, ent));
+        var damage = DamageToBeDealt(ent, dirtiness);
+
+        if (damage > 0)
+        {
+            var sepsis = new DamageSpecifier(_prototypes.Index(ent.Comp.SepsisDamageType), damage);
+            SetDamage(ent, sepsis, 0.5f, args.User, args.Part);
+        }
+
+        if (!TryComp<SurgeryStepDirtinessComponent>(args.Step, out var surgicalStepDirtiness))
+            return;
+
+        if (HasComp<SurgerySelfDirtyComponent>(args.User))
+        {
+            _clean.AddDirt(args.User, surgicalStepDirtiness.ToolDirtiness);
+            _clean.AddDna(args.User, dnaComp.DNA);
+            return;
+        }
+
+        if (_inventory.TryGetSlotEntity(args.User, "gloves", out var glovesEntity))
+        {
+            _clean.AddDirt(glovesEntity.Value, surgicalStepDirtiness.GloveDirtiness);
+            _clean.AddDna(glovesEntity.Value, dnaComp.DNA);
+        }
+        foreach (var tool in args.Tools)
+        {
+            // don't dirty random non-surgery items like soap or clothes
+            // ideally Tools would only contain the (highest quality) tool used for the step
+            if (!HasComp<SurgeryToolComponent>(tool))
+                continue;
+
+            _clean.AddDirt(tool, surgicalStepDirtiness.ToolDirtiness);
+            _clean.AddDna(tool, dnaComp.DNA);
+        }
+    }
+    // End DeltaV Additions
+
+    private void OnSurgeryDamageChange(Entity<SurgeryDamageChangeEffectComponent> ent, ref SurgeryStepEvent args) // DeltaV
     {
         var damageChange = ent.Comp.Damage;
-        if (HasComp<ForcedSleepingComponent>(args.Body))
+        if (HasComp<AnesthesiaComponent>(args.Body) || _mobState.IsDead(args.Body)) // DeltaV - anesthesia
             damageChange = damageChange * ent.Comp.SleepModifier;
 
         SetDamage(args.Body, damageChange, 0.5f, args.User, args.Part);
@@ -161,7 +269,10 @@ public sealed class SurgerySystem : SharedSurgerySystem
 
     private void OnStepScreamComplete(Entity<SurgeryStepEmoteEffectComponent> ent, ref SurgeryStepEvent args)
     {
-        if (HasComp<ForcedSleepingComponent>(args.Body))
+        if (HasComp<AnesthesiaComponent>(args.Body)) // DeltaV
+            return;
+
+        if (HasComp<PainNumbnessComponent>(args.Body))
             return;
 
         _chat.TryEmoteWithChat(args.Body, ent.Comp.Emote);

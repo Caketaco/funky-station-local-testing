@@ -1,3 +1,41 @@
+// SPDX-FileCopyrightText: 2020 JiimBob <44332255+JiimBob@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2020 Tyler Young <tyler.young@impromptu.ninja>
+// SPDX-FileCopyrightText: 2020 Vince <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Javier Guardia Fernández <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 ShadowCommander <10494922+ShadowCommander@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Vera Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Acruid <shatter66@gmail.com>
+// SPDX-FileCopyrightText: 2022 Paul Ritter <ritter.paul1@googlemail.com>
+// SPDX-FileCopyrightText: 2022 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2022 Vera Aguilera Puerto <gradientvera@outlook.com>
+// SPDX-FileCopyrightText: 2022 metalgearsloth <comedian_vs_clown@hotmail.com>
+// SPDX-FileCopyrightText: 2022 metalgearsloth <metalgearsloth@gmail.com>
+// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 20kdc <asdd2808@gmail.com>
+// SPDX-FileCopyrightText: 2023 AJCM-git <60196617+AJCM-git@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Julian Giebel <juliangiebel@live.de>
+// SPDX-FileCopyrightText: 2023 Moony <moony@hellomouse.net>
+// SPDX-FileCopyrightText: 2023 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 TemporalOroboros <TemporalOroboros@gmail.com>
+// SPDX-FileCopyrightText: 2023 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 ElectroJr <leonsfriedrich@gmail.com>
+// SPDX-FileCopyrightText: 2024 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 MilenVolf <63782763+MilenVolf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 Tayrtahn <tayrtahn@gmail.com>
+// SPDX-FileCopyrightText: 2024 Vasilis <vasilis@pikachu.systems>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 username <113782077+whateverusername0@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -39,6 +77,7 @@ namespace Content.IntegrationTests.Tests
                     .Where(p => !p.Abstract)
                     .Where(p => !pair.IsTestPrototype(p))
                     .Where(p => !p.Components.ContainsKey("MapGrid")) // This will smash stuff otherwise.
+                    .Where(p => !p.Components.ContainsKey("RoomFill")) // This comp can delete all entities, and spawn others
                     .Where(p => !p.Components.ContainsKey("MobReplacementRule")) // goob edit - fuck them mimics
                     .Where(p => !p.Components.ContainsKey("Supermatter")) // Goobstation - Supermatter eats everything, oh no!
                     .Select(p => p.ID)
@@ -106,6 +145,7 @@ namespace Content.IntegrationTests.Tests
                     .Where(p => !pair.IsTestPrototype(p))
                     .Where(p => !p.Components.ContainsKey("MapGrid")) // This will smash stuff otherwise.
                     .Where(p => !p.Components.ContainsKey("Supermatter")) // Goobstation - Supermatter eats everything, oh no!
+                    .Where(p => !p.Components.ContainsKey("RoomFill")) // This comp can delete all entities, and spawn others
                     .Select(p => p.ID)
                     .ToList();
                 foreach (var protoId in protoIds)
@@ -350,6 +390,7 @@ namespace Content.IntegrationTests.Tests
                 "DebugExceptionInitialize",
                 "DebugExceptionStartup",
                 "GridFill",
+                "RoomFill",
                 "Map", // We aren't testing a map entity in this test
                 "MapGrid",
                 "Broadphase",

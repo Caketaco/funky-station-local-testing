@@ -1,3 +1,26 @@
+// SPDX-FileCopyrightText: 2022 Kara <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2022 Kara D <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2023 Chief-Engineer <119664036+Chief-Engineer@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2023 Ygg01 <y.laughing.man.y@gmail.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <comedian_vs_clown@hotmail.com>
+// SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Jezithyr <jezithyr@gmail.com>
+// SPDX-FileCopyrightText: 2024 Plykiya <58439124+Plykiya@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tayrtahn <tayrtahn@gmail.com>
+// SPDX-FileCopyrightText: 2024 deltanedas <39013340+deltanedas@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
+using System.Linq;
 using System.Numerics;
 using Content.Shared.Administration.Managers;
 using Content.Shared.Database;
@@ -16,6 +39,7 @@ using Robust.Shared.Network;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Player;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
 namespace Content.Shared.Follower;
@@ -30,6 +54,8 @@ public sealed class FollowerSystem : EntitySystem
     [Dependency] private readonly INetManager _netMan = default!;
     [Dependency] private readonly ISharedAdminManager _adminManager = default!;
 
+    private static readonly ProtoId<TagPrototype> ForceableFollowTag = "ForceableFollow";
+
     public override void Initialize()
     {
         base.Initialize();
@@ -42,7 +68,7 @@ public sealed class FollowerSystem : EntitySystem
         SubscribeLocalEvent<FollowedComponent, ComponentGetStateAttemptEvent>(OnFollowedAttempt);
         SubscribeLocalEvent<FollowerComponent, GotEquippedHandEvent>(OnGotEquippedHand);
         SubscribeLocalEvent<FollowedComponent, EntityTerminatingEvent>(OnFollowedTerminating);
-        SubscribeLocalEvent<BeforeSaveEvent>(OnBeforeSave);
+        SubscribeLocalEvent<BeforeSerializationEvent>(OnBeforeSave);
     }
 
     private void OnFollowedAttempt(Entity<FollowedComponent> ent, ref ComponentGetStateAttemptEvent args)
@@ -60,10 +86,16 @@ public sealed class FollowerSystem : EntitySystem
         }
     }
 
-    private void OnBeforeSave(BeforeSaveEvent ev)
+    private void OnBeforeSave(BeforeSerializationEvent ev)
     {
-        // Some followers will not be map savable. This ensures that maps don't get saved with empty/invalid
-        // followers, but just stopping any following on the map being saved.
+        // Some followers will not be map savable. This ensures that maps don't get saved with some entities that have
+        // empty/invalid followers, by just stopping any following happening on the map being saved.
+        // I hate this so much.
+        // TODO WeakEntityReference
+        // We need some way to store entity references in a way that doesn't imply that the entity still exists.
+        // Then we wouldn't have to deal with this shit.
+
+        var maps = ev.Entities.Select(x => Transform(x).MapUid).ToHashSet();
 
         var query = AllEntityQuery<FollowerComponent, TransformComponent, MetaDataComponent>();
         while (query.MoveNext(out var uid, out var follower, out var xform, out var meta))
@@ -71,7 +103,7 @@ public sealed class FollowerSystem : EntitySystem
             if (meta.EntityPrototype == null || meta.EntityPrototype.MapSavable)
                 continue;
 
-            if (xform.MapUid != ev.Map)
+            if (!maps.Contains(xform.MapUid))
                 continue;
 
             StopFollowingEntity(uid, follower.Following);
@@ -96,7 +128,7 @@ public sealed class FollowerSystem : EntitySystem
             ev.Verbs.Add(verb);
         }
 
-        if (_tagSystem.HasTag(ev.Target, "ForceableFollow"))
+        if (_tagSystem.HasTag(ev.Target, ForceableFollowTag))
         {
             if (!ev.CanAccess || !ev.CanInteract)
                 return;

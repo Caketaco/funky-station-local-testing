@@ -1,6 +1,16 @@
+// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Numerics;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Systems;
+using Robust.Client.GameObjects;
 using Robust.Client.Player;
 
 namespace Content.Client.Movement.Systems;
@@ -51,5 +61,15 @@ public sealed class ContentEyeSystem : SharedContentEyeSystem
     public void RequestEye(bool drawFov, bool drawLight)
     {
         RaisePredictiveEvent(new RequestEyeEvent(drawFov, drawLight));
+    }
+
+    public override void FrameUpdate(float frameTime)
+    {
+        base.FrameUpdate(frameTime);
+        var eyeEntities = AllEntityQuery<ContentEyeComponent, EyeComponent>();
+        while (eyeEntities.MoveNext(out var entity, out ContentEyeComponent? contentComponent, out EyeComponent? eyeComponent))
+        {
+            UpdateEyeOffset((entity, eyeComponent));
+        }
     }
 }

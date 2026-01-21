@@ -1,3 +1,42 @@
+// SPDX-FileCopyrightText: 2021 Acruid <shatter66@gmail.com>
+// SPDX-FileCopyrightText: 2021 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2021 Vera Aguilera Puerto <gradientvera@outlook.com>
+// SPDX-FileCopyrightText: 2021 metalgearsloth <comedian_vs_clown@hotmail.com>
+// SPDX-FileCopyrightText: 2022 Illiux <newoutlook@gmail.com>
+// SPDX-FileCopyrightText: 2022 Jacob Tong <10494922+ShadowCommander@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Júlio César Ueti <52474532+Mirino97@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Vera Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Jezithyr <jezithyr@gmail.com>
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 ShadowCommander <10494922+ShadowCommander@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Kara <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2024 LordCarve <27449516+LordCarve@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+// SPDX-FileCopyrightText: 2024 Plykiya <58439124+Plykiya@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 ShadowCommander <shadowjjt@gmail.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 Tayrtahn <tayrtahn@gmail.com>
+// SPDX-FileCopyrightText: 2024 Winkarst <74284083+Winkarst-cpu@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 deltanedas <39013340+deltanedas@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 keronshb <54602815+keronshb@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 nikthechampiongr <32041239+nikthechampiongr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 corresp0nd <46357632+corresp0nd@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 deltanedas <@deltanedas:kde.org>
+// SPDX-FileCopyrightText: 2025 duston <66768086+dch-GH@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Linq;
 using System.Numerics;
 using Content.Server.Administration.Logs;
@@ -24,7 +63,10 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Events;
 using Content.Shared.Movement.Systems;
+using Content.Shared.NameModifier.EntitySystems;
+using Content.Shared.Popups;
 using Content.Shared.Storage.Components;
+using Content.Shared.Tag;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.Configuration;
@@ -33,6 +75,7 @@ using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
 namespace Content.Server.Ghost
@@ -61,9 +104,15 @@ namespace Content.Server.Ghost
         [Dependency] private readonly SharedMindSystem _mind = default!;
         [Dependency] private readonly GameTicker _gameTicker = default!;
         [Dependency] private readonly DamageableSystem _damageable = default!;
+        [Dependency] private readonly SharedPopupSystem _popup = default!;
+        [Dependency] private readonly IRobustRandom _random = default!;
+        [Dependency] private readonly TagSystem _tag = default!;
+        [Dependency] private readonly NameModifierSystem _nameMod = default!;
 
         private EntityQuery<GhostComponent> _ghostQuery;
         private EntityQuery<PhysicsComponent> _physicsQuery;
+
+        private static readonly ProtoId<TagPrototype> AllowGhostShownByEventTag = "AllowGhostShownByEvent";
 
         public override void Initialize()
         {
@@ -95,6 +144,17 @@ namespace Content.Server.Ghost
 
             SubscribeLocalEvent<RoundEndTextAppendEvent>(_ => MakeVisible(true));
             SubscribeLocalEvent<ToggleGhostVisibilityToAllEvent>(OnToggleGhostVisibilityToAll);
+
+            SubscribeLocalEvent<GhostComponent, GetVisMaskEvent>(OnGhostVis);
+        }
+
+        private void OnGhostVis(Entity<GhostComponent> ent, ref GetVisMaskEvent args)
+        {
+            // If component not deleting they can see ghosts.
+            if (ent.Comp.LifeStage <= ComponentLifeStage.Running)
+            {
+                args.VisibilityMask |= (int)VisibilityFlags.Ghost;
+            }
         }
 
         private void OnGhostHearingAction(EntityUid uid, GhostComponent component, ToggleGhostHearingActionEvent args)
@@ -125,7 +185,9 @@ namespace Content.Server.Ghost
             if (args.Handled)
                 return;
 
-            var entities = _lookup.GetEntitiesInRange(args.Performer, component.BooRadius);
+            var entities = _lookup.GetEntitiesInRange(args.Performer, component.BooRadius).ToList();
+            // Shuffle the possible targets so we don't favor any particular entities
+            _random.Shuffle(entities);
 
             var booCounter = 0;
             foreach (var ent in entities)
@@ -138,6 +200,9 @@ namespace Content.Server.Ghost
                 if (booCounter >= component.BooMaxTargets)
                     break;
             }
+
+            if (booCounter == 0)
+                _popup.PopupEntity(Loc.GetString("ghost-component-boo-action-failed"), uid, uid);
 
             args.Handled = true;
         }
@@ -176,8 +241,7 @@ namespace Content.Server.Ghost
                 _visibilitySystem.RefreshVisibility(uid, visibilityComponent: visibility);
             }
 
-            SetCanSeeGhosts(uid, true);
-
+            _eye.RefreshVisibilityMask(uid);
             var time = _gameTiming.CurTime;
             component.TimeOfDeath = time;
         }
@@ -197,19 +261,8 @@ namespace Content.Server.Ghost
             }
 
             // Entity can't see ghosts anymore.
-            SetCanSeeGhosts(uid, false);
+            _eye.RefreshVisibilityMask(uid);
             _actions.RemoveAction(uid, component.BooActionEntity);
-        }
-
-        private void SetCanSeeGhosts(EntityUid uid, bool canSee, EyeComponent? eyeComponent = null)
-        {
-            if (!Resolve(uid, ref eyeComponent, false))
-                return;
-
-            if (canSee)
-                _eye.SetVisibilityMask(uid, eyeComponent.VisibilityMask | (int) VisibilityFlags.Ghost, eyeComponent);
-            else
-                _eye.SetVisibilityMask(uid, eyeComponent.VisibilityMask & ~(int) VisibilityFlags.Ghost, eyeComponent);
         }
 
         private void OnMapInit(EntityUid uid, GhostComponent component, MapInitEvent args)
@@ -219,6 +272,20 @@ namespace Content.Server.Ghost
             _actions.AddAction(uid, ref component.ToggleLightingActionEntity, component.ToggleLightingAction);
             _actions.AddAction(uid, ref component.ToggleFoVActionEntity, component.ToggleFoVAction);
             _actions.AddAction(uid, ref component.ToggleGhostsActionEntity, component.ToggleGhostsAction);
+            _actions.AddAction(uid, ref component.ToggleSelfGhostActionEntity, component.ToggleSelfGhostAction);
+        }
+
+        private void SetCanSeeGhosts(EntityUid uid, bool canSee, bool medium, EyeComponent? eyeComponent = null)
+        {
+            if (!Resolve(uid, ref eyeComponent, false))
+                return;
+
+            if (canSee)
+            {
+                _eye.SetVisibilityMask(uid, eyeComponent.VisibilityMask | (int) VisibilityFlags.Ghost, eyeComponent);
+            }
+            else
+                _eye.SetVisibilityMask(uid, eyeComponent.VisibilityMask & ~(int) VisibilityFlags.Ghost, eyeComponent);
         }
 
         private void OnGhostExamine(EntityUid uid, GhostComponent component, ExaminedEvent args)
@@ -390,8 +457,11 @@ namespace Content.Server.Ghost
         public void MakeVisible(bool visible)
         {
             var entityQuery = EntityQueryEnumerator<GhostComponent, VisibilityComponent>();
-            while (entityQuery.MoveNext(out var uid, out _, out var vis))
+            while (entityQuery.MoveNext(out var uid, out var _, out var vis))
             {
+                if (!_tag.HasTag(uid, AllowGhostShownByEventTag))
+                    continue;
+
                 if (visible)
                 {
                     _visibilitySystem.AddLayer((uid, vis), (int) VisibilityFlags.Normal, false);
@@ -426,7 +496,7 @@ namespace Content.Server.Ghost
             if (spawnPosition?.IsValid(EntityManager) != true)
                 return false;
 
-            var mapUid = spawnPosition?.GetMapUid(EntityManager);
+            var mapUid = _transformSystem.GetMap(spawnPosition.Value);
             var gridUid = spawnPosition?.EntityId;
             // Test if the map is being deleted
             if (mapUid == null || TerminatingOrDeleted(mapUid.Value))
@@ -483,10 +553,14 @@ namespace Content.Server.Ghost
             else
                 _minds.TransferTo(mind.Owner, ghost, mind: mind.Comp);
             Log.Debug($"Spawned ghost \"{ToPrettyString(ghost)}\" for {mind.Comp.CharacterName}.");
+
+            // we changed the entity name above
+            // we have to call this after the mind has been transferred since some mind roles modify the ghost's name
+            _nameMod.RefreshNameModifiers(ghost);
             return ghost;
         }
 
-        public bool OnGhostAttempt(EntityUid mindId, bool canReturnGlobal, bool viaCommand = false, MindComponent? mind = null)
+        public bool OnGhostAttempt(EntityUid mindId, bool canReturnGlobal, bool viaCommand = false, bool forced = false, MindComponent? mind = null)
         {
             if (!Resolve(mindId, ref mind))
                 return false;
@@ -494,7 +568,12 @@ namespace Content.Server.Ghost
             var playerEntity = mind.CurrentEntity;
 
             if (playerEntity != null && viaCommand)
-                _adminLogger.Add(LogType.Mind, $"{EntityManager.ToPrettyString(playerEntity.Value):player} is attempting to ghost via command");
+            {
+                if (forced)
+                    _adminLog.Add(LogType.Mind, $"{EntityManager.ToPrettyString(playerEntity.Value):player} was forced to ghost via command");
+                else
+                    _adminLog.Add(LogType.Mind, $"{EntityManager.ToPrettyString(playerEntity.Value):player} is attempting to ghost via command");
+            }
 
             var handleEv = new GhostAttemptHandleEvent(mind, canReturnGlobal);
             RaiseLocalEvent(handleEv);
@@ -503,7 +582,7 @@ namespace Content.Server.Ghost
             if (handleEv.Handled)
                 return handleEv.Result;
 
-            if (mind.PreventGhosting)
+            if (mind.PreventGhosting && !forced)
             {
                 if (mind.Session != null) // Logging is suppressed to prevent spam from ghost attempts caused by movement attempts
                 {
@@ -566,7 +645,7 @@ namespace Content.Server.Ghost
             }
 
             if (playerEntity != null)
-                _adminLogger.Add(LogType.Mind, $"{EntityManager.ToPrettyString(playerEntity.Value):player} ghosted{(!canReturn ? " (non-returnable)" : "")}");
+                _adminLogger.Add(LogType.Mind, $"{EntityManager.ToPrettyString(playerEntity.Value):player} ghosted{(!canReturn ? " (non-returnable)" : "")}"); // imp
 
             var ghost = SpawnGhost((mindId, mind), position, canReturn);
 

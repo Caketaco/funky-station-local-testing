@@ -1,3 +1,27 @@
+// SPDX-FileCopyrightText: 2020 Víctor Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Acruid <shatter66@gmail.com>
+// SPDX-FileCopyrightText: 2021 Paul <ritter.paul1+git@googlemail.com>
+// SPDX-FileCopyrightText: 2021 Paul Ritter <ritter.paul1@googlemail.com>
+// SPDX-FileCopyrightText: 2021 Vera Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Vera Aguilera Puerto <gradientvera@outlook.com>
+// SPDX-FileCopyrightText: 2021 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Kara <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2023 Kevin Zheng <kevinz5000@gmail.com>
+// SPDX-FileCopyrightText: 2024 Ilya246 <57039557+Ilya246@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Jezithyr <jezithyr@gmail.com>
+// SPDX-FileCopyrightText: 2024 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2026 Sarah C <93578146+SapphicOverload@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2026 Steve <marlumpy@gmail.com>
+// SPDX-FileCopyrightText: 2026 marc-pelletier <113944176+marc-pelletier@users.noreply.github.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Server.Atmos.EntitySystems;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Reactions;
@@ -11,11 +35,14 @@ namespace Content.Server.Atmos.Reactions
     {
         public ReactionResult React(GasMixture mixture, IGasMixtureHolder? holder, AtmosphereSystem atmosphereSystem, float heatScale)
         {
+            if (mixture.Temperature > 20f && mixture.GetMoles(Gas.HyperNoblium) >= 5f)
+                return ReactionResult.NoReaction;
+
             var energyReleased = 0f;
             var oldHeatCapacity = atmosphereSystem.GetHeatCapacity(mixture, true);
             var temperature = mixture.Temperature;
             var location = holder as TileAtmosphere;
-            mixture.ReactionResults[GasReaction.Fire] = 0f;
+            mixture.ReactionResults[(byte)GasReaction.Fire] = 0f;
             var burnedFuel = 0f;
             var initialTrit = mixture.GetMoles(Gas.Tritium);
 
@@ -27,12 +54,13 @@ namespace Content.Server.Atmos.Reactions
                     burnedFuel = initialTrit;
 
                 mixture.AdjustMoles(Gas.Tritium, -burnedFuel);
+                mixture.AdjustMoles(Gas.Oxygen, -burnedFuel / Atmospherics.TritiumBurnFuelRatio);
             }
             else
             {
-                burnedFuel = initialTrit;
-                mixture.SetMoles(Gas.Tritium, mixture.GetMoles(Gas.Tritium ) * (1 - 1 / Atmospherics.TritiumBurnTritFactor));
-                mixture.AdjustMoles(Gas.Oxygen, -mixture.GetMoles(Gas.Tritium));
+                burnedFuel = Math.Min(initialTrit, mixture.GetMoles(Gas.Oxygen) / Atmospherics.TritiumBurnFuelRatio) / Atmospherics.TritiumBurnTritFactor;
+                mixture.AdjustMoles(Gas.Tritium, -burnedFuel);
+                mixture.AdjustMoles(Gas.Oxygen, -burnedFuel / Atmospherics.TritiumBurnFuelRatio);
                 energyReleased += (Atmospherics.FireHydrogenEnergyReleased * burnedFuel * (Atmospherics.TritiumBurnTritFactor - 1));
             }
 
@@ -45,7 +73,7 @@ namespace Content.Server.Atmos.Reactions
                 // Conservation of mass is important.
                 mixture.AdjustMoles(Gas.WaterVapor, burnedFuel);
 
-                mixture.ReactionResults[GasReaction.Fire] += burnedFuel;
+                mixture.ReactionResults[(byte)GasReaction.Fire] += burnedFuel;
             }
 
             energyReleased /= heatScale; // adjust energy to make sure speedup doesn't cause mega temperature rise
@@ -65,7 +93,7 @@ namespace Content.Server.Atmos.Reactions
                 }
             }
 
-            return mixture.ReactionResults[GasReaction.Fire] != 0 ? ReactionResult.Reacting : ReactionResult.NoReaction;
+            return mixture.ReactionResults[(byte)GasReaction.Fire] != 0 ? ReactionResult.Reacting : ReactionResult.NoReaction;
         }
     }
 }

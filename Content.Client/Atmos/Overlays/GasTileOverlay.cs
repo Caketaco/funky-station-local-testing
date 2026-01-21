@@ -1,3 +1,27 @@
+// SPDX-FileCopyrightText: 2020 Metal Gear Sloth <metalgearsloth@gmail.com>
+// SPDX-FileCopyrightText: 2020 Víctor Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 E F R <602406+Efruit@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 GraniteSidewalk <32942106+GraniteSidewalk@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2021 Vera Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Acruid <shatter66@gmail.com>
+// SPDX-FileCopyrightText: 2022 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 hubismal <47284081+hubismal@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 metalgearsloth <comedian_vs_clown@hotmail.com>
+// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2023 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Ygg01 <y.laughing.man.y@gmail.com>
+// SPDX-FileCopyrightText: 2024 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 TemporalOroboros <TemporalOroboros@gmail.com>
+// SPDX-FileCopyrightText: 2024 eoineoineoin <github@eoinrul.es>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 YaraaraY <158123176+YaraaraY@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Numerics;
 using Content.Client.Atmos.Components;
 using Content.Client.Atmos.EntitySystems;
@@ -21,6 +45,7 @@ namespace Content.Client.Atmos.Overlays
     {
         private readonly IEntityManager _entManager;
         private readonly IMapManager _mapManager;
+        private readonly SharedTransformSystem _xformSys;
 
         public override OverlaySpace Space => OverlaySpace.WorldSpaceEntities | OverlaySpace.WorldSpaceBelowWorld;
         private readonly ShaderInstance _shader;
@@ -34,7 +59,7 @@ namespace Content.Client.Atmos.Overlays
         private readonly Texture[][] _frames;
 
         // Fire overlays
-        private const int FireStates = 3;
+        private const int FireStates = 6;
         private const string FireRsiPath = "/Textures/Effects/fire.rsi";
 
         private readonly float[] _fireTimer = new float[FireStates];
@@ -46,10 +71,11 @@ namespace Content.Client.Atmos.Overlays
 
         public const int GasOverlayZIndex = (int) Shared.DrawDepth.DrawDepth.Effects; // Under ghosts, above mostly everything else
 
-        public GasTileOverlay(GasTileOverlaySystem system, IEntityManager entManager, IResourceCache resourceCache, IPrototypeManager protoMan, SpriteSystem spriteSys)
+        public GasTileOverlay(GasTileOverlaySystem system, IEntityManager entManager, IResourceCache resourceCache, IPrototypeManager protoMan, SpriteSystem spriteSys, SharedTransformSystem xformSys)
         {
             _entManager = entManager;
             _mapManager = IoCManager.Resolve<IMapManager>();
+            _xformSys = xformSys;
             _shader = protoMan.Index<ShaderPrototype>("unshaded").Instance();
             ZIndex = GasOverlayZIndex;
 
@@ -158,7 +184,8 @@ namespace Content.Client.Atmos.Overlays
                 _fireFrameCounter,
                 _shader,
                 overlayQuery,
-                xformQuery);
+                xformQuery,
+                _xformSys);
 
             var mapUid = _mapManager.GetMapEntityId(args.MapId);
 
@@ -180,7 +207,8 @@ namespace Content.Client.Atmos.Overlays
                         int[] fireFrameCounter,
                         ShaderInstance shader,
                         EntityQuery<GasTileOverlayComponent> overlayQuery,
-                        EntityQuery<TransformComponent> xformQuery) state) =>
+                        EntityQuery<TransformComponent> xformQuery,
+                        SharedTransformSystem xformSys) state) =>
                 {
                     if (!state.overlayQuery.TryGetComponent(uid, out var comp) ||
                         !state.xformQuery.TryGetComponent(uid, out var gridXform))
@@ -188,7 +216,7 @@ namespace Content.Client.Atmos.Overlays
                             return true;
                         }
 
-                    var (_, _, worldMatrix, invMatrix) = gridXform.GetWorldPositionRotationMatrixWithInv();
+                    var (_, _, worldMatrix, invMatrix) = state.xformSys.GetWorldPositionRotationMatrixWithInv(gridXform);
                     state.drawHandle.SetTransform(worldMatrix);
                     var floatBounds = invMatrix.TransformBox(state.WorldBounds).Enlarged(grid.TileSize);
                     var localBounds = new Box2i(
@@ -239,7 +267,7 @@ namespace Content.Client.Atmos.Overlays
                             if (!localBounds.Contains(index))
                                 continue;
 
-                            var fireState = gas.FireState - 1;
+                            var fireState = gas.FireState - 1 + gas.FireType * 3;
                             var texture = state.fireFrames[fireState][state.fireFrameCounter[fireState]];
                             state.drawHandle.DrawTexture(texture, index);
                         }

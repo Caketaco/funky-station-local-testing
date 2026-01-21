@@ -1,6 +1,21 @@
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 SlamBamActionman <83650252+SlamBamActionman@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 Tayrtahn <tayrtahn@gmail.com>
+// SPDX-FileCopyrightText: 2025 Carcc <225926381+carccborg@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Carccborg <225926381+carccborg@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2026 Terkala <appleorange64@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Shared.Actions;
 using Content.Shared.Buckle.Components;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Events;
 using Content.Shared.Damage.ForceSay;
 using Content.Shared.Emoting;
 using Content.Shared.Examine;
@@ -18,6 +33,7 @@ using Content.Shared.Sound.Components;
 using Content.Shared.Speech;
 using Content.Shared.StatusEffect;
 using Content.Shared.Stunnable;
+using Content.Shared.Traits.Assorted;
 using Content.Shared.Verbs;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Prototypes;
@@ -63,6 +79,8 @@ public sealed partial class SleepingSystem : EntitySystem
         SubscribeLocalEvent<ForcedSleepingComponent, ComponentInit>(OnInit);
         SubscribeLocalEvent<SleepingComponent, UnbuckleAttemptEvent>(OnUnbuckleAttempt);
         SubscribeLocalEvent<SleepingComponent, EmoteAttemptEvent>(OnEmoteAttempt);
+
+        SubscribeLocalEvent<SleepingComponent, BeforeForceSayEvent>(OnChangeForceSay, after: new []{typeof(PainNumbnessSystem)});
     }
 
     private void OnUnbuckleAttempt(Entity<SleepingComponent> ent, ref UnbuckleAttemptEvent args)
@@ -80,8 +98,13 @@ public sealed partial class SleepingSystem : EntitySystem
 
     private void OnWakeAction(Entity<MobStateComponent> ent, ref WakeActionEvent args)
     {
-        if (TryWakeWithCooldown(ent.Owner))
+        if (HasComp<SleepingComponent>(ent) && TryWakeWithCooldown(ent.Owner))
             args.Handled = true;
+        else if (!HasComp<SleepingComponent>(ent))
+        {
+            Dirty(ent);
+            args.Handled = true;
+        }
     }
 
     private void OnSleepAction(Entity<MobStateComponent> ent, ref SleepActionEvent args)
@@ -101,8 +124,11 @@ public sealed partial class SleepingSystem : EntitySystem
             _statusEffectsSystem.TryRemoveStatusEffect(ent.Owner, "KnockedDown");
 
             EnsureComp<StunnedComponent>(ent);
-            EnsureComp<KnockedDownComponent>(ent);
-
+            // The entity will not fall over  if they are buckled. I think this could be written better.
+            if (!EntityManager.TryGetComponent(ent, out BuckleComponent? buckleComp) || !buckleComp.Buckled)
+            {
+                EnsureComp<KnockedDownComponent>(ent);
+            }
             if (TryComp<SleepEmitSoundComponent>(ent, out var sleepSound))
             {
                 var emitSound = EnsureComp<SpamEmitSoundComponent>(ent);
@@ -322,6 +348,11 @@ public sealed partial class SleepingSystem : EntitySystem
     public void OnEmoteAttempt(Entity<SleepingComponent> ent, ref EmoteAttemptEvent args)
     {
         args.Cancel();
+    }
+
+    private void OnChangeForceSay(Entity<SleepingComponent> ent, ref BeforeForceSayEvent args)
+    {
+        args.Prefix = ent.Comp.ForceSaySleepDataset;
     }
 }
 

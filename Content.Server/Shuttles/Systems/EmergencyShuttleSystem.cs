@@ -1,3 +1,37 @@
+// SPDX-FileCopyrightText: 2022 Flipp Syder <76629141+vulppine@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Kara <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2022 LittleBuilderJane <63973502+LittleBuilderJane@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Myctai <108953437+Myctai@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 metalgearsloth <metalgearsloth@gmail.com>
+// SPDX-FileCopyrightText: 2023 Checkraze <71046427+Cheackraze@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Moony <moony@hellomouse.net>
+// SPDX-FileCopyrightText: 2023 Pieter-Jan Briers <pieterjan.briers@gmail.com>
+// SPDX-FileCopyrightText: 2023 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Vordenburg <114301317+Vordenburg@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 deltanedas <39013340+deltanedas@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 DrSmugleaf <10968691+DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 ElectroJr <leonsfriedrich@gmail.com>
+// SPDX-FileCopyrightText: 2024 IProduceWidgets <107586145+IProduceWidgets@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 LordCarve <27449516+LordCarve@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Mervill <mervills.email@gmail.com>
+// SPDX-FileCopyrightText: 2024 MilenVolf <63782763+MilenVolf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+// SPDX-FileCopyrightText: 2024 SlamBamActionman <83650252+SlamBamActionman@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tayrtahn <tayrtahn@gmail.com>
+// SPDX-FileCopyrightText: 2024 avery <51971268+graevy@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 QueerCats <jansencheng3@gmail.com>
+// SPDX-FileCopyrightText: 2025 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 beck-thompson <107373427+beck-thompson@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Linq;
 using System.Numerics;
 using System.Threading;
@@ -18,6 +52,7 @@ using Content.Server.Shuttles.Events;
 using Content.Server.Station.Components;
 using Content.Server.Station.Events;
 using Content.Server.Station.Systems;
+using Content.Shared._DV.CustomObjectiveSummary; // DeltaV
 using Content.Shared.Access.Systems;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
@@ -29,10 +64,9 @@ using Content.Shared.Shuttles.Events;
 using Content.Shared.Tag;
 using Content.Shared.Tiles;
 using Robust.Server.GameObjects;
-using Robust.Server.Maps;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
-using Robust.Shared.Map;
+using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
@@ -60,7 +94,7 @@ public sealed partial class EmergencyShuttleSystem : EntitySystem
     [Dependency] private readonly DockingSystem _dock = default!;
     [Dependency] private readonly IdCardSystem _idSystem = default!;
     [Dependency] private readonly NavMapSystem _navMap = default!;
-    [Dependency] private readonly MapLoaderSystem _map = default!;
+    [Dependency] private readonly MapLoaderSystem _loader = default!;
     [Dependency] private readonly MetaDataSystem _metaData = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly RoundEndSystem _roundEnd = default!;
@@ -220,6 +254,7 @@ public sealed partial class EmergencyShuttleSystem : EntitySystem
             };
             _deviceNetworkSystem.QueuePacket(uid, null, payload, netComp.TransmitFrequency);
         }
+        RaiseLocalEvent(new EvacShuttleLeftEvent()); // DeltaV
     }
 
     /// <summary>
@@ -428,6 +463,24 @@ public sealed partial class EmergencyShuttleSystem : EntitySystem
     /// </remarks>
     public void DockEmergencyShuttle()
     {
+        // funky station
+        // fires an event that the emergency shuttle is trying to dock.
+        var query = AllEntityQuery<StationEmergencyShuttleComponent>();
+
+        var ev = new ShuttleDockAttemptEvent();
+        RaiseLocalEvent(ref ev); // 💔
+
+        if (ev.Cancelled)
+        {
+            while (query.MoveNext(out var uid, out _))
+            {
+                _chatSystem.DispatchStationAnnouncement(uid, ev.CancelMessage, Loc.GetString("Station"), false);
+            }
+
+            _roundEnd.CancelRoundEndCountdown(null, false, false);
+            return;
+        }
+
         if (EmergencyShuttleArrived)
             return;
 
@@ -439,8 +492,6 @@ public sealed partial class EmergencyShuttleSystem : EntitySystem
 
         _consoleAccumulator = _configManager.GetCVar(CCVars.EmergencyShuttleDockTime);
         EmergencyShuttleArrived = true;
-
-        var query = AllEntityQuery<StationEmergencyShuttleComponent>();
 
         var dockResults = new List<ShuttleDockResult>();
 
@@ -531,10 +582,11 @@ public sealed partial class EmergencyShuttleSystem : EntitySystem
         }
 
         var map = _mapSystem.CreateMap(out var mapId);
-        var grid = _map.LoadGrid(mapId, component.Map.ToString(), new MapLoadOptions()
+        if (!_loader.TryLoadGrid(mapId, component.Map, out var grid))
         {
-            LoadMap = false,
-        });
+            Log.Error($"Failed to set up centcomm grid!");
+            return;
+        }
 
         if (!Exists(map))
         {
@@ -608,15 +660,11 @@ public sealed partial class EmergencyShuttleSystem : EntitySystem
 
         // Load escape shuttle
         var shuttlePath = ent.Comp1.EmergencyShuttlePath;
-        var shuttle = _map.LoadGrid(map.MapId, shuttlePath.ToString(), new MapLoadOptions()
-        {
+        if (!_loader.TryLoadGrid(map.MapId,
+            shuttlePath,
+            out var shuttle,
             // Should be far enough... right? I'm too lazy to bounds check CentCom rn.
-            Offset = new Vector2(500f + ent.Comp2.ShuttleIndex, 0f),
-            // fun fact: if you just fucking yeet centcomm into nullspace anytime you try to spawn the shuttle, then any distance is far enough. so lets not do that
-            LoadMap = false,
-        });
-
-        if (shuttle == null)
+            offset: new Vector2(500f + ent.Comp2.ShuttleIndex, 0f)))
         {
             Log.Error($"Unable to spawn emergency shuttle {shuttlePath} for {ToPrettyString(ent)}");
             return;
@@ -737,4 +785,12 @@ public sealed partial class EmergencyShuttleSystem : EntitySystem
         /// </summary>
         GoodLuck,
     }
+}
+
+// funky station
+[ByRefEvent]
+public record struct ShuttleDockAttemptEvent()
+{
+    public bool Cancelled = false;
+    public string CancelMessage = string.Empty;
 }

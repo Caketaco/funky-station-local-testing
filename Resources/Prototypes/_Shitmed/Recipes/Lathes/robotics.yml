@@ -1,3 +1,11 @@
+# SPDX-FileCopyrightText: 2024 BombasterDS <115770678+BombasterDS@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Fishbait <Fishbait@git.ml>
+# SPDX-FileCopyrightText: 2024 John Space <bigdumb421@gmail.com>
+# SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 - type: latheRecipe
   abstract: true
   parent: BaseRoboticsRecipe
@@ -87,7 +95,8 @@
 - type: latheRecipe
   id: BorgModuleSurgery
   result: BorgModuleSurgery
-  category: Robotics
+  categories:
+  - Robotics
   completetime: 3
   materials:
     Steel: 250
@@ -97,7 +106,8 @@
 - type: latheRecipe
   id: BorgModuleAdvancedSurgery
   result: BorgModuleAdvancedSurgery
-  category: Robotics
+  categories:
+  - Robotics
   completetime: 3
   materials:
     Steel: 500
@@ -108,7 +118,8 @@
 - type: latheRecipe
   id: JawsOfLifeLeftArm
   result: JawsOfLifeLeftArm
-  category: Robotics
+  categories:
+  - Robotics
   completetime: 5
   materials:
     Steel: 1000
@@ -120,7 +131,8 @@
 - type: latheRecipe
   id: JawsOfLifeRightArm
   result: JawsOfLifeRightArm
-  category: Robotics
+  categories:
+  - Robotics
   completetime: 5
   materials:
     Steel: 1000
@@ -132,7 +144,8 @@
 - type: latheRecipe
   id: SpeedLeftLeg
   result: SpeedLeftLeg
-  category: Robotics
+  categories:
+  - Robotics
   completetime: 5
   materials:
     Steel: 1000
@@ -144,7 +157,8 @@
 - type: latheRecipe
   id: SpeedRightLeg
   result: SpeedRightLeg
-  category: Robotics
+  categories:
+  - Robotics
   completetime: 5
   materials:
     Steel: 1000
@@ -156,7 +170,8 @@
 - type: latheRecipe
   id: BasicCyberneticEyes
   result: BasicCyberneticEyes
-  category: Robotics
+  categories:
+  - Robotics
   completetime: 5
   materials:
     Steel: 1000

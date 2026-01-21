@@ -1,3 +1,20 @@
+# SPDX-FileCopyrightText: 2024 Fenn <162015305+TooSillyFennec@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 John Space <bigdumb421@gmail.com>
+# SPDX-FileCopyrightText: 2024 PJBot <pieterjan.briers+bot@gmail.com>
+# SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2024 fishbait <gnesse@gmail.com>
+# SPDX-FileCopyrightText: 2024 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 username <113782077+whateverusername0@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 whateverusername0 <whateveremail>
+# SPDX-FileCopyrightText: 2025 Mish <bluscout78@yahoo.com>
+# SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 empty0set <16693552+empty0set@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 empty0set <empty0set@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 # same with roundstart, highImpact means it can only be spawned once
 # the only weights that work are in DynamicRuleset
 # Many changes to unfuck it - Funky Station
@@ -155,6 +172,9 @@
     minimumPlayers: 30
   - type: SpaceSpawnRule
   - type: AntagLoadProfileRule
+    speciesOverride: Human # funkystation
+    speciesOverrideBlacklist: # funkstation
+    - IPC # funkystation
   - type: AntagObjectives
     objectives:
     - StealResearchObjective
@@ -187,8 +207,8 @@
         - DeathAcidifierImplant
       - type: RandomMetadata
         nameSegments:
-        - names_ninja_title
-        - names_ninja
+        - NamesNinjaTitle
+        - NamesNinjaName
       mindRoles:
       - MindRoleNinja
 
@@ -282,7 +302,7 @@
       components:
       - type: NukeOperative
       - type: RandomMetadata
-        nameSegments: [names_death_commando] # goob edit
+        nameSegments: [NamesDeathCommando] # goob edit
       - type: NpcFactionMember
         factions:
         - Syndicate
@@ -308,15 +328,14 @@
     duration: 50
     minimumPlayers: 30 # Hopefully this is enough for the Rat King's potential Army (it was not, raised from 15 -> 30)
   - type: VentCrittersRule
-    entries:
-    - id: MobMouse
-      prob: 0.02
-    - id: MobMouse1
-      prob: 0.02
-    - id: MobMouse2
-      prob: 0.02
-    - id: MobMouseCancer
-      prob: 0.001
+    min: 10 # DeltaV
+    max: 20 # DeltaV
+    playerRatio: 70 # DeltaV: Mostly ignore player scaling
+    table: !type:GroupSelector # DeltaV: EntityTable instead of spawn entries
+      children:
+      - id: MobMouse
+      - id: MobMouse1
+      - id: MobMouse2
     specialEntries:
     - id: SpawnPointGhostRatKing
       prob: 0.001

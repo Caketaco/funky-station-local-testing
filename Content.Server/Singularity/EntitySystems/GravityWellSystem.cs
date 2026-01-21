@@ -1,3 +1,21 @@
+// SPDX-FileCopyrightText: 2022 TemporalOroboros <TemporalOroboros@gmail.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Ed <96445749+TheShuEd@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+// SPDX-FileCopyrightText: 2024 Plykiya <58439124+Plykiya@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 Tayrtahn <tayrtahn@gmail.com>
+// SPDX-FileCopyrightText: 2024 eoineoineoin <github@eoinrul.es>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 VMSolidus <evilexecutive@gmail.com>
+// SPDX-FileCopyrightText: 2025 corresp0nd <46357632+corresp0nd@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Numerics;
 using Content.Server.Singularity.Components;
 using Content.Shared.Atmos.Components;
@@ -39,6 +57,8 @@ public sealed class GravityWellSystem : SharedGravityWellSystem
     private EntityQuery<MapGridComponent> _gridQuery;
     private EntityQuery<PhysicsComponent> _physicsQuery;
 
+    private HashSet<EntityUid> _entSet = new();
+
     public override void Initialize()
     {
         base.Initialize();
@@ -46,10 +66,15 @@ public sealed class GravityWellSystem : SharedGravityWellSystem
         _mapQuery = GetEntityQuery<MapComponent>();
         _gridQuery = GetEntityQuery<MapGridComponent>();
         _physicsQuery = GetEntityQuery<PhysicsComponent>();
-        SubscribeLocalEvent<GravityWellComponent, ComponentStartup>(OnGravityWellStartup);
+        SubscribeLocalEvent<GravityWellComponent, MapInitEvent>(OnGravityWellMapInit);
 
         var vvHandle = _vvManager.GetTypeHandler<GravityWellComponent>();
         vvHandle.AddPath(nameof(GravityWellComponent.TargetPulsePeriod), (_, comp) => comp.TargetPulsePeriod, SetPulsePeriod);
+    }
+
+    private void OnGravityWellMapInit(Entity<GravityWellComponent> ent, ref MapInitEvent args)
+    {
+        ent.Comp.NextPulseTime = _timing.CurTime + ent.Comp.TargetPulsePeriod;
     }
 
     public override void Shutdown()
@@ -73,6 +98,7 @@ public sealed class GravityWellSystem : SharedGravityWellSystem
         while (query.MoveNext(out var uid, out var gravWell, out var xform))
         {
             var curTime = _timing.CurTime;
+
             if (gravWell.NextPulseTime <= curTime)
                 Update(uid, curTime - gravWell.LastPulseTime, gravWell, xform);
         }
@@ -103,8 +129,7 @@ public sealed class GravityWellSystem : SharedGravityWellSystem
         if(!Resolve(uid, ref gravWell))
             return;
 
-        gravWell.LastPulseTime = _timing.CurTime;
-        gravWell.NextPulseTime = gravWell.LastPulseTime + gravWell.TargetPulsePeriod;
+        gravWell.NextPulseTime += gravWell.TargetPulsePeriod;
         if (gravWell.MaxRange < 0.0f || !Resolve(uid, ref xform))
             return;
 
@@ -144,7 +169,13 @@ public sealed class GravityWellSystem : SharedGravityWellSystem
     public void GravPulse(EntityUid uid, float maxRange, float minRange, in Matrix3x2 baseMatrixDeltaV, TransformComponent? xform = null)
     {
         if (Resolve(uid, ref xform))
+        {
             GravPulse(xform.Coordinates, maxRange, minRange, in baseMatrixDeltaV);
+
+            // imp edit
+            var ev = new GravPulseEvent();
+            RaiseLocalEvent(uid, ref ev);
+        }
     }
 
     /// <summary>
@@ -159,7 +190,13 @@ public sealed class GravityWellSystem : SharedGravityWellSystem
     public void GravPulse(EntityUid uid, float maxRange, float minRange, float baseRadialDeltaV = 0.0f, float baseTangentialDeltaV = 0.0f, TransformComponent? xform = null)
     {
         if (Resolve(uid, ref xform))
+        {
             GravPulse(xform.Coordinates, maxRange, minRange, baseRadialDeltaV, baseTangentialDeltaV);
+
+            // imp edit
+            var ev = new GravPulseEvent();
+            RaiseLocalEvent(uid, ref ev);
+        }
     }
 
     /// <summary>
@@ -195,15 +232,18 @@ public sealed class GravityWellSystem : SharedGravityWellSystem
         if (mapPos == MapCoordinates.Nullspace)
             return; // No gravpulses in nullspace please.
 
+        _entSet.Clear();
         var epicenter = mapPos.Position;
         var minRange2 = MathF.Max(minRange * minRange, MinGravPulseRange); // Cache square value for speed. Also apply a sane minimum value to the minimum value so that div/0s don't happen.
-        var bodyQuery = GetEntityQuery<PhysicsComponent>();
-        var xformQuery = GetEntityQuery<TransformComponent>();
+        _lookup.GetEntitiesInRange(mapPos.MapId,
+            epicenter,
+            maxRange,
+            _entSet,
+            flags: LookupFlags.Dynamic | LookupFlags.Sundries);
 
-        foreach(var entity in _lookup.GetEntitiesInRange(mapPos.MapId, epicenter, maxRange, flags: LookupFlags.Dynamic | LookupFlags.Sundries))
+        foreach (var entity in _entSet)
         {
-            if (!bodyQuery.TryGetComponent(entity, out var physics)
-                || physics.BodyType == BodyType.Static)
+            if (!_physicsQuery.TryGetComponent(entity, out var physics))
             {
                 continue;
             }
@@ -214,7 +254,7 @@ public sealed class GravityWellSystem : SharedGravityWellSystem
             if(!CanGravPulseAffect(entity))
                 continue;
 
-            var displacement = epicenter - _transform.GetWorldPosition(entity, xformQuery);
+            var displacement = epicenter - _transform.GetWorldPosition(entity);
             var distance2 = displacement.LengthSquared();
             if (distance2 < minRange2)
                 continue;
@@ -263,20 +303,10 @@ public sealed class GravityWellSystem : SharedGravityWellSystem
     }
 
     #endregion Getters/Setters
-
-    #region Event Handlers
-
-    /// <summary>
-    /// Resets the pulse timings of the gravity well when the components starts up.
-    /// </summary>
-    /// <param name="uid">The uid of the gravity well to start up.</param>
-    /// <param name="comp">The state of the gravity well to start up.</param>
-    /// <param name="args">The startup prompt arguments.</param>
-    public void OnGravityWellStartup(EntityUid uid, GravityWellComponent comp, ComponentStartup args)
-    {
-        comp.LastPulseTime = _timing.CurTime;
-        comp.NextPulseTime = comp.LastPulseTime + comp.TargetPulsePeriod;
-    }
-
-    #endregion Event Handlers
 }
+
+/// <summary>
+/// Raised after each gravity pulse, imp edit
+/// </summary>
+[ByRefEvent]
+public readonly record struct GravPulseEvent();

@@ -1,3 +1,15 @@
+<!--
+SPDX-FileCopyrightText: 2023 Sir Winters <7543955+Owai-Seek@users.noreply.github.com>
+SPDX-FileCopyrightText: 2023 end <72604018+laok233@users.noreply.github.com>
+SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+SPDX-FileCopyrightText: 2024 UBlueberry <161545003+UBlueberry@users.noreply.github.com>
+SPDX-FileCopyrightText: 2025 Fenn <162015305+TooSillyFennec@users.noreply.github.com>
+SPDX-FileCopyrightText: 2025 corresp0nd <46357632+corresp0nd@users.noreply.github.com>
+SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+
+SPDX-License-Identifier: MIT
+-->
+
 <Document>
 # Medical Doctor
 It's time to heal. Or at least, try to heal, anyway. Medical Doctors are the primary caretakers of every boo boo and ouchie crewmembers get on the station, be it a small scratch, or boiled skin.
@@ -20,12 +32,12 @@ Before we go any further, it's probably a good idea to go over damage types, and
 
 An important note: Most medication has an overdose level, which will cause harm to your patient. Chemicals also take time to metabolise in pill form, if you want things to act quickly, use a syringe.
 
-- Brute Damage: Bicaridine or Bruise Packs
-- Burn Damage: Dermaline or Ointment
-- Toxin (Poison): Dylovene
+  - Brute Damage: Libital, Probital, Salicylic Acid  or Bruise Packs
+  - Burn Damage: Aiuri, Lenturi, Oxandrolone or Ointment
+  - Toxin (Poison): Multiver or Pentetic Acid
 - Toxin (Radiation) Hyronalin or Arithrazine
-- Airloss: Dexaline or Inaprovaline
-- Bloodloss: Dexaline (Examine the patient, if pale, they still need blood or iron.)
+- Airloss: Dexalin, Salbutamol, Inaprovaline, or Convermol
+- Bloodloss: Dexalin or Salbutamol (Examine the patient, if pale, they still need blood or iron.)
 - Bleeding: Tranexamic acid and Gauze (Bleeding can also be cauterized with burn damage.)
 
 Many stations are stocked with kits in storage, and all medics have some equipment in their starting belt.

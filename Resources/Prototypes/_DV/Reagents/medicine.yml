@@ -1,0 +1,114 @@
+# SPDX-FileCopyrightText: 2025 corresp0nd <46357632+corresp0nd@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 deltanedas <@deltanedas:kde.org>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
+- type: reagent
+  id: Hemoxadone
+  name: reagent-name-hemoxadone
+  group: Medicine
+  desc: reagent-desc-hemoxadone
+  physicalDesc: reagent-physical-desc-metallic
+  flavor: medicine
+  color: "#ee0044"
+  worksOnTheDead: true
+  metabolisms:
+    Poison:
+      effects:
+      - !type:HealthChange
+        conditions:
+        - !type:OrganType
+          type: Arachnid
+          shouldHave: true
+        damage:
+          types:
+            Poison: 2
+    Medicine:
+      effects:
+      - !type:HealthChange
+        conditions:
+        - !type:Temperature
+          max: 213.0
+        - !type:OrganType
+          type: Arachnid
+          shouldHave: false
+        damage:
+          types:
+            Bloodloss: -6
+      - !type:ModifyBloodLevel
+        conditions:
+        - !type:Temperature
+          max: 213.0
+        - !type:OrganType
+          type: Arachnid
+          shouldHave: false
+        amount: 6
+
+- type: reagent
+  id: Cyanoxadone
+  name: reagent-name-cyanoxadone
+  group: Medicine
+  desc: reagent-desc-cyanoxadone
+  physicalDesc: reagent-physical-desc-metallic
+  flavor: medicine
+  color: "#00eeff"
+  worksOnTheDead: true
+  metabolisms:
+    Poison:
+      effects:
+      - !type:HealthChange
+        conditions:
+        - !type:OrganType
+          type: Arachnid
+          shouldHave: false
+        damage:
+          types:
+            Poison: 2
+    Medicine:
+      effects:
+      - !type:HealthChange
+        conditions:
+        - !type:Temperature
+          max: 213.0
+        - !type:OrganType
+          type: Arachnid
+          shouldHave: true
+        damage:
+          types:
+            Bloodloss: -6
+      - !type:ModifyBloodLevel
+        conditions:
+        - !type:Temperature
+          max: 213.0
+        - !type:OrganType
+          type: Arachnid
+          shouldHave: true
+        amount: 6
+
+- type: reagent
+  id: Anodynafil
+  name: reagent-name-anodynafil
+  desc: reagent-desc-anodynafil
+  flavor: tingly
+  color: "#8FABA3"
+  physicalDesc: reagent-physical-desc-sticky
+  group: Medicine
+  metabolisms:
+    Medicine:
+      effects:
+      - !type:GenericStatusEffect
+        key: Anesthesia
+        component: Anesthesia
+        refresh: false
+        time: 4.0
+        type: Add
+      - !type:GenericStatusEffect
+        key: PainNumbness
+        component: PainNumbness
+        refresh: false
+        time: 8.0
+        type: Add
+      - !type:MovespeedModifier
+        walkSpeedModifier: 0.5
+        sprintSpeedModifier: 0.5

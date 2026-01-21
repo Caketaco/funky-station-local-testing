@@ -1,12 +1,67 @@
+// SPDX-FileCopyrightText: 2019 ZelteHonor <gabrieldionbouchard@gmail.com>
+// SPDX-FileCopyrightText: 2020 AJCM-git <60196617+AJCM-git@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2020 FL-OZ <anotherscuffed@gmail.com>
+// SPDX-FileCopyrightText: 2020 Injazz <43905364+Injazz@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2020 Memory <58238103+FL-OZ@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2020 Qustinnus <Floydje123@hotmail.com>
+// SPDX-FileCopyrightText: 2020 Rohesie <rohesie@gmail.com>
+// SPDX-FileCopyrightText: 2020 Víctor Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2020 chairbender <kwhipke1@gmail.com>
+// SPDX-FileCopyrightText: 2020 daniel-cr <eldanielcr@gmail.com>
+// SPDX-FileCopyrightText: 2020 moneyl <8206401+Moneyl@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Daniel Castro Razo <eldanielcr@gmail.com>
+// SPDX-FileCopyrightText: 2021 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Galactic Chimp <GalacticChimpanzee@gmail.com>
+// SPDX-FileCopyrightText: 2021 Javier Guardia Fernández <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Swept <sweptwastaken@protonmail.com>
+// SPDX-FileCopyrightText: 2021 Vera Aguilera Puerto <gradientvera@outlook.com>
+// SPDX-FileCopyrightText: 2022 Acruid <shatter66@gmail.com>
+// SPDX-FileCopyrightText: 2022 Emisse <99158783+Emisse@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Moony <moonheart08@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Paul Ritter <ritter.paul1@googlemail.com>
+// SPDX-FileCopyrightText: 2022 keronshb <54602815+keronshb@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 metalgearsloth <comedian_vs_clown@hotmail.com>
+// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Chief-Engineer <119664036+Chief-Engineer@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Kara <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Pieter-Jan Briers <pieterjan.briers@gmail.com>
+// SPDX-FileCopyrightText: 2023 Slava0135 <40753025+Slava0135@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Vordenburg <114301317+Vordenburg@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 deltanedas <@deltanedas:kde.org>
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 John Space <bigdumb421@gmail.com>
+// SPDX-FileCopyrightText: 2024 LordCarve <27449516+LordCarve@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 MilenVolf <63782763+MilenVolf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Mr. 27 <45323883+Dutch-VanDerLinde@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2024 Plykiya <58439124+Plykiya@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 Tayrtahn <tayrtahn@gmail.com>
+// SPDX-FileCopyrightText: 2024 TemporalOroboros <TemporalOroboros@gmail.com>
+// SPDX-FileCopyrightText: 2024 Trevor Day <tday93@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 TsjipTsjip <19798667+TsjipTsjip@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 beck-thompson <107373427+beck-thompson@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 deltanedas <39013340+deltanedas@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 fishbait <gnesse@gmail.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Linq;
 using System.Numerics;
 using Content.Server.Administration.Logs;
 using Content.Server.Atmos.Components;
 using Content.Server.Chat.Managers;
-using Content.Server.Explosion.Components;
 using Content.Server.NodeContainer.EntitySystems;
 using Content.Server.NPC.Pathfinding;
-using Content.Shared.Armor;
 using Content.Shared.Camera;
 using Content.Shared.CCVar;
 using Content.Shared.Damage;
@@ -18,8 +73,7 @@ using Content.Shared.GameTicking;
 using Content.Shared.Inventory;
 using Content.Shared.Projectiles;
 using Content.Shared.Throwing;
-using Content.Shared.Explosion.Components;
-using Content.Shared.Explosion.EntitySystems;
+using Robust.Server.GameObjects;
 using Robust.Server.GameStates;
 using Robust.Server.Player;
 using Robust.Shared.Audio.Systems;
@@ -42,6 +96,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
 
+    [Dependency] private readonly MapSystem _mapSystem = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly DamageableSystem _damageableSystem = default!;
     [Dependency] private readonly NodeGroupSystem _nodeGroupSystem = default!;
@@ -267,11 +322,12 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         }
         else
         {
-            _adminLogger.Add(LogType.Explosion, LogImpact.High,
-                $"{ToPrettyString(user.Value):user} caused {ToPrettyString(uid):entity} to explode ({typeId}) at Pos:{(posFound ? $"{gridPos:coordinates}" : "[Grid or Map not found]")} with intensity {totalIntensity} slope {slope}");
             var alertMinExplosionIntensity = _cfg.GetCVar(CCVars.AdminAlertExplosionMinIntensity);
-            if (alertMinExplosionIntensity > -1 && totalIntensity >= alertMinExplosionIntensity)
-                _chat.SendAdminAlert(user.Value, $"caused {ToPrettyString(uid)} to explode ({typeId}:{totalIntensity}) at Pos:{(posFound ? $"{gridPos:coordinates}" : "[Grid or Map not found]")}");
+            var logImpact = (alertMinExplosionIntensity > -1 && totalIntensity >= alertMinExplosionIntensity)
+                ? LogImpact.Extreme
+                : LogImpact.High;
+            _adminLogger.Add(LogType.Explosion, logImpact,
+                $"{ToPrettyString(user.Value):user} caused {ToPrettyString(uid):entity} to explode ({typeId}) at Pos:{(posFound ? $"{gridPos:coordinates}" : "[Grid or Map not found]")} with intensity {totalIntensity} slope {slope}");
         }
     }
 
@@ -358,13 +414,18 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         CameraShake(iterationIntensity.Count * 4f, pos, queued.TotalIntensity);
 
         //For whatever bloody reason, sound system requires ENTITY coordinates.
-        var mapEntityCoords = EntityCoordinates.FromMap(_mapManager.GetMapEntityId(pos.MapId), pos, _transformSystem, EntityManager);
+        var mapEntityCoords = _transformSystem.ToCoordinates(_mapSystem.GetMap(pos.MapId), pos);
 
         // play sound.
         // for the normal audio, we want everyone in pvs range
         // + if the bomb is big enough, people outside of it too
         // this is capped to 30 because otherwise really huge bombs
         // will attempt to play regular audio for people who can't hear it anyway because the epicenter is so far away
+        //
+        // TODO EXPLOSION redo this.
+        // Use the Filter.Pvs range-multiplier option instead of AddInRange.
+        // Also the default PVS range is 25*2 = 50. So capping it at 30 makes no sense here.
+        // So actually maybe don't use Filter.Pvs at all and only use AddInRange?
         var audioRange = Math.Min(iterationIntensity.Count * 2, MaxExplosionAudioRange);
         var filter = Filter.Pvs(pos).AddInRange(pos, audioRange);
         var sound = iterationIntensity.Count < queued.Proto.SmallSoundIterationThreshold

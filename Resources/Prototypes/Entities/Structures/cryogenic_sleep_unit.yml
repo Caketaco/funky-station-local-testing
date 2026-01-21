@@ -1,3 +1,14 @@
+# SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 heree <79546981+hereelabs@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 hereelabs <hahmorm@gmail.com>
+# SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 - type: entity
   parent: BaseStructure
   id: CryogenicSleepUnit
@@ -17,7 +28,7 @@
   - type: ActivatableUI
     key: enum.CryostorageUIKey.Key
   - type: AccessReader
-    breakOnEmag: false
+    breakOnAccessBreaker: false
     access: [["Cryogenics"]]
   - type: InteractionOutline
   - type: Cryostorage
@@ -25,6 +36,7 @@
     canCollide: false
   - type: DragInsertContainer
     containerId: storage
+    entryDelay: 2
   - type: ExitContainerOnMove
     containerId: storage
   - type: PointLight
@@ -75,7 +87,6 @@
     - state: sleeper_0
       map: ["base"]
   - type: AccessReader
-    breakOnEmag: false
     access: [["Cryogenics"]]
   - type: InteractionOutline
   - type: Physics

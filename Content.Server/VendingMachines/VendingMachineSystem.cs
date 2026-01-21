@@ -1,3 +1,37 @@
+// SPDX-FileCopyrightText: 2022 Alex Evgrashin <aevgrashin@yandex.ru>
+// SPDX-FileCopyrightText: 2022 Andreas Kämper <andreas@kaemper.tech>
+// SPDX-FileCopyrightText: 2022 EmoGarbage404 <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Fishfish458 <47410468+Fishfish458@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Flipp Syder <76629141+vulppine@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Rane <60792108+Elijahrane@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 fishfish458 <fishfish458>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <drsmugleaf@gmail.com>
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Slava0135 <40753025+Slava0135@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Vordenburg <114301317+Vordenburg@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 deltanedas <39013340+deltanedas@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 keronshb <54602815+keronshb@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Ed <96445749+TheShuEd@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 LordCarve <27449516+LordCarve@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+// SPDX-FileCopyrightText: 2024 Repo <47093363+Titian3@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Robert V <keywogger@gmail.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 Tayrtahn <tayrtahn@gmail.com>
+// SPDX-FileCopyrightText: 2024 goet <6637097+goet@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 lzk <124214523+lzk228@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Linq;
 using System.Numerics;
 using Content.Server.Advertise;
@@ -39,6 +73,7 @@ namespace Content.Server.VendingMachines
         [Dependency] private readonly IGameTiming _timing = default!;
         [Dependency] private readonly SpeakOnUIClosedSystem _speakOnUIClosed = default!;
         [Dependency] private readonly SharedPointLightSystem _light = default!;
+        [Dependency] private readonly EmagSystem _emag = default!;
 
         private const float WallVendEjectDistanceFromWall = 1f;
 
@@ -48,7 +83,6 @@ namespace Content.Server.VendingMachines
 
             SubscribeLocalEvent<VendingMachineComponent, PowerChangedEvent>(OnPowerChanged);
             SubscribeLocalEvent<VendingMachineComponent, BreakageEventArgs>(OnBreak);
-            SubscribeLocalEvent<VendingMachineComponent, GotEmaggedEvent>(OnEmagged);
             SubscribeLocalEvent<VendingMachineComponent, DamageChangedEvent>(OnDamageChanged);
             SubscribeLocalEvent<VendingMachineComponent, PriceCalculationEvent>(OnVendingPrice);
             SubscribeLocalEvent<VendingMachineComponent, EmpPulseEvent>(OnEmpPulse);
@@ -121,12 +155,6 @@ namespace Content.Server.VendingMachines
         {
             vendComponent.Broken = true;
             TryUpdateVisualState(uid, vendComponent);
-        }
-
-        private void OnEmagged(EntityUid uid, VendingMachineComponent component, ref GotEmaggedEvent args)
-        {
-            // only emag if there are emag-only items
-            args.Handled = component.EmaggedInventory.Count > 0;
         }
 
         private void OnDamageChanged(EntityUid uid, VendingMachineComponent component, DamageChangedEvent args)
@@ -232,7 +260,7 @@ namespace Content.Server.VendingMachines
             if (!TryComp<AccessReaderComponent>(uid, out var accessReader))
                 return true;
 
-            if (_accessReader.IsAllowed(sender, uid, accessReader) || HasComp<EmaggedComponent>(uid))
+            if (_accessReader.IsAllowed(sender, uid, accessReader))
                 return true;
 
             Popup.PopupEntity(Loc.GetString("vending-machine-component-try-eject-access-denied"), uid);
@@ -422,7 +450,7 @@ namespace Content.Server.VendingMachines
             if (!Resolve(uid, ref component))
                 return null;
 
-            if (type == InventoryType.Emagged && HasComp<EmaggedComponent>(uid))
+            if (type == InventoryType.Emagged && _emag.CheckFlag(uid, EmagType.Interaction))
                 return component.EmaggedInventory.GetValueOrDefault(entryId);
 
             if (type == InventoryType.Contraband && component.Contraband)

@@ -1,3 +1,23 @@
+// SPDX-FileCopyrightText: 2022 Rane <60792108+Elijahrane@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Emisse <99158783+Emisse@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Pieter-Jan Briers <pieterjan.briers@gmail.com>
+// SPDX-FileCopyrightText: 2023 Topy <topy72.mine@gmail.com>
+// SPDX-FileCopyrightText: 2024 Cojoke <83733158+Cojoke-dot@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Kara <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 TemporalOroboros <TemporalOroboros@gmail.com>
+// SPDX-FileCopyrightText: 2024 beck-thompson <107373427+beck-thompson@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 nikthechampiongr <32041239+nikthechampiongr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Server.DoAfter;
 using Content.Server.Popups;
 using Content.Shared.Chemistry.EntitySystems;
@@ -141,7 +161,7 @@ public sealed class DrainSystem : SharedDrainSystem
             if (!_solutionContainerSystem.ResolveSolution((uid, manager), DrainComponent.SolutionName, ref drain.Solution, out var drainSolution))
                 continue;
 
-            if (drainSolution.AvailableVolume <= 0)
+            if (drainSolution.Volume <= 0 && !drain.AutoDrain)
             {
                 _ambientSoundSystem.SetAmbience(uid, false);
                 continue;
@@ -158,7 +178,7 @@ public sealed class DrainSystem : SharedDrainSystem
                 _puddles.Clear();
                 _lookup.GetEntitiesInRange(Transform(uid).Coordinates, drain.Range, _puddles);
 
-                if (_puddles.Count == 0)
+                if (_puddles.Count == 0 && drainSolution.Volume <= 0)
                 {
                     _ambientSoundSystem.SetAmbience(uid, false);
                     continue;

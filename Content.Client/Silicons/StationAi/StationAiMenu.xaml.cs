@@ -1,3 +1,13 @@
+// SPDX-FileCopyrightText: 2024 Mervill <mervills.email@gmail.com>
+// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Numerics;
 using Content.Client.UserInterface.Controls;
 using Content.Shared.Silicons.StationAi;
@@ -54,7 +64,6 @@ public sealed partial class StationAiMenu : RadialMenu
             // TODO: This radial boilerplate is quite annoying
             var button = new StationAiMenuButton(action.Event)
             {
-                StyleClasses = { "RadialMenuButton" },
                 SetSize = new Vector2(64f, 64f),
                 ToolTip = action.Tooltip != null ? Loc.GetString(action.Tooltip) : null,
             };
@@ -121,7 +130,7 @@ public sealed partial class StationAiMenu : RadialMenu
     }
 }
 
-public sealed class StationAiMenuButton(BaseStationAiAction action) : RadialMenuTextureButton
+public sealed class StationAiMenuButton(BaseStationAiAction action) : RadialMenuTextureButtonWithSector
 {
     public BaseStationAiAction Action = action;
 }

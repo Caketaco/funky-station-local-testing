@@ -1,4 +1,10 @@
-﻿using Content.Shared.Chemistry.Reagent;
+// SPDX-FileCopyrightText: 2023 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
+using Content.Shared.Chemistry.Reagent;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
@@ -14,6 +20,9 @@ public abstract class SharedChemistryGuideDataSystem : EntitySystem
     protected readonly Dictionary<string, ReagentGuideEntry> Registry = new();
 
     public IReadOnlyDictionary<string, ReagentGuideEntry> ReagentGuideRegistry => Registry;
+
+    // Only ran on the server
+    public abstract void ReloadAllReagentPrototypes();
 }
 
 [Serializable, NetSerializable]

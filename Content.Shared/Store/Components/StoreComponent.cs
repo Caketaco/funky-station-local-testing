@@ -1,3 +1,18 @@
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Fildrance <fildrance@gmail.com>
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 keronshb <54602815+keronshb@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 username <113782077+whateverusername0@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 whateverusername0 <whateveremail>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 YaraaraY <158123176+YaraaraY@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Shared._White.StoreDiscount;
 using Content.Shared.FixedPoint;
 using Robust.Shared.Audio;
@@ -39,10 +54,10 @@ public sealed partial class StoreComponent : Component
     public HashSet<ProtoId<CurrencyPrototype>> CurrencyWhitelist = new();
 
     /// <summary>
-    /// The person who "owns" the store/account. Used if you want the listings to be fixed
+    /// The person/mind who "owns" the store/account. Used if you want the listings to be fixed
     /// regardless of who activated it. I.E. role specific items for uplinks.
     /// </summary>
-    [ViewVariables(VVAccess.ReadWrite)]
+    [DataField]
     public EntityUid? AccountOwner = null;
 
     /// <summary>
@@ -74,6 +89,12 @@ public sealed partial class StoreComponent : Component
     /// </summary>
     [ViewVariables, DataField]
     public bool RefundAllowed;
+
+    /// <summary>
+    /// DeltaV: Should the store grant actions to the mind?
+    /// </summary>
+    [DataField]
+    public bool GrantActionsToMind = true;
 
     /// <summary>
     ///     Checks if store can be opened by the account owner only.

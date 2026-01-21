@@ -1,3 +1,11 @@
+// SPDX-FileCopyrightText: 2024 V <97265903+formlessnameless@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 RadsammyT <32146976+RadsammyT@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 corresp0nd <46357632+corresp0nd@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
+using System.Linq;
 using System.Numerics;
 using Content.Shared._EstacaoPirata.Cards.Hand;
 using Content.Shared._EstacaoPirata.Cards.Stack;
@@ -10,6 +18,7 @@ namespace Content.Client._EstacaoPirata.Cards.Hand;
 /// </summary>
 public sealed class CardHandSystem : EntitySystem
 {
+    private readonly Dictionary<Entity<CardHandComponent>, int> _notInit = [];
     [Dependency] private readonly CardSpriteSystem _cardSpriteSystem = default!;
 
 
@@ -23,6 +32,39 @@ public sealed class CardHandSystem : EntitySystem
         SubscribeNetworkEvent<CardStackFlippedEvent>(OnStackFlip);
     }
 
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+        foreach (var (ent, value) in _notInit)
+        {
+            if (value >= 5)
+            {
+                _notInit.Remove(ent);
+                continue;
+            }
+            _notInit[ent] = value + 1;
+            if(!TryComp(ent.Owner, out CardStackComponent? stack) || stack.Cards.Count <= 0)
+                continue;
+
+            // If cards were correctly initialized, we update the sprite
+            UpdateSprite(ent.Owner, ent.Comp);
+            _notInit.Remove(ent);
+        }
+    }
+
+    private bool TryGetCardLayer(EntityUid card, out SpriteComponent.Layer? layer)
+    {
+        layer = null;
+        if (!TryComp(card, out SpriteComponent? cardSprite))
+            return false;
+
+        if (!cardSprite.TryGetLayer(0, out var l))
+            return false;
+
+        layer = l;
+        return true;
+    }
+
     private void UpdateSprite(EntityUid uid, CardHandComponent comp)
     {
         if (!TryComp(uid, out SpriteComponent? sprite))
@@ -30,6 +72,14 @@ public sealed class CardHandSystem : EntitySystem
 
         if (!TryComp(uid, out CardStackComponent? cardStack))
             return;
+
+        // Prevents error appearing at spawnMenu
+        if (cardStack.Cards.Count <= 0 || !TryGetCardLayer(cardStack.Cards.Last(), out var cardlayer) ||
+            cardlayer == null)
+        {
+            _notInit[(uid, comp)] = 0;
+            return;
+        }
 
         _cardSpriteSystem.TryAdjustLayerQuantity((uid, sprite, cardStack), comp.CardLimit);
 
@@ -99,7 +149,13 @@ public sealed class CardHandSystem : EntitySystem
     }
     private void OnComponentStartupEvent(EntityUid uid, CardHandComponent comp, ComponentStartup args)
     {
-
+        if (!TryComp(uid, out CardStackComponent? stack))
+        {
+            _notInit[(uid, comp)] = 0;
+            return;
+        }
+        if(stack.Cards.Count <= 0)
+            _notInit[(uid, comp)] = 0;
         UpdateSprite(uid, comp);
     }
 

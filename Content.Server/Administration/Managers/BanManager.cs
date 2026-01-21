@@ -1,3 +1,20 @@
+// SPDX-FileCopyrightText: 2023 Chief-Engineer <119664036+Chief-Engineer@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2023 Riggle <27156122+RigglePrime@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Vasilis <vasilis@pikachu.systems>
+// SPDX-FileCopyrightText: 2024 DrSmugleaf <10968691+DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Julian Giebel <juliangiebel@live.de>
+// SPDX-FileCopyrightText: 2024 LordCarve <27449516+LordCarve@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Collections.Immutable;
 using System.Linq;
 using System.Net;
@@ -53,7 +70,12 @@ public sealed partial class BanManager : IBanManager, IPostInjectInit
     {
         _netManager.RegisterNetMessage<MsgRoleBans>();
 
-        _db.SubscribeToNotifications(OnDatabaseNotification);
+        _db.SubscribeToJsonNotification<BanNotificationData>(
+            _taskManager,
+            _sawmill,
+            BanNotificationChannel,
+            ProcessBanNotification,
+            OnDatabaseNotificationEarlyFilter);
 
         _userDbData.AddOnLoadPlayer(CachePlayerData);
         _userDbData.AddOnPlayerDisconnect(ClearPlayerData);
@@ -160,6 +182,8 @@ public sealed partial class BanManager : IBanManager, IPostInjectInit
             null);
 
         await _db.AddServerBanAsync(banDef);
+        if (_cfg.GetCVar(CCVars.ServerBanResetLastReadRules) && target != null)
+            await _db.SetLastReadRules(target.Value, null); // Reset their last read rules. They probably need a refresher!
         var adminName = banningAdmin == null
             ? Loc.GetString("system-user")
             : (await _db.GetPlayerRecordByUserId(banningAdmin.Value))?.LastSeenUserName ?? Loc.GetString("system-user");

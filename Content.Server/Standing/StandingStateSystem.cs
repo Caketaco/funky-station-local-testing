@@ -1,3 +1,24 @@
+// SPDX-FileCopyrightText: 2020 Remie Richards <remierichards@gmail.com>
+// SPDX-FileCopyrightText: 2021 Acruid <shatter66@gmail.com>
+// SPDX-FileCopyrightText: 2021 Clyybber <darkmine956@gmail.com>
+// SPDX-FileCopyrightText: 2021 Vera Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Vera Aguilera Puerto <gradientvera@outlook.com>
+// SPDX-FileCopyrightText: 2021 mirrorcult <notzombiedude@gmail.com>
+// SPDX-FileCopyrightText: 2022 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Rane <60792108+Elijahrane@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 TemporalOroboros <TemporalOroboros@gmail.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 whateverusername0 <whateveremail>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Numerics;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
@@ -13,6 +34,7 @@ public sealed class StandingStateSystem : EntitySystem
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedHandsSystem _handsSystem = default!;
     [Dependency] private readonly ThrowingSystem _throwingSystem = default!;
+    [Dependency] private readonly SharedTransformSystem _transformSystem = default!;
 
     private void FallOver(EntityUid uid, StandingStateComponent component, DropHandItemsEvent args)
     {
@@ -25,7 +47,7 @@ public sealed class StandingStateSystem : EntitySystem
         if (!TryComp(uid, out HandsComponent? handsComp))
             return;
 
-        var worldRotation = EntityManager.GetComponent<TransformComponent>(uid).WorldRotation.ToVec();
+        var worldRotation = _transformSystem.GetWorldRotation(uid).ToVec();
         foreach (var hand in handsComp.Hands.Values)
         {
             if (hand.HeldEntity is not EntityUid held)

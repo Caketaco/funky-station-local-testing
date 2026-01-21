@@ -1,3 +1,34 @@
+// SPDX-FileCopyrightText: 2022 Chief-Engineer <119664036+Chief-Engineer@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Arimah Greene <30327355+arimah@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Eoin Mcloughlin <helloworld@eoinrul.es>
+// SPDX-FileCopyrightText: 2023 Morb <14136326+Morb0@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Pieter-Jan Briers <pieterjan.briers@gmail.com>
+// SPDX-FileCopyrightText: 2023 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 deltanedas <39013340+deltanedas@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 eoineoineoin <eoin.mcloughlin+gh@gmail.com>
+// SPDX-FileCopyrightText: 2023 eoineoineoin <github@eoinrul.es>
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 CaasGit <87243814+CaasGit@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Deatherd <69344159+Deatherd@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Ed <96445749+TheShuEd@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Guilherme Ornel <86210200+joshepvodka@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+// SPDX-FileCopyrightText: 2024 Plykiya <58439124+Plykiya@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 Tayrtahn <tayrtahn@gmail.com>
+// SPDX-FileCopyrightText: 2024 brainfood1183 <113240905+brainfood1183@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 dffdff2423 <dffdff2423@gmail.com>
+// SPDX-FileCopyrightText: 2024 exincore <me@exin.xyz>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Server.Administration;
 using Content.Server.Administration.Managers;
 using Content.Server.Chat.Managers;
@@ -50,6 +81,7 @@ public sealed class FaxSystem : EntitySystem
     [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private readonly MetaDataSystem _metaData = default!;
     [Dependency] private readonly FaxecuteSystem _faxecute = default!;
+    [Dependency] private readonly EmagSystem _emag = default!;
 
     private const string PaperSlotId = "Paper";
 
@@ -227,7 +259,7 @@ public sealed class FaxSystem : EntitySystem
                 return;
             }
 
-            if (component.KnownFaxes.ContainsValue(newName) && !HasComp<EmaggedComponent>(uid)) // Allow existing names if emagged for fun
+            if (component.KnownFaxes.ContainsValue(newName) && !_emag.CheckFlag(uid, EmagType.Interaction)) // Allow existing names if emagged for fun
             {
                 _popupSystem.PopupEntity(Loc.GetString("fax-machine-popup-name-exist"), uid);
                 return;
@@ -246,7 +278,12 @@ public sealed class FaxSystem : EntitySystem
 
     private void OnEmagged(EntityUid uid, FaxMachineComponent component, ref GotEmaggedEvent args)
     {
-        _audioSystem.PlayPvs(component.EmagSound, uid);
+        if (!_emag.CompareFlag(args.Type, EmagType.Interaction))
+            return;
+
+        if (_emag.CheckFlag(uid, EmagType.Interaction))
+            return;
+
         args.Handled = true;
     }
 
@@ -260,7 +297,7 @@ public sealed class FaxSystem : EntitySystem
             switch (command)
             {
                 case FaxConstants.FaxPingCommand:
-                    var isForSyndie = HasComp<EmaggedComponent>(uid) &&
+                    var isForSyndie = _emag.CheckFlag(uid, EmagType.Interaction) &&
                                       args.Data.ContainsKey(FaxConstants.FaxSyndicateData);
                     if (!isForSyndie && !component.ResponsePings)
                         return;
@@ -405,7 +442,7 @@ public sealed class FaxSystem : EntitySystem
             { DeviceNetworkConstants.Command, FaxConstants.FaxPingCommand }
         };
 
-        if (HasComp<EmaggedComponent>(uid))
+        if (_emag.CheckFlag(uid, EmagType.Interaction))
             payload.Add(FaxConstants.FaxSyndicateData, true);
 
         _deviceNetworkSystem.QueuePacket(uid, null, payload);
@@ -443,6 +480,9 @@ public sealed class FaxSystem : EntitySystem
     public void Copy(EntityUid uid, FaxMachineComponent? component, FaxCopyMessage args)
     {
         if (!Resolve(uid, ref component))
+            return;
+
+        if (component.SendTimeoutRemaining > 0)
             return;
 
         var sendEntity = component.PaperSlot.Item;
@@ -487,6 +527,9 @@ public sealed class FaxSystem : EntitySystem
     public void Send(EntityUid uid, FaxMachineComponent? component, FaxSendMessage args)
     {
         if (!Resolve(uid, ref component))
+            return;
+
+        if (component.SendTimeoutRemaining > 0)
             return;
 
         var sendEntity = component.PaperSlot.Item;

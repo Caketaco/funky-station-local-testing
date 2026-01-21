@@ -1,3 +1,13 @@
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2024 chromiumboy <50505512+chromiumboy@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Client.UserInterface.Controls;
 using Content.Shared.Popups;
 using Content.Shared.RCD;
@@ -74,7 +84,6 @@ public sealed partial class RCDMenu : RadialMenu
 
             var button = new RCDMenuButton()
             {
-                StyleClasses = { "RadialMenuButton" },
                 SetSize = new Vector2(64f, 64f),
                 ToolTip = tooltip,
                 ProtoId = protoId,
@@ -99,9 +108,7 @@ public sealed partial class RCDMenu : RadialMenu
             // is visible in the main radial container (as these all start with Visible = false)
             foreach (var child in main.Children)
             {
-                var castChild = child as RadialMenuTextureButton;
-
-                if (castChild is not RadialMenuTextureButton)
+                if (child is not RadialMenuTextureButton castChild)
                     continue;
 
                 if (castChild.TargetLayer == proto.Category)
@@ -169,12 +176,7 @@ public sealed partial class RCDMenu : RadialMenu
     }
 }
 
-public sealed class RCDMenuButton : RadialMenuTextureButton
+public sealed class RCDMenuButton : RadialMenuTextureButtonWithSector
 {
     public ProtoId<RCDPrototype> ProtoId { get; set; }
-
-    public RCDMenuButton()
-    {
-
-    }
 }

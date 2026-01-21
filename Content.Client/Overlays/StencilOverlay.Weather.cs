@@ -1,4 +1,15 @@
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Ed <96445749+TheShuEd@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 eoineoineoin <github@eoinrul.es>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Numerics;
+using Content.Shared.Light.Components;
 using Content.Shared.Weather;
 using Robust.Client.Graphics;
 using Robust.Shared.Map.Components;
@@ -34,11 +45,12 @@ public sealed partial class StencilOverlay
                 var matrix = _transform.GetWorldMatrix(grid, xformQuery);
                 var matty =  Matrix3x2.Multiply(matrix, invMatrix);
                 worldHandle.SetTransform(matty);
+                _entManager.TryGetComponent(grid.Owner, out RoofComponent? roofComp);
 
                 foreach (var tile in _map.GetTilesIntersecting(grid.Owner, grid, worldAABB))
                 {
                     // Ignored tiles for stencil
-                    if (_weather.CanWeatherAffect(grid.Owner, grid, tile))
+                    if (_weather.CanWeatherAffect(grid.Owner, grid, tile, roofComp))
                     {
                         continue;
                     }

@@ -1,3 +1,9 @@
+// SPDX-FileCopyrightText: 2024 Fahasor <70820551+Fahasor@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Shared.Coordinates;
 using Content.Shared.Humanoid;
 using Content.Shared.Interaction.Events;
@@ -27,11 +33,10 @@ public sealed class WhistleSystem : EntitySystem
 
     public void OnUseInHand(EntityUid uid, WhistleComponent component, UseInHandEvent args)
     {
-        if (!_timing.IsFirstTimePredicted)
+        if (args.Handled || !_timing.IsFirstTimePredicted)
             return;
 
-        TryMakeLoudWhistle(uid, args.User, component);
-        args.Handled = true;
+        args.Handled = TryMakeLoudWhistle(uid, args.User, component);
     }
 
     public bool TryMakeLoudWhistle(EntityUid uid, EntityUid owner, WhistleComponent? component = null)

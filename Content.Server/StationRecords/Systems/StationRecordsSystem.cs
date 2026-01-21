@@ -1,15 +1,44 @@
+// SPDX-FileCopyrightText: 2022 Flipp Syder <76629141+vulppine@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 0x6273 <0x40@keemail.me>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Moony <moony@hellomouse.net>
+// SPDX-FileCopyrightText: 2023 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 TemporalOroboros <TemporalOroboros@gmail.com>
+// SPDX-FileCopyrightText: 2023 Theomund <34360334+Theomund@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 faint <46868845+ficcialfaint@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <comedian_vs_clown@hotmail.com>
+// SPDX-FileCopyrightText: 2024 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Mervill <mervills.email@gmail.com>
+// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 deltanedas <39013340+deltanedas@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 nikthechampiongr <32041239+nikthechampiongr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 YaraaraY <158123176+YaraaraY@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 ferynn <117872973+ferynn@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Content.Server.Access.Systems;
 using Content.Server.Forensics;
 using Content.Shared.Access.Components;
+using Content.Shared.Clothing;
+using Content.Shared.Forensics.Components;
 using Content.Shared.GameTicking;
 using Content.Shared.Inventory;
 using Content.Shared.PDA;
 using Content.Shared.Preferences;
+using Content.Shared.Preferences.Loadouts;
 using Content.Shared.Roles;
 using Content.Shared.StationRecords;
 using Robust.Shared.Enums;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 
 namespace Content.Server.StationRecords.Systems;
 
@@ -38,6 +67,7 @@ public sealed class StationRecordsSystem : SharedStationRecordsSystem
     [Dependency] private readonly StationRecordKeyStorageSystem _keyStorage = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IdCardSystem _idCard = default!;
+    [Dependency] private readonly IRobustRandom _random = default!;
 
     public override void Initialize()
     {
@@ -90,10 +120,26 @@ public sealed class StationRecordsSystem : SharedStationRecordsSystem
         if (!_inventory.TryGetSlotEntity(player, "id", out var idUid))
             return;
 
+        //Checking role-loadout for a custom name, and using it instead if it exists.
+        RoleLoadout? loadout = null;
+        string? nameOverride = null;
+        var prototype = _prototypeManager.Index<JobPrototype>(jobId);
+        var jobLoadout = LoadoutSystem.GetJobPrototype(prototype?.ID);
+
+        if (_prototypeManager.TryIndex(jobLoadout, out RoleLoadoutPrototype? roleProto))
+        {
+            profile.Loadouts.TryGetValue(jobLoadout, out loadout);
+            if (loadout != null)
+            {
+                if (roleProto.CanCustomizeName)
+                {
+                    nameOverride = loadout.EntityName;
+                }
+            }
+        }
         TryComp<FingerprintComponent>(player, out var fingerprintComponent);
         TryComp<DnaComponent>(player, out var dnaComponent);
-
-        CreateGeneralRecord(station, idUid.Value, profile.Name, profile.Age, profile.Species, profile.Gender, jobId, fingerprintComponent?.Fingerprint, dnaComponent?.DNA, profile, records);
+        CreateGeneralRecord(station, idUid.Value, nameOverride ?? profile.Name, profile.Age, profile.Species, profile.Gender, jobId, fingerprintComponent?.Fingerprint, dnaComponent?.DNA, profile, records);
     }
 
 
@@ -142,17 +188,42 @@ public sealed class StationRecordsSystem : SharedStationRecordsSystem
 
         // when adding a record that already exists use the old one
         // this happens when respawning as the same character
-        if (GetRecordByName(station, name, records) is {} id)
+        if (GetRecordByName(station, name, records) is { } id)
         {
             SetIdKey(idUid, new StationRecordKey(id, station));
             return;
+        }
+
+        string? jobTitle = null;
+
+        Entity<IdCardComponent>? card = null;
+        if (idUid != null && _idCard.TryFindIdCard(idUid.Value, out var cardUid) && TryComp(cardUid, out IdCardComponent? comp))
+        {
+            card = (cardUid, comp);
+        }
+
+        if (card.HasValue)
+        {
+            var cardComp = card.Value.Comp;
+            if (!string.IsNullOrEmpty(cardComp.LocalizedJobTitle))
+                jobTitle = cardComp.LocalizedJobTitle;
+        }
+        if (string.IsNullOrEmpty(jobTitle) && profile.AlternateJobTitle != null &&
+            _prototypeManager.TryIndex<JobAlternateTitlePrototype>(profile.AlternateJobTitle, out var altTitle))
+        {
+            jobTitle = altTitle.LocalizedName;
+        }
+
+        if (string.IsNullOrEmpty(jobTitle))
+        {
+            jobTitle = jobPrototype.LocalizedName;
         }
 
         var record = new GeneralStationRecord()
         {
             Name = name,
             Age = age,
-            JobTitle = jobPrototype.LocalizedName,
+            JobTitle = jobTitle,
             JobIcon = jobPrototype.Icon,
             JobPrototype = jobId,
             Species = species,
@@ -229,6 +300,28 @@ public sealed class StationRecordsSystem : SharedStationRecordsSystem
             return false;
 
         return records.Records.TryGetRecordEntry(key.Id, out entry);
+    }
+
+    /// <summary>
+    /// Gets a random record from the station's record entries.
+    /// </summary>
+    /// <param name="ent">The EntityId of the station from which you want to get the record.</param>
+    /// <param name="entry">The resulting entry.</param>
+    /// <typeparam name="T">Type to get from the record set.</typeparam>
+    /// <returns>True if a record was obtained. False otherwise.</returns>
+    public bool TryGetRandomRecord<T>(Entity<StationRecordsComponent?> ent, [NotNullWhen(true)] out T? entry)
+    {
+        entry = default;
+
+        if (!Resolve(ent.Owner, ref ent.Comp))
+            return false;
+
+        if (ent.Comp.Records.Keys.Count == 0)
+            return false;
+
+        var key = _random.Pick(ent.Comp.Records.Keys);
+
+        return ent.Comp.Records.TryGetRecordEntry(key, out entry);
     }
 
     /// <summary>

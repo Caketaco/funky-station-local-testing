@@ -1,3 +1,20 @@
+// SPDX-FileCopyrightText: 2022 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Fildrance <fildrance@gmail.com>
+// SPDX-FileCopyrightText: 2024 LordCarve <27449516+LordCarve@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 username <113782077+whateverusername0@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 whateverusername0 <whateveremail>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 misghast <51974455+misterghast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
+using System.Diagnostics.CodeAnalysis;
+using Content.Shared.Mind;
 using Content.Shared.Store;
 using Content.Shared.Store.Components;
 using Robust.Shared.Prototypes;
@@ -14,7 +31,7 @@ public sealed partial class StoreSystem
     public void RefreshAllListings(StoreComponent component)
     {
         component.Listings = GetAllListings();
-        _storeDiscount.ApplyDiscounts(component.Listings, component); // goob edit
+        _storeDiscount.ApplyDiscounts(component.Listings, component);
     }
 
     /// <summary>
@@ -97,7 +114,7 @@ public sealed partial class StoreSystem
 
             if (listing.Conditions != null)
             {
-                var args = new ListingConditionArgs(buyer, storeEntity, listing, EntityManager);
+                var args = new ListingConditionArgs(GetBuyerMind(buyer), storeEntity, listing, EntityManager);
                 var conditionsMet = true;
 
                 foreach (var condition in listing.Conditions)
@@ -115,6 +132,19 @@ public sealed partial class StoreSystem
 
             yield return listing;
         }
+    }
+
+    /// <summary>
+    /// Returns the entity's mind entity, if it has one, to be used for listing conditions.
+    /// If it doesn't have one, or is a mind entity already, it returns itself.
+    /// </summary>
+    /// <param name="buyer">The buying entity.</param>
+    public EntityUid GetBuyerMind(EntityUid buyer)
+    {
+        if (!HasComp<MindComponent>(buyer) && _mind.TryGetMind(buyer, out var buyerMind, out var _))
+            return buyerMind;
+
+        return buyer;
     }
 
     /// <summary>

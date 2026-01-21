@@ -1,4 +1,11 @@
-﻿using Content.Shared.Interaction.Components;
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
+using Content.Shared.Interaction.Components;
 using Content.Shared.Inventory;
 using Content.Shared.Radio;
 using Content.Shared.Silicons.Borgs.Components;
@@ -19,7 +26,7 @@ public sealed partial class BorgTypePrototype : IPrototype
     private static readonly ProtoId<SoundCollectionPrototype> DefaultFootsteps = new("FootstepBorg");
 
     [IdDataField]
-    public required string ID { get; init; }
+    public required string ID { get; set; }
 
     //
     // Description info (name/desc) is configured via localization strings directly.
@@ -29,7 +36,7 @@ public sealed partial class BorgTypePrototype : IPrototype
     /// The prototype displayed in the selection menu for this type.
     /// </summary>
     [DataField]
-    public required EntProtoId DummyPrototype { get; init; }
+    public required EntProtoId DummyPrototype;
 
     //
     // Functional information

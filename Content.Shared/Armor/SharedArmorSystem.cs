@@ -1,8 +1,20 @@
-﻿using Content.Shared.Damage;
+// SPDX-FileCopyrightText: 2023 Chronophylos <nikolai@chronophylos.com>
+// SPDX-FileCopyrightText: 2023 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 beck-thompson <107373427+beck-thompson@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 unknown <alexander.kuepper1234@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
+using Content.Shared.Damage;
 using Content.Shared.Examine;
 using Content.Shared.Inventory;
 using Content.Shared.Silicons.Borgs;
 using Content.Shared.Verbs;
+using Content.Shared._EE.Supermatter.Components;
 using Robust.Shared.Utility;
 
 namespace Content.Shared.Armor;
@@ -19,9 +31,23 @@ public abstract class SharedArmorSystem : EntitySystem
     {
         base.Initialize();
 
+        SubscribeLocalEvent<ArmorComponent, InventoryRelayedEvent<CoefficientQueryEvent>>(OnCoefficientQuery);
         SubscribeLocalEvent<ArmorComponent, InventoryRelayedEvent<DamageModifyEvent>>(OnDamageModify);
         SubscribeLocalEvent<ArmorComponent, BorgModuleRelayedEvent<DamageModifyEvent>>(OnBorgDamageModify);
         SubscribeLocalEvent<ArmorComponent, GetVerbsEvent<ExamineVerb>>(OnArmorVerbExamine);
+    }
+
+    /// <summary>
+    /// Get the total Damage reduction value of all equipment caught by the relay.
+    /// </summary>
+    /// <param name="ent">The item that's being relayed to</param>
+    /// <param name="args">The event, contains the running count of armor percentage as a coefficient</param>
+    private void OnCoefficientQuery(Entity<ArmorComponent> ent, ref InventoryRelayedEvent<CoefficientQueryEvent> args)
+    {
+        foreach (var armorCoefficient in ent.Comp.Modifiers.Coefficients)
+        {
+            args.Args.DamageModifiers.Coefficients[armorCoefficient.Key] = args.Args.DamageModifiers.Coefficients.TryGetValue(armorCoefficient.Key, out var coefficient) ? coefficient * armorCoefficient.Value : armorCoefficient.Value;
+        }
     }
 
     private void OnDamageModify(EntityUid uid, ArmorComponent component, InventoryRelayedEvent<DamageModifyEvent> args)
@@ -37,10 +63,10 @@ public abstract class SharedArmorSystem : EntitySystem
 
     private void OnArmorVerbExamine(EntityUid uid, ArmorComponent component, GetVerbsEvent<ExamineVerb> args)
     {
-        if (!args.CanInteract || !args.CanAccess)
+        if (!args.CanInteract || !args.CanAccess || !component.ShowArmorOnExamine)
             return;
 
-        var examineMarkup = GetArmorExamine(component.Modifiers);
+        var examineMarkup = GetArmorExamine(component.Modifiers, uid);
 
         var ev = new ArmorExamineEvent(examineMarkup);
         RaiseLocalEvent(uid, ref ev);
@@ -50,10 +76,18 @@ public abstract class SharedArmorSystem : EntitySystem
             Loc.GetString("armor-examinable-verb-message"));
     }
 
-    private FormattedMessage GetArmorExamine(DamageModifierSet armorModifiers)
+    private FormattedMessage GetArmorExamine(DamageModifierSet armorModifiers, EntityUid? uid = null)
     {
         var msg = new FormattedMessage();
         msg.AddMarkupOrThrow(Loc.GetString("armor-examine"));
+
+        // TODO: better reflect What's Going On
+        // Hi! Tay here. This is not true.
+        // This WILL be null if the person using this has the
+        // funny trait that gives them armor buffs.
+        // Sorry!
+        if (armorModifiers == null)
+            return msg;
 
         foreach (var coefficientArmor in armorModifiers.Coefficients)
         {
@@ -75,6 +109,12 @@ public abstract class SharedArmorSystem : EntitySystem
                 ("type", armorType),
                 ("value", flatArmor.Value)
             ));
+        }
+
+        if (uid != null && HasComp<SupermatterImmuneComponent>(uid.Value))
+        {
+            msg.PushNewline();
+            msg.AddMarkupOrThrow(Loc.GetString("armor-supermatter-immune"));
         }
 
         return msg;

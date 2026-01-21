@@ -1,0 +1,48 @@
+- type: entity
+  id: ToggleNightVision
+  name: Switch night vision
+  description: Switches night vision.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    itemIconStyle: BigAction
+    priority: -20
+    icon:
+      sprite: _EE/Clothing/Eyes/Goggles/nightvision.rsi
+      state: icon
+    event: !type:ToggleNightVisionEvent
+
+- type: entity
+  id: ToggleThermalVision
+  name: Switch Thermal vision
+  description: Switches Thermal vision.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    itemIconStyle: BigAction
+    priority: -20
+    icon:
+      sprite: _EE/Clothing/Eyes/Goggles/thermal.rsi
+      state: icon
+    event: !type:ToggleThermalVisionEvent
+
+- type: entity
+  id: PulseThermalVision
+  parent: ToggleThermalVision
+  name: Pulse Thermal Vision
+  description: Activate thermal vision temporarily.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    useDelay: 4
+
+- type: entity
+  id: ActionOpenMouthStorage
+  name: Open cheek storage
+  description: Allows you to store items in your cheeks.
+  components:
+  - type: InstantAction
+    itemIconStyle: BigAction
+    priority: -10
+    icon: _DV/Interface/Actions/mouthStorageOpen.png
+    event: !type:OpenStorageImplantEvent

@@ -1,3 +1,17 @@
+// SPDX-FileCopyrightText: 2022 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 keronshb <54602815+keronshb@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Shared.Alert;
 using Robust.Shared.Containers;
 using Robust.Shared.GameStates;
@@ -13,13 +27,13 @@ public sealed partial class EnsnareableComponent : Component
     /// <summary>
     /// How much should this slow down the entities walk?
     /// </summary>
-    [DataField]
+    [DataField, AutoNetworkedField]
     public float WalkSpeed = 1.0f;
 
     /// <summary>
     /// How much should this slow down the entities sprint?
     /// </summary>
-    [DataField]
+    [DataField, AutoNetworkedField]
     public float SprintSpeed = 1.0f;
 
     /// <summary>

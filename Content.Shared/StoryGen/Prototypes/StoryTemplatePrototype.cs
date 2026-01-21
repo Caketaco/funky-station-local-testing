@@ -1,3 +1,11 @@
+// SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Tayrtahn <tayrtahn@gmail.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Shared.Dataset;
 using Robust.Shared.Prototypes;
 
@@ -6,7 +14,7 @@ namespace Content.Shared.StoryGen;
 /// <summary>
 /// Prototype for a story template that can be filled in with words chosen from <see cref="DatasetPrototype"/>s.
 /// </summary>
-[Serializable, Prototype("storyTemplate")]
+[Serializable, Prototype]
 public sealed partial class StoryTemplatePrototype : IPrototype
 {
     /// <summary>
@@ -20,7 +28,7 @@ public sealed partial class StoryTemplatePrototype : IPrototype
     /// Localization ID of the Fluent string that forms the structure of this story.
     /// </summary>
     [DataField(required: true)]
-    public LocId LocId { get; } = default!;
+    public LocId LocId;
 
     /// <summary>
     /// Dictionary containing the name of each variable to pass to the template and the ID of the
@@ -29,5 +37,5 @@ public sealed partial class StoryTemplatePrototype : IPrototype
     /// dataset which can then be used in the template by <c>{$name}</c>.
     /// </summary>
     [DataField]
-    public Dictionary<string, ProtoId<LocalizedDatasetPrototype>> Variables { get; } = default!;
+    public Dictionary<string, ProtoId<LocalizedDatasetPrototype>> Variables = [];
 }

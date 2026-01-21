@@ -1,0 +1,56 @@
+# SPDX-FileCopyrightText: 2024 BombasterDS <115770678+BombasterDS@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Skubman <ba.fallaria@gmail.com>
+# SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 corresp0nd <46357632+corresp0nd@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 mkanke-real <mikekanke@gmail.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
+- type: entity
+  parent: BaseItem
+  id: MailMetricsCartridge
+  name: mail metrics cartridge
+  description: A cartridge that tracks statistics related to mail deliveries.
+  components:
+  - type: Sprite
+    sprite: _DV/Objects/Devices/cartridge.rsi
+    state: cart-mail
+  - type: Icon
+    sprite: _DV/Objects/Devices/cartridge.rsi
+    state: cart-mail
+  - type: UIFragment
+    ui: !type:MailMetricUi
+  - type: MailMetricsCartridge
+  - type: Cartridge
+    programName: mail-metrics-program-name
+    icon:
+      sprite: _Funkystation/Objects/Specific/Mail/mail_mailer.rsi
+      state: icon
+  - type: Tag
+    tags:
+     - PDACart
+
+- type: entity
+  parent: BaseItem
+  id: NanoChatCartridge
+  name: NanoChat cartridge
+  description: Lets you message other people!
+  components:
+  - type: Sprite
+    sprite: _DV/Objects/Devices/cartridge.rsi
+    state: cart-chat
+  - type: UIFragment
+    ui: !type:NanoChatUi
+  - type: NanoChatCartridge
+  - type: Cartridge
+    programName: nano-chat-program-name
+    icon:
+      sprite: _DV/Misc/program_icons.rsi
+      state: nanochat
+  - type: ActiveRadio
+    channels:
+    - Common
+  - type: Tag
+    tags:
+    - PDACart

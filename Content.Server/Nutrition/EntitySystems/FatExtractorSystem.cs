@@ -1,4 +1,17 @@
-﻿using System.Diagnostics.CodeAnalysis;
+// SPDX-FileCopyrightText: 2023 Pieter-Jan Briers <pieterjan.briers@gmail.com>
+// SPDX-FileCopyrightText: 2024 MilenVolf <63782763+MilenVolf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Server.Nutrition.Components;
 using Content.Server.Power.Components;
@@ -21,6 +34,7 @@ namespace Content.Server.Nutrition.EntitySystems;
 public sealed class FatExtractorSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly EmagSystem _emag = default!;
     [Dependency] private readonly HungerSystem _hunger = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
@@ -36,8 +50,13 @@ public sealed class FatExtractorSystem : EntitySystem
 
     private void OnGotEmagged(EntityUid uid, FatExtractorComponent component, ref GotEmaggedEvent args)
     {
+        if (!_emag.CompareFlag(args.Type, EmagType.Interaction))
+            return;
+
+        if (_emag.CheckFlag(uid, EmagType.Interaction))
+            return;
+
         args.Handled = true;
-        args.Repeatable = false;
     }
 
     private void OnClosed(EntityUid uid, FatExtractorComponent component, ref StorageAfterCloseEvent args)
@@ -103,7 +122,7 @@ public sealed class FatExtractorSystem : EntitySystem
         if (_hunger.GetHunger(hunger) < component.NutritionPerSecond)
             return false;
 
-        if (hunger.CurrentThreshold < component.MinHungerThreshold && !HasComp<EmaggedComponent>(uid))
+        if (hunger.CurrentThreshold < component.MinHungerThreshold && !_emag.CheckFlag(uid, EmagType.Interaction))
             return false;
 
         return true;

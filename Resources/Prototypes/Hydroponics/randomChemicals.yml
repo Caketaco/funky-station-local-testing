@@ -1,3 +1,15 @@
+# SPDX-FileCopyrightText: 2023 Doru991 <75124791+Doru991@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 MilenVolf <63782763+MilenVolf@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2024 Whisper <121047731+QuietlyWhisper@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 drakewill-CRL <46307022+drakewill-CRL@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 lzk <124214523+lzk228@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Fenn <162015305+TooSillyFennec@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 corresp0nd <46357632+corresp0nd@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 - type: weightedRandomFillSolution
   id: RandomPickBotanyReagent
   fills:
@@ -10,6 +22,7 @@
     - Honk
     - BuzzochloricBees
     - Stimulants
+    - ExoticReagent # Funkychem
   - quantity: 5
     weight: 1
     reagents:
@@ -17,9 +30,11 @@
     - Toxin
     - Leporazine
     - Epinephrine
+    - Convermol # Funkychem
     - CarpoToxin
     - SulfuricAcid
     - Licoxide
+    - Pestiline # Funkychem
     - Napalm
     - ChlorineTrifluoride
     - Radium
@@ -41,14 +56,14 @@
     - Pax
     - Cryoxadone
     - Ethylredoxrazine
-    - Dylovene
+    - Multiver # Funkychem
     - Histamine
     - Blood
     - WeldingFuel
     - Mercury
     - Silver
     - Phenol
-    - Ultravasculine
+    - PenteticAcid # Funkychem
     - Carbon
     - THC
     - Nicotine
@@ -60,8 +75,12 @@
   - quantity: 10
     weight: 3
     reagents:
-    - Bicaridine
-    - Dermaline
+    - Libital # Funkychem - Start
+    - Probital
+    - SalicylicAcid
+    - Aiuri
+    - Lenturi
+    - Oxandrolone # funky end
     - Ephedrine
     - NorepinephricAcid
     - Tricordrazine
@@ -95,7 +114,7 @@
     weight: 3.5
     reagents:
     - Vitamin
-    - Kelotane
+    - Dexalin # Funkychem
     - Inaprovaline
     - Oil
     - Slime

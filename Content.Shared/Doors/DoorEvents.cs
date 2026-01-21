@@ -1,3 +1,19 @@
+// SPDX-FileCopyrightText: 2022 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Rane <60792108+Elijahrane@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Theomund <34360334+Theomund@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Tom Leys <tom@crump-leys.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <comedian_vs_clown@hotmail.com>
+// SPDX-FileCopyrightText: 2023 nikthechampiongr <32041239+nikthechampiongr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Shared.Doors.Components;
 
 namespace Content.Shared.Doors
@@ -44,15 +60,20 @@ namespace Content.Shared.Doors
     /// </summary>
     /// <remarks>
     /// This event is raised both when the door is initially closed, and when it is just about to become "partially"
-    /// closed (opaque & collidable). If canceled while partially closing, it will start opening again. Useful in case
+    /// closed (opaque &amp; collidable). If canceled while partially closing, it will start opening again. Useful in case
     /// an entity entered the door just as it was about to become "solid".
     /// </remarks>
     public sealed class BeforeDoorClosedEvent : CancellableEntityEventArgs
     {
+        /// <summary>
+        /// If true, this check is being performed when the door is partially closing.
+        /// </summary>
+        public bool Partial;
         public bool PerformCollisionCheck;
 
-        public BeforeDoorClosedEvent(bool performCollisionCheck)
+        public BeforeDoorClosedEvent(bool performCollisionCheck, bool partial = false)
         {
+            Partial = partial;
             PerformCollisionCheck = performCollisionCheck;
         }
     }

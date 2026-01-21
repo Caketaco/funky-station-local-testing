@@ -1,3 +1,45 @@
+# SPDX-FileCopyrightText: 2022 EmoGarbage404 <98561806+EmoGarbage404@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2022 Moony <moonheart08@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2022 Paul Ritter <ritter.paul1@googlemail.com>
+# SPDX-FileCopyrightText: 2022 Vera Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2022 moonheart08 <moonheart08@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Ilya246 <57039557+Ilya246@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Moony <moony@hellomouse.net>
+# SPDX-FileCopyrightText: 2023 Skye <22365940+Skyedra@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 coolmankid12345 <55817627+coolmankid12345@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 coolmankid12345 <coolmankid12345@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
+# SPDX-FileCopyrightText: 2024 Brandon Hu <103440971+Brandon-Huu@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 IProduceWidgets <107586145+IProduceWidgets@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 John Space <bigdumb421@gmail.com>
+# SPDX-FileCopyrightText: 2024 Kara <lunarautomaton6@gmail.com>
+# SPDX-FileCopyrightText: 2024 Kevin Zheng <kevinz5000@gmail.com>
+# SPDX-FileCopyrightText: 2024 Kira Bridgeton <161087999+Verbalase@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 PJBot <pieterjan.briers+bot@gmail.com>
+# SPDX-FileCopyrightText: 2024 Pancake <Pangogie@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 PoTeletubby <108604614+PoTeletubby@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 PoTeletubby <ajcraigaz@gmail.com>
+# SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2024 deltanedas <39013340+deltanedas@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 deltanedas <@deltanedas:kde.org>
+# SPDX-FileCopyrightText: 2024 lzk <124214523+lzk228@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 shamp <140359015+shampunj@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 username <113782077+whateverusername0@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Aviu00 <93730715+Aviu00@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 DevilishMilk <michaellapjr@gmail.com>
+# SPDX-FileCopyrightText: 2025 Mish <bluscout78@yahoo.com>
+# SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 Terkala <appleorange64@gmail.com>
+# SPDX-FileCopyrightText: 2025 corresp0nd <46357632+corresp0nd@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 misghast <51974455+misterghast@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 - type: gamePreset
   id: Survival
   alias:
@@ -6,7 +48,21 @@
   showInVote: false # secret
   description: survival-description
   rules:
-    # - MeteorSwarmScheduler Goobstation - nuh uh
+    - MeteorSwarmScheduler
+    - RampingStationEventScheduler
+    - SpaceTrafficControlEventScheduler
+    - SpaceTrafficControlFriendlyEventScheduler
+    - BasicRoundstartVariation
+
+- type: gamePreset
+  id: SecretSurvival
+  alias:
+    - secretsurvival
+  name: secret-title
+  showInVote: false # secret
+  description: secret-description
+  rules:
+    - MeteorSwarmScheduler
     - RampingStationEventScheduler
     - SpaceTrafficControlEventScheduler
     - SpaceTrafficControlFriendlyEventScheduler
@@ -28,6 +84,19 @@
     - BasicRoundstartVariation
 
 - type: gamePreset
+  id: SecretKesslerSyndrome
+  alias:
+    - secretkessler
+  name: secret-title
+  showInVote: false # secret
+  description: secret-description
+  rules:
+    - KesslerSyndromeScheduler
+    - RampingStationEventScheduler
+    - SpaceTrafficControlEventScheduler
+    - BasicRoundstartVariation
+
+- type: gamePreset
   id: AllAtOnce
   alias:
   - all
@@ -38,10 +107,10 @@
     - Nukeops
     - Traitor
     - Revolutionary
-    - Zombie
+    - medZombies
     - BlobGameMode # Goobstation antag
     - SubGamemodesRule
-    # - KesslerSyndromeScheduler Goobstation - nuh uh
+    - MeteorSwarmScheduler
     - RampingStationEventScheduler
     - Changeling # Goobstation - changeling playtest
     - SpaceTrafficControlEventScheduler
@@ -58,10 +127,12 @@
   description: aller-at-once-description
   showInVote: false #Please god dont do this
   rules:
+    - CosmicCult
     - Nukeops
     - Traitor
     - Revolutionary
-    - Zombie
+    - medZombies
+    - Wizard
     - BlobGameMode # Goobstation antag
     - SubGamemodesRule
     - BasicStationEventScheduler
@@ -84,7 +155,7 @@
   description: extended-description
   rules:
   - BasicStationEventScheduler
-  # - MeteorSwarmScheduler Goobstation - nuh uh
+  - MeteorSwarmScheduler
   - SpaceTrafficControlEventScheduler
   - BasicRoundstartVariation
 
@@ -106,7 +177,7 @@
     - secret
     - sekrit
   name: secret-title
-  showInVote: true
+  showInVote: true # Goob - Game Director
   description: secret-description
   rules:
     - Secret
@@ -120,7 +191,7 @@
   description: secret-description
   rules:
     - BasicStationEventScheduler
-  #  - MeteorSwarmScheduler Goobstation - nuh uh
+    - MeteorSwarmScheduler
     - SpaceTrafficControlEventScheduler
     - BasicRoundstartVariation
 
@@ -155,10 +226,27 @@
   description: traitor-description
   showInVote: false
   rules:
+    - DummyNonAntagChance
     - Traitor
     - SubGamemodesRule
     - BasicStationEventScheduler
-  #  - MeteorSwarmScheduler Goobstation - nuh uh
+    - MeteorSwarmScheduler
+    - SpaceTrafficControlEventScheduler
+    - BasicRoundstartVariation
+
+- type: gamePreset
+  id: SecretTraitor
+  alias:
+    - secrettraitor
+  name: secret-title
+  description: secret-description
+  showInVote: false
+  rules:
+    - DummyNonAntagChance
+    - Traitor
+    - SubGamemodesRule
+    - BasicStationEventScheduler
+    - MeteorSwarmScheduler
     - SpaceTrafficControlEventScheduler
     - BasicRoundstartVariation
 
@@ -184,9 +272,26 @@
   showInVote: false
   rules:
     - Nukeops
+    - DummyNonAntagChance
     - SubGamemodesRule
     - BasicStationEventScheduler
-  #  - MeteorSwarmScheduler Goobstation - nuh uh
+    - MeteorSwarmScheduler
+    - SpaceTrafficControlEventScheduler
+    - BasicRoundstartVariation
+
+- type: gamePreset
+  id: SecretNukeops
+  alias:
+    - secretnukeops
+  name: secret-title
+  description: secret-description
+  showInVote: false
+  rules:
+    - Nukeops
+    - DummyNonAntagChance
+    - SubGamemodesRule
+    - BasicStationEventScheduler
+    - MeteorSwarmScheduler
     - SpaceTrafficControlEventScheduler
     - BasicRoundstartVariation
 
@@ -200,12 +305,45 @@
   description: rev-description
   showInVote: false
   rules:
-    - Revolutionary
-    - SubGamemodesRule
-    - BasicStationEventScheduler
-  #  - MeteorSwarmScheduler Goobstation - nuh uh
-    - SpaceTrafficControlEventScheduler
-    - BasicRoundstartVariation
+  - DummyNonAntagChance
+  - Revolutionary
+  - SubGamemodesRule
+  - BasicStationEventScheduler
+  - MeteorSwarmScheduler
+  - SpaceTrafficControlEventScheduler
+  - BasicRoundstartVariation
+
+- type: gamePreset
+  id: SecretRevolutionary
+  alias:
+    - secretrevs
+    - secretrevolutionaries
+  name: secret-title
+  description: secret-description
+  showInVote: false
+  rules:
+  - DummyNonAntagChance
+  - Revolutionary
+  - SubGamemodesRule
+  - BasicStationEventScheduler
+  - MeteorSwarmScheduler
+  - SpaceTrafficControlEventScheduler
+  - BasicRoundstartVariation
+
+- type: gamePreset
+  id: SecretWizard
+  alias:
+  - secretwizard
+  name: secret-title
+  description: secret-description
+  showInVote: false
+  rules:
+  - Wizard
+  - DummyNonAntagChance
+  - BasicStationEventScheduler
+  - MeteorSwarmScheduler
+  - SpaceTrafficControlEventScheduler
+  - BasicRoundstartVariation
 
 - type: gamePreset
   id: Zombie
@@ -213,15 +351,59 @@
   - zombie
   - zombies
   - Zombies
-  - zz14
-  - zomber
   name: zombie-title
   description: zombie-description
   showInVote: false
   rules:
-  - Zombie
+  - medZombies
+  - CalmTraitor
   - BasicStationEventScheduler
-#  - MeteorSwarmScheduler Goobstation - nuh uh
+  - MeteorSwarmScheduler
+  - SpaceTrafficControlEventScheduler
+  - BasicRoundstartVariation
+
+- type: gamePreset
+  id: SecretZombieMedium
+  alias:
+  - secretzombie
+  name: secret-title
+  description: secret-description
+  showInVote: false
+  rules:
+  - medZombies
+  - CalmTraitor
+  - BasicStationEventScheduler
+  - MeteorSwarmScheduler
+  - SpaceTrafficControlEventScheduler
+  - BasicRoundstartVariation
+
+- type: gamePreset
+  id: SecretLowZombie
+  alias:
+  - secretZombieLow
+  name: secret-title
+  description: secret-description
+  showInVote: false
+  rules:
+  - lowZombies
+  - CalmTraitor
+  - BasicStationEventScheduler
+  - MeteorSwarmScheduler
+  - SpaceTrafficControlEventScheduler
+  - BasicRoundstartVariation
+
+- type: gamePreset
+  id: SecretZombieHigh
+  alias:
+  - secretZombieHigh
+  name: secret-title
+  description: secret-description
+  showInVote: false
+  rules:
+  - highZombies
+  - CalmTraitor
+  - BasicStationEventScheduler
+  - MeteorSwarmScheduler
   - SpaceTrafficControlEventScheduler
   - BasicRoundstartVariation
 
@@ -235,7 +417,7 @@
   description: zombieteors-description
   showInVote: false
   rules:
-  - Zombie
+  - medZombies
   - BasicStationEventScheduler
   - KesslerSyndromeScheduler
   - SpaceTrafficControlEventScheduler

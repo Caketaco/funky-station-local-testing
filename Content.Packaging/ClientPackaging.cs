@@ -1,4 +1,12 @@
-﻿using System.Diagnostics;
+// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Vasilis <vasilis@pikachu.systems>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
+using System.Diagnostics;
 using System.IO.Compression;
 using Robust.Packaging;
 using Robust.Packaging.AssetProcessing;
@@ -61,7 +69,13 @@ public static class ClientPackaging
         var graph = new RobustClientAssetGraph();
         pass.Dependencies.Add(new AssetPassDependency(graph.Output.Name));
 
-        AssetGraph.CalculateGraph(graph.AllPasses.Append(pass).ToArray(), logger);
+        var dropSvgPass = new AssetPassFilterDrop(f => f.Path.EndsWith(".svg"))
+        {
+            Name = "DropSvgPass",
+        };
+        dropSvgPass.AddDependency(graph.Input).AddBefore(graph.PresetPasses);
+
+        AssetGraph.CalculateGraph([pass, dropSvgPass, ..graph.AllPasses], logger);
 
         var inputPass = graph.Input;
 
@@ -72,7 +86,7 @@ public static class ClientPackaging
             new[] { "Content.Client", "Content.Shared", "Content.Shared.Database" },
             cancel: cancel);
 
-        await RobustClientPackaging.WriteClientResources(contentDir, pass, cancel);
+        await RobustClientPackaging.WriteClientResources(contentDir, inputPass, cancel);
 
         inputPass.InjectFinished();
     }

@@ -1,3 +1,10 @@
+// SPDX-FileCopyrightText: 2024 V <97265903+formlessnameless@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 RadsammyT <32146976+RadsammyT@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 corresp0nd <46357632+corresp0nd@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 using Robust.Shared.GameStates;
 using Robust.Shared.Serialization;
 using Robust.Shared.Utility;
@@ -14,7 +21,7 @@ public sealed partial class CardComponent : Component
     /// The back of the card
     /// </summary>
     [DataField("backSpriteLayers", readOnly: true)]
-    public List<SpriteSpecifier>? BackSprite = [];
+    public List<SpriteSpecifier> BackSprite = [];
 
     /// <summary>
     /// The front of the card

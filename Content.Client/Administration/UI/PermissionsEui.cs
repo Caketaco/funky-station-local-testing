@@ -1,3 +1,21 @@
+// SPDX-FileCopyrightText: 2021 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Galactic Chimp <63882831+GalacticChimp@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2021 Vera Aguilera Puerto <gradientvera@outlook.com>
+// SPDX-FileCopyrightText: 2021 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Aaron Mell <aaronamell@gmail.com>
+// SPDX-FileCopyrightText: 2022 Kara <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2022 Paul Ritter <ritter.paul1@googlemail.com>
+// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Brandon Li <48413902+aspiringLich@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -27,7 +45,7 @@ namespace Content.Client.Administration.UI
         [Dependency] private readonly IClientAdminManager _adminManager = default!;
 
         private readonly Menu _menu;
-        private readonly List<DefaultWindow> _subWindows = new();
+        private readonly List<BaseWindow> _subWindows = new();
 
         private Dictionary<int, PermissionsEuiState.AdminRankData> _ranks =
             new();
@@ -130,6 +148,7 @@ namespace Content.Client.Administration.UI
             }
 
             var title = string.IsNullOrWhiteSpace(popup.TitleEdit.Text) ? null : popup.TitleEdit.Text;
+            var suspended = popup.SuspendedCheckbox.Pressed;
 
             if (popup.SourceData is { } src)
             {
@@ -139,7 +158,8 @@ namespace Content.Client.Administration.UI
                     Title = title,
                     PosFlags = pos,
                     NegFlags = neg,
-                    RankId = rank
+                    RankId = rank,
+                    Suspended = suspended,
                 });
             }
             else
@@ -152,7 +172,8 @@ namespace Content.Client.Administration.UI
                     Title = title,
                     PosFlags = pos,
                     NegFlags = neg,
-                    RankId = rank
+                    RankId = rank,
+                    Suspended = suspended,
                 });
             }
 
@@ -171,7 +192,7 @@ namespace Content.Client.Administration.UI
                 {
                     Id = src,
                     Flags = flags,
-                    Name = name
+                    Name = name,
                 });
             }
             else
@@ -213,7 +234,7 @@ namespace Content.Client.Administration.UI
                 var titleControl = new Label { Text = admin.Title ?? Loc.GetString("permissions-eui-edit-admin-title-control-text").ToLowerInvariant() };
                 if (admin.Title == null) // none
                 {
-                    titleControl.StyleClasses.Add(StyleBase.StyleClassItalic);
+                    titleControl.StyleClasses.Add(StyleClass.Italic);
                 }
 
                 al.AddChild(titleControl);
@@ -237,7 +258,7 @@ namespace Content.Client.Administration.UI
                 var rankControl = new Label { Text = rank };
                 if (italic)
                 {
-                    rankControl.StyleClasses.Add(StyleBase.StyleClassItalic);
+                    rankControl.StyleClasses.Add(StyleClass.Italic);
                 }
 
                 al.AddChild(rankControl);
@@ -337,10 +358,9 @@ namespace Content.Client.Administration.UI
                 tab.AddChild(adminVBox);
                 tab.AddChild(rankVBox);
 
-                Contents.AddChild(tab);
+                ContentsContainer.AddChild(tab);
+                ContentsContainer.MinSize = new(600, 400);
             }
-
-            protected override Vector2 ContentsMinimumSize => new Vector2(600, 400);
         }
 
         private sealed class EditAdminWindow : DefaultWindow
@@ -351,6 +371,7 @@ namespace Content.Client.Administration.UI
             public readonly OptionButton RankButton;
             public readonly Button SaveButton;
             public readonly Button? RemoveButton;
+            public readonly CheckBox SuspendedCheckbox;
 
             public readonly Dictionary<AdminFlags, (Button inherit, Button sub, Button plus)> FlagButtons
                 = new();
@@ -381,6 +402,12 @@ namespace Content.Client.Administration.UI
                 RankButton = new OptionButton();
                 SaveButton = new Button { Text = Loc.GetString("permissions-eui-edit-admin-window-save-button"), HorizontalAlignment = HAlignment.Right };
 
+                SuspendedCheckbox = new CheckBox
+                {
+                    Text = Loc.GetString("permissions-eui-edit-admin-window-suspended"),
+                    Pressed = data?.Suspended ?? false,
+                };
+
                 RankButton.AddItem(Loc.GetString("permissions-eui-edit-admin-window-no-rank-button"), NoRank);
                 foreach (var (rId, rank) in ui._ranks)
                 {
@@ -409,21 +436,21 @@ namespace Content.Client.Administration.UI
                     var inherit = new Button
                     {
                         Text = "I",
-                        StyleClasses = { StyleBase.ButtonOpenRight },
+                        StyleClasses = { StyleClass.ButtonOpenRight },
                         Disabled = disable,
                         Group = group,
                     };
                     var sub = new Button
                     {
                         Text = "-",
-                        StyleClasses = { StyleBase.ButtonOpenBoth },
+                        StyleClasses = { StyleClass.ButtonOpenBoth },
                         Disabled = disable,
                         Group = group
                     };
                     var plus = new Button
                     {
                         Text = "+",
-                        StyleClasses = { StyleBase.ButtonOpenLeft },
+                        StyleClasses = { StyleClass.ButtonOpenLeft },
                         Disabled = disable,
                         Group = group
                     };
@@ -469,7 +496,7 @@ namespace Content.Client.Administration.UI
 
                 bottomButtons.AddChild(SaveButton);
 
-                Contents.AddChild(new BoxContainer
+                ContentsContainer.AddChild(new BoxContainer
                 {
                     Orientation = LayoutOrientation.Vertical,
                     Children =
@@ -488,7 +515,8 @@ namespace Content.Client.Administration.UI
                                     {
                                         nameControl,
                                         TitleEdit,
-                                        RankButton
+                                        RankButton,
+                                        SuspendedCheckbox,
                                     }
                                 },
                                 permGrid
@@ -594,7 +622,7 @@ namespace Content.Client.Administration.UI
 
                 bottomButtons.AddChild(SaveButton);
 
-                Contents.AddChild(new BoxContainer
+                ContentsContainer.AddChild(new BoxContainer
                 {
                     Orientation = LayoutOrientation.Vertical,
                     Children =

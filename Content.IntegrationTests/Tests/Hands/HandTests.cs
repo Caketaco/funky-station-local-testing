@@ -1,3 +1,14 @@
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Kara <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2024 Plykiya <58439124+Plykiya@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 TemporalOroboros <TemporalOroboros@gmail.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Linq;
 using Content.Server.Storage.EntitySystems;
 using Content.Shared.Hands.Components;
@@ -6,7 +17,6 @@ using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.Containers;
 using Robust.Shared.GameObjects;
-using Robust.Shared.Map;
 
 namespace Content.IntegrationTests.Tests.Hands;
 
@@ -38,7 +48,7 @@ public sealed class HandTests
 
         var entMan = server.ResolveDependency<IEntityManager>();
         var playerMan = server.ResolveDependency<IPlayerManager>();
-        var mapMan = server.ResolveDependency<IMapManager>();
+        var mapSystem = server.System<SharedMapSystem>();
         var sys = entMan.System<SharedHandsSystem>();
         var tSys = entMan.System<TransformSystem>();
 
@@ -69,7 +79,7 @@ public sealed class HandTests
         await pair.RunTicksSync(5);
         Assert.That(hands.ActiveHandEntity, Is.Null);
 
-        await server.WaitPost(() => mapMan.DeleteMap(data.MapId));
+        await server.WaitPost(() => mapSystem.DeleteMap(data.MapId));
         await pair.CleanReturnAsync();
     }
 
@@ -87,7 +97,7 @@ public sealed class HandTests
 
         var entMan = server.ResolveDependency<IEntityManager>();
         var playerMan = server.ResolveDependency<IPlayerManager>();
-        var mapMan = server.ResolveDependency<IMapManager>();
+        var mapSystem = server.System<SharedMapSystem>();
         var sys = entMan.System<SharedHandsSystem>();
         var tSys = entMan.System<TransformSystem>();
         var containerSystem = server.System<SharedContainerSystem>();
@@ -134,7 +144,7 @@ public sealed class HandTests
         Assert.That(hands.ActiveHandEntity, Is.Not.EqualTo(item));
         Assert.That(containerSystem.IsInSameOrNoContainer((player, xform), (item, itemXform)));
 
-        await server.WaitPost(() => mapMan.DeleteMap(map.MapId));
+        await server.WaitPost(() => mapSystem.DeleteMap(map.MapId));
         await pair.CleanReturnAsync();
     }
 }

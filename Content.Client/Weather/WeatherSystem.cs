@@ -1,4 +1,20 @@
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Pieter-Jan Briers <pieterjan.briers@gmail.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <metalgearsloth@gmail.com>
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Ed <96445749+TheShuEd@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 Tayrtahn <tayrtahn@gmail.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Numerics;
+using Content.Shared.Light.Components;
 using Content.Shared.Weather;
 using Robust.Client.Audio;
 using Robust.Client.GameObjects;
@@ -57,6 +73,7 @@ public sealed class WeatherSystem : SharedWeatherSystem
         // Work out tiles nearby to determine volume.
         if (TryComp<MapGridComponent>(entXform.GridUid, out var grid))
         {
+            TryComp(entXform.GridUid, out RoofComponent? roofComp);
             var gridId = entXform.GridUid.Value;
             // FloodFill to the nearest tile and use that for audio.
             var seed = _mapSystem.GetTileRef(gridId, grid, entXform.Coordinates);
@@ -71,7 +88,7 @@ public sealed class WeatherSystem : SharedWeatherSystem
                 if (!visited.Add(node.GridIndices))
                     continue;
 
-                if (!CanWeatherAffect(entXform.GridUid.Value, grid, node))
+                if (!CanWeatherAffect(entXform.GridUid.Value, grid, node, roofComp))
                 {
                     // Add neighbors
                     // TODO: Ideally we pick some deterministically random direction and use that

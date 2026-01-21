@@ -1,4 +1,14 @@
-﻿using System.Linq;
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Moony <moony@hellomouse.net>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 MilenVolf <63782763+MilenVolf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
+using System.Linq;
 using Content.Server.Administration;
 using Content.Server.EUI;
 using Content.Shared.Administration;
@@ -9,7 +19,7 @@ using Robust.Shared.Toolshed.Errors;
 
 namespace Content.Server.Toolshed.Commands;
 
-[ToolshedCommand, AdminCommand(AdminFlags.Admin)]
+[ToolshedCommand, AdminCommand(AdminFlags.VarEdit)]
 public sealed class VisualizeCommand : ToolshedCommand
 {
     [Dependency] private readonly EuiManager _euiManager = default!;

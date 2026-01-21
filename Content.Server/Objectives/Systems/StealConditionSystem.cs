@@ -1,3 +1,18 @@
+// SPDX-FileCopyrightText: 2023 deltanedas <@deltanedas:kde.org>
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Ed <96445749+TheShuEd@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Jezithyr <jezithyr@gmail.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 chavonadelal <156101927+chavonadelal@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 deltanedas <39013340+deltanedas@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Эдуард <36124833+Ertanic@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Server.Objectives.Components;
 using Content.Server.Objectives.Components.Targets;
 using Content.Shared.CartridgeLoader;
@@ -29,6 +44,7 @@ public sealed class StealConditionSystem : EntitySystem
     private EntityQuery<ContainerManagerComponent> _containerQuery;
 
     private HashSet<Entity<TransformComponent>> _nearestEnts = new();
+    private HashSet<EntityUid> _countedItems = new();
 
     public override void Initialize()
     {
@@ -104,6 +120,8 @@ public sealed class StealConditionSystem : EntitySystem
         var containerStack = new Stack<ContainerManagerComponent>();
         var count = 0;
 
+        _countedItems.Clear();
+
         //check stealAreas
         if (condition.CheckStealAreas)
         {
@@ -174,6 +192,9 @@ public sealed class StealConditionSystem : EntitySystem
 
     private int CheckStealTarget(EntityUid entity, StealConditionComponent condition)
     {
+        if (_countedItems.Contains(entity))
+            return 0;
+
         // check if this is the target
         if (!TryComp<StealTargetComponent>(entity, out var target))
             return 0;
@@ -195,6 +216,8 @@ public sealed class StealConditionSystem : EntitySystem
                     return 0;
             }
         }
+
+        _countedItems.Add(entity);
 
         return TryComp<StackComponent>(entity, out var stack) ? stack.Count : 1;
     }

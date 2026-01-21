@@ -1,3 +1,9 @@
+// SPDX-FileCopyrightText: 2024 deltanedas <39013340+deltanedas@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
@@ -24,7 +30,10 @@ public sealed class ScoopableSolutionSystem : EntitySystem
 
     private void OnInteractUsing(Entity<ScoopableSolutionComponent> ent, ref InteractUsingEvent args)
     {
-        TryScoop(ent, args.Used, args.User);
+        if (args.Handled)
+            return;
+
+        args.Handled = TryScoop(ent, args.Used, args.User);
     }
 
     public bool TryScoop(Entity<ScoopableSolutionComponent> ent, EntityUid beaker, EntityUid user)

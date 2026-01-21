@@ -1,9 +1,15 @@
+// SPDX-FileCopyrightText: 2024 Ed <96445749+TheShuEd@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 deltanedas <39013340+deltanedas@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Diagnostics.CodeAnalysis;
 using Content.Shared.CCVar;
 using Content.Shared.GridPreloader.Prototypes;
 using Content.Shared.GridPreloader.Systems;
 using Robust.Server.GameObjects;
-using Robust.Server.Maps;
 using Robust.Shared.Configuration;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
@@ -13,6 +19,7 @@ using System.Numerics;
 using Content.Server.GameTicking;
 using Content.Shared.GameTicking;
 using JetBrains.Annotations;
+using Robust.Shared.EntitySerialization.Systems;
 
 namespace Content.Server.GridPreloader;
 public sealed class GridPreloaderSystem : SharedGridPreloaderSystem
@@ -72,23 +79,13 @@ public sealed class GridPreloaderSystem : SharedGridPreloaderSystem
         {
             for (var i = 0; i < proto.Copies; i++)
             {
-                var options = new MapLoadOptions
+                if (!_mapLoader.TryLoadGrid(mapId, proto.Path, out var grid))
                 {
-                    LoadMap = false,
-                };
-
-                if (!_mapLoader.TryLoad(mapId, proto.Path.ToString(), out var roots, options))
+                    Log.Error($"Failed to preload grid prototype {proto.ID}");
                     continue;
+                }
 
-                // only supports loading maps with one grid.
-                if (roots.Count != 1)
-                    continue;
-
-                var gridUid = roots[0];
-
-                // gets grid + also confirms that the root we loaded is actually a grid
-                if (!TryComp<MapGridComponent>(gridUid, out var mapGrid))
-                    continue;
+                var (gridUid, mapGrid) = grid.Value;
 
                 if (!TryComp<PhysicsComponent>(gridUid, out var physics))
                     continue;

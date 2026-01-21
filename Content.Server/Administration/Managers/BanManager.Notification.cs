@@ -1,6 +1,12 @@
-using System.Text.Json;
+// SPDX-FileCopyrightText: 2024 Julian Giebel <juliangiebel@live.de>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Text.Json.Serialization;
-using Content.Server.Database;
 
 namespace Content.Server.Administration.Managers;
 
@@ -30,36 +36,15 @@ public sealed partial class BanManager
     private TimeSpan _banNotificationRateLimitStart;
     private int _banNotificationRateLimitCount;
 
-    private void OnDatabaseNotification(DatabaseNotification notification)
+    private bool OnDatabaseNotificationEarlyFilter()
     {
-        if (notification.Channel != BanNotificationChannel)
-            return;
-
-        if (notification.Payload == null)
-        {
-            _sawmill.Error("Got ban notification with null payload!");
-            return;
-        }
-
-        BanNotificationData data;
-        try
-        {
-            data = JsonSerializer.Deserialize<BanNotificationData>(notification.Payload)
-                   ?? throw new JsonException("Content is null");
-        }
-        catch (JsonException e)
-        {
-            _sawmill.Error($"Got invalid JSON in ban notification: {e}");
-            return;
-        }
-
         if (!CheckBanRateLimit())
         {
             _sawmill.Verbose("Not processing ban notification due to rate limit");
-            return;
+            return false;
         }
 
-        _taskManager.RunOnMainThread(() => ProcessBanNotification(data));
+        return true;
     }
 
     private async void ProcessBanNotification(BanNotificationData data)

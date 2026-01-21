@@ -1,3 +1,10 @@
+// SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 deltanedas <39013340+deltanedas@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Server.Antag;
 using Content.Shared.Random;
 using Robust.Shared.Prototypes;
@@ -28,7 +35,7 @@ public sealed partial class AntagRandomObjectivesComponent : Component
 /// Difficulty is checked over all sets, but each set has its own probability and pick count.
 /// </summary>
 [DataRecord]
-public record struct AntagObjectiveSet()
+public partial record struct AntagObjectiveSet()
 {
     /// <summary>
     /// The grouping used by the objective system to pick random objectives.

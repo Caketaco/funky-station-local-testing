@@ -1,3 +1,10 @@
+# SPDX-FileCopyrightText: 2024 BombasterDS <115770678+BombasterDS@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 surgery-popup-step-SurgeryStepOpenIncisionScalpel = {$user} is making an incision on {$target}'s {$part}.
 surgery-popup-step-SurgeryStepClampBleeders = {$user} is clamping the bleeders on {$target}'s {$part}.
 surgery-popup-step-SurgeryStepRetractSkin = {$user} is retracting the skin on {$target}'s {$part}.
@@ -39,6 +46,8 @@ surgery-popup-procedure-SurgeryRemoveBrain-step-SurgeryStepRemoveOrgan = {$user}
 surgery-popup-procedure-SurgeryRemoveHeart-step-SurgeryStepRemoveOrgan = {$user} is removing the heart from {$target}'s {$part}!
 surgery-popup-procedure-SurgeryRemoveLiver-step-SurgeryStepRemoveOrgan = {$user} is removing the liver from {$target}'s {$part}!
 surgery-popup-procedure-SurgeryRemoveLungs-step-SurgeryStepRemoveOrgan = {$user} is removing the lungs from {$target}'s {$part}!
+surgery-popup-procedure-SurgeryRemoveZombieTumor-step-SurgeryStepRemoveOrgan = {$user} is removing the zombie tumor from {$target}'s {$part}!
+surgery-popup-procedure-SurgeryRemoveZombieRoboTumor-step-SurgeryStepRemoveOrgan = {$user} is removing the zombie robot tumor from {$target}'s {$part}!
 surgery-popup-procedure-SurgeryRemoveEyes-step-SurgeryStepRemoveOrgan = {$user} is removing the eyes from {$target}'s {$part}!
 surgery-popup-procedure-SurgeryRemoveStomach-step-SurgeryStepRemoveOrgan = {$user} is removing the stomach from {$target}'s {$part}!
 
@@ -52,3 +61,5 @@ surgery-popup-step-SurgeryStepInsertStomach = {$user} is inserting a stomach int
 surgery-popup-step-SurgeryStepSealOrganWound = {$user} is sealing the wounds on {$target}'s {$part}.
 surgery-popup-step-SurgeryStepLobotomize = {$user} is lobotomizing {$target}!
 surgery-popup-step-SurgeryStepMendBrainTissue = {$user} is mending the brain tissue on {$target}'s {$part}.
+
+surgery-popup-step-SurgeryStepRemoveVitalOrgan = {$user} is removing an organ from {$target}'s {$part}!

@@ -1,4 +1,10 @@
-﻿#nullable enable
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
+#nullable enable
 using System.Collections.Generic;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
@@ -26,11 +32,7 @@ public sealed partial class TestPair
             instance.ProtoMan.LoadString(file, changed: changed);
         }
 
-        await instance.WaitPost(() =>
-        {
-            instance.ProtoMan.ResolveResults();
-            instance.ProtoMan.ReloadPrototypes(changed);
-        });
+        await instance.WaitPost(() => instance.ProtoMan.ReloadPrototypes(changed));
 
         foreach (var (kind, ids) in changed)
         {

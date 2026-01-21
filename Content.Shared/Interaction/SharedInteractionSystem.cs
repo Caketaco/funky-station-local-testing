@@ -1,3 +1,63 @@
+// SPDX-FileCopyrightText: 2020 FL-OZ <anotherscuffed@gmail.com>
+// SPDX-FileCopyrightText: 2020 Sam <Sam.V_@hotmail.com>
+// SPDX-FileCopyrightText: 2020 Tomeno <Tomeno@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2020 Tomeno <tomeno@lulzsec.co.uk>
+// SPDX-FileCopyrightText: 2020 Víctor Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2020 Víctor Aguilera Puerto <zddm@outlook.es>
+// SPDX-FileCopyrightText: 2020 chairbender <kwhipke1@gmail.com>
+// SPDX-FileCopyrightText: 2021 Acruid <shatter66@gmail.com>
+// SPDX-FileCopyrightText: 2021 Clyybber <darkmine956@gmail.com>
+// SPDX-FileCopyrightText: 2021 Galactic Chimp <63882831+GalacticChimp@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Moony <moonheart08@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Paul <ritter.paul1@googlemail.com>
+// SPDX-FileCopyrightText: 2021 Pieter-Jan Briers <pieterjan.briers@gmail.com>
+// SPDX-FileCopyrightText: 2021 Vera Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Vera Aguilera Puerto <gradientvera@outlook.com>
+// SPDX-FileCopyrightText: 2021 Wrexbe <wrexbe@protonmail.com>
+// SPDX-FileCopyrightText: 2022 Jacob Tong <10494922+ShadowCommander@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Paul Ritter <ritter.paul1@googlemail.com>
+// SPDX-FileCopyrightText: 2022 Rane <60792108+Elijahrane@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 WlarusFromDaSpace <44726328+WlarusFromDaSpace@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 metalgearsloth <metalgearsloth@gmail.com>
+// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Chief-Engineer <119664036+Chief-Engineer@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Ilya Chvilyov <90278813+Telyonok@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Vordenburg <114301317+Vordenburg@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Vyacheslav Kovalevsky <40753025+Slava0135@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 brainfood1183 <113240905+brainfood1183@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 deltanedas <39013340+deltanedas@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 deltanedas <@deltanedas:kde.org>
+// SPDX-FileCopyrightText: 2023 keronshb <54602815+keronshb@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <comedian_vs_clown@hotmail.com>
+// SPDX-FileCopyrightText: 2024 AJCM-git <60196617+AJCM-git@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 BombasterDS <115770678+BombasterDS@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Jezithyr <jezithyr@gmail.com>
+// SPDX-FileCopyrightText: 2024 Kara <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2024 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 LordCarve <27449516+LordCarve@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+// SPDX-FileCopyrightText: 2024 ShadowCommander <10494922+ShadowCommander@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 Tayrtahn <tayrtahn@gmail.com>
+// SPDX-FileCopyrightText: 2024 TemporalOroboros <TemporalOroboros@gmail.com>
+// SPDX-FileCopyrightText: 2024 lunarcomets <140772713+lunarcomets@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 themias <89101928+themias@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 88tv <131759102+88tv@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 YaraaraY <158123176+YaraaraY@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared.ActionBlocker;
@@ -18,6 +78,7 @@ using Content.Shared.Inventory.Events;
 using Content.Shared.Item;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Pulling.Systems;
+using Content.Shared.Movement.Systems;
 using Content.Shared.Physics;
 using Content.Shared.Players.RateLimiting;
 using Content.Shared.Popups;
@@ -29,7 +90,6 @@ using Content.Shared.UserInterface;
 using Content.Shared.Verbs;
 using Content.Shared.Wall;
 using JetBrains.Annotations;
-using Robust.Shared.Configuration;
 using Robust.Shared.Containers;
 using Robust.Shared.Input;
 using Robust.Shared.Input.Binding;
@@ -39,7 +99,7 @@ using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Player;
-using Robust.Shared.Random;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
@@ -66,12 +126,10 @@ namespace Content.Shared.Interaction
         [Dependency] private readonly UseDelaySystem _useDelay = default!;
         [Dependency] private readonly PullingSystem _pullSystem = default!;
         [Dependency] private readonly InventorySystem _inventory = default!;
-        [Dependency] private readonly IRobustRandom _random = default!;
         [Dependency] private readonly TagSystem _tagSystem = default!;
         [Dependency] private readonly SharedUserInterfaceSystem _ui = default!;
         [Dependency] private readonly SharedStrippableSystem _strippable = default!;
         [Dependency] private readonly SharedPlayerRateLimitManager _rateLimit = default!;
-        [Dependency] private readonly IConfigurationManager _cfg = default!;
         [Dependency] private readonly ISharedChatManager _chat = default!;
 
         private EntityQuery<IgnoreUIRangeComponent> _ignoreUiRangeQuery;
@@ -92,6 +150,8 @@ namespace Content.Shared.Interaction
         public const float MaxRaycastRange = 100f;
         public const string RateLimitKey = "Interaction";
 
+        private static readonly ProtoId<TagPrototype> BypassInteractionRangeChecksTag = "BypassInteractionRangeChecks";
+
         public delegate bool Ignored(EntityUid entity);
 
         public override void Initialize()
@@ -108,7 +168,9 @@ namespace Content.Shared.Interaction
             _uiQuery = GetEntityQuery<ActivatableUIComponent>();
 
             SubscribeLocalEvent<BoundUserInterfaceCheckRangeEvent>(HandleUserInterfaceRangeCheck);
-            SubscribeLocalEvent<BoundUserInterfaceMessageAttempt>(OnBoundInterfaceInteractAttempt);
+
+            // TODO make this a broadcast event subscription again when engine has updated.
+            SubscribeLocalEvent<UserInterfaceComponent, BoundUserInterfaceMessageAttempt>(OnBoundInterfaceInteractAttempt);
 
             SubscribeAllEvent<InteractInventorySlotEvent>(HandleInteractInventorySlotEvent);
 
@@ -153,13 +215,15 @@ namespace Content.Shared.Interaction
         /// <summary>
         ///     Check that the user that is interacting with the BUI is capable of interacting and can access the entity.
         /// </summary>
-        private void OnBoundInterfaceInteractAttempt(BoundUserInterfaceMessageAttempt ev)
+        private void OnBoundInterfaceInteractAttempt(Entity<UserInterfaceComponent> ent, ref BoundUserInterfaceMessageAttempt ev)
         {
-            _uiQuery.TryComp(ev.Target, out var uiComp);
+            _uiQuery.TryComp(ev.Target, out var aUiComp);
             if (!_actionBlockerSystem.CanInteract(ev.Actor, ev.Target))
             {
                 // We permit ghosts to open uis unless explicitly blocked
-                if (ev.Message is not OpenBoundInterfaceMessage || !HasComp<GhostComponent>(ev.Actor) || uiComp?.BlockSpectators == true)
+                if (ev.Message is not OpenBoundInterfaceMessage
+                    || !HasComp<GhostComponent>(ev.Actor)
+                    || aUiComp?.BlockSpectators == true)
                 {
                     ev.Cancel();
                     return;
@@ -177,16 +241,16 @@ namespace Content.Shared.Interaction
                 return;
             }
 
-            if (uiComp == null)
+            if (aUiComp == null)
                 return;
 
-            if (uiComp.SingleUser && uiComp.CurrentSingleUser != null && uiComp.CurrentSingleUser != ev.Actor)
+            if (aUiComp.SingleUser && aUiComp.CurrentSingleUser != null && aUiComp.CurrentSingleUser != ev.Actor)
             {
                 ev.Cancel();
                 return;
             }
 
-            if (uiComp.RequiresComplex && !_actionBlockerSystem.CanComplexInteract(ev.Actor))
+            if (aUiComp.RequiresComplex && !_actionBlockerSystem.CanComplexInteract(ev.Actor))
                 ev.Cancel();
         }
 
@@ -323,7 +387,7 @@ namespace Content.Shared.Interaction
         {
             // This is for Admin/mapping convenience. If ever there are other ghosts that can still interact, this check
             // might need to be more selective.
-            return !_tagSystem.HasTag(user, "BypassInteractionRangeChecks");
+            return !_tagSystem.HasTag(user, BypassInteractionRangeChecksTag);
         }
 
         /// <summary>
@@ -563,8 +627,11 @@ namespace Content.Shared.Interaction
             if (_transform.GetMapId(coordinates) != Transform(user).MapID)
                 return false;
 
-            if (!HasComp<NoRotateOnInteractComponent>(user))
+            // Only rotate to face if they're not moving.
+            if (!HasComp<NoRotateOnInteractComponent>(user) && (!TryComp(user, out InputMoverComponent? mover) || (mover.HeldMoveButtons & MoveButtons.AnyDirection) == 0x0))
+            {
                 _rotateToFaceSystem.TryFaceCoordinates(user, _transform.ToMapCoordinates(coordinates).Position);
+            }
 
             return true;
         }
@@ -668,7 +735,8 @@ namespace Content.Shared.Interaction
             float range = InteractionRange,
             CollisionGroup collisionMask = InRangeUnobstructedMask,
             Ignored? predicate = null,
-            bool popup = false)
+            bool popup = false,
+            bool overlapCheck = true)
         {
             if (!Resolve(other, ref other.Comp))
                 return false;
@@ -688,7 +756,8 @@ namespace Content.Shared.Interaction
                 range,
                 collisionMask,
                 predicate,
-                popup);
+                popup,
+                overlapCheck);
         }
 
         /// <summary>
@@ -718,6 +787,7 @@ namespace Content.Shared.Interaction
         /// <returns>
         ///     True if the two points are within a given range without being obstructed.
         /// </returns>
+        /// <param name="overlapCheck">If true, if the broadphase query returns an overlap (0f distance) this function will early out true with no raycast made.</param>
         public bool InRangeUnobstructed(
             Entity<TransformComponent?> origin,
             Entity<TransformComponent?> other,
@@ -726,7 +796,8 @@ namespace Content.Shared.Interaction
             float range = InteractionRange,
             CollisionGroup collisionMask = InRangeUnobstructedMask,
             Ignored? predicate = null,
-            bool popup = false)
+            bool popup = false,
+            bool overlapCheck = true)
         {
             Ignored combinedPredicate = e => e == origin.Owner || (predicate?.Invoke(e) ?? false);
             var inRange = true;
@@ -749,7 +820,7 @@ namespace Content.Shared.Interaction
                 fixtureB.FixtureCount > 0 &&
                 Resolve(origin, ref origin.Comp))
             {
-                var (worldPosA, worldRotA) = origin.Comp.GetWorldPositionRotation();
+                var (worldPosA, worldRotA) = _transform.GetWorldPositionRotation(origin.Comp);
                 var xfA = new Transform(worldPosA, worldRotA);
                 var parentRotB = _transform.GetWorldRotation(otherCoordinates.EntityId);
                 var xfB = new Transform(targetPos.Position, parentRotB + otherAngle);
@@ -769,7 +840,7 @@ namespace Content.Shared.Interaction
                     inRange = false;
                 }
                 // Overlap, early out and no raycast.
-                else if (distance.Equals(0f))
+                else if (overlapCheck && distance.Equals(0f))
                 {
                     return true;
                 }
@@ -822,7 +893,7 @@ namespace Content.Shared.Interaction
             Ignored? predicate = null)
         {
             var transform = Transform(target);
-            var (position, rotation) = transform.GetWorldPositionRotation();
+            var (position, rotation) = _transform.GetWorldPositionRotation(transform);
             var mapPos = new MapCoordinates(position, transform.MapID);
             var combinedPredicate = GetPredicate(origin, target, mapPos, rotation, collisionMask, predicate);
 
@@ -1188,7 +1259,7 @@ namespace Content.Shared.Interaction
                 return false;
 
             // Goobstation [
-            var useAttemptEv = new UseInHandAttemptEvent(user); 
+            var useAttemptEv = new UseInHandAttemptEvent(user);
             RaiseLocalEvent(used, useAttemptEv);
 
             if (useAttemptEv.Cancelled)
@@ -1418,7 +1489,7 @@ namespace Content.Shared.Interaction
         /// <returns>If there is an entity being used.</returns>
         public bool TryGetUsedEntity(EntityUid user, [NotNullWhen(true)] out EntityUid? used, bool checkCanUse = true)
         {
-            var ev = new GetUsedEntityEvent();
+            var ev = new GetUsedEntityEvent(user);
             RaiseLocalEvent(user, ref ev);
 
             used = ev.Used;
@@ -1433,6 +1504,18 @@ namespace Content.Shared.Interaction
             }
 
             return ev.Handled;
+        }
+
+        /// <summary>
+        /// Get a list of entities which are currently considered to be interacting with the specified target entity.
+        /// Note: the result set is cleared on call.
+        /// </summary>
+        public void GetEntitiesInteractingWithTarget(EntityUid target, HashSet<EntityUid> result)
+        {
+            result.Clear();
+
+            var ev = new GetInteractingEntitiesEvent(target, result);
+            RaiseLocalEvent(target, ref ev, true);
         }
 
         [Obsolete("Use ActionBlockerSystem")]
@@ -1469,8 +1552,9 @@ namespace Content.Shared.Interaction
     ///     Raised directed by-ref on an entity to determine what item will be used in interactions.
     /// </summary>
     [ByRefEvent]
-    public record struct GetUsedEntityEvent()
+    public record struct GetUsedEntityEvent(EntityUid User)
     {
+        public EntityUid User = User;
         public EntityUid? Used = null;
 
         public bool Handled => Used != null;
@@ -1510,5 +1594,14 @@ namespace Content.Shared.Interaction
 
         public bool Handled;
         public bool InRange = false;
+    }
+    /// <summary>
+    /// Raised to allow systems to provide entities which are interacting with the target entity.
+    /// </summary>
+    [ByRefEvent]
+    public record struct GetInteractingEntitiesEvent(EntityUid Target, HashSet<EntityUid> InteractingEntities)
+    {
+        public readonly EntityUid Target = Target;
+        public HashSet<EntityUid> InteractingEntities = InteractingEntities;
     }
 }

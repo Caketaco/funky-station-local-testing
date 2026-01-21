@@ -1,3 +1,34 @@
+// SPDX-FileCopyrightText: 2022 Alex Evgrashin <aevgrashin@yandex.ru>
+// SPDX-FileCopyrightText: 2022 Bright0 <55061890+Bright0@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Chief-Engineer <119664036+Chief-Engineer@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Jezithyr <Jezithyr@gmail.com>
+// SPDX-FileCopyrightText: 2022 Kara <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2022 Lucas <luc4s.rib3iro@gmail.com>
+// SPDX-FileCopyrightText: 2022 Moony <moony@hellomouse.net>
+// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Christopher Thirtle <29220292+ChrisThirtle@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <drsmugleaf@gmail.com>
+// SPDX-FileCopyrightText: 2023 Ed <96445749+TheShuEd@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Pieter-Jan Briers <pieterjan.briers@gmail.com>
+// SPDX-FileCopyrightText: 2023 TemporalOroboros <TemporalOroboros@gmail.com>
+// SPDX-FileCopyrightText: 2023 Ygg01 <y.laughing.man.y@gmail.com>
+// SPDX-FileCopyrightText: 2024 Arendian <137322659+Arendian@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Cojoke <83733158+Cojoke-dot@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Plykiya <58439124+Plykiya@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 ShadowCommander <10494922+ShadowCommander@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 ArtisticRoomba <145879011+ArtisticRoomba@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 JoulesBerg <104539820+JoulesBerg@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
@@ -9,7 +40,6 @@ using Content.Shared.Interaction;
 using Content.Shared.Item;
 using Content.Shared.Lock;
 using Content.Shared.Movement.Events;
-using Content.Shared.Placeable;
 using Content.Shared.Popups;
 using Content.Shared.Storage.Components;
 using Content.Shared.Tools.Systems;
@@ -34,7 +64,6 @@ public abstract class SharedEntityStorageSystem : EntitySystem
     [Dependency] private   readonly IGameTiming _timing = default!;
     [Dependency] private   readonly INetManager _net = default!;
     [Dependency] private   readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private   readonly PlaceableSurfaceSystem _placeableSurface = default!;
     [Dependency] private   readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private   readonly SharedAudioSystem _audio = default!;
     [Dependency] private   readonly SharedContainerSystem _container = default!;
@@ -183,7 +212,7 @@ public abstract class SharedEntityStorageSystem : EntitySystem
 
         if (component.Open)
         {
-            TryCloseStorage(target);
+            TryCloseStorage(target, user);
         }
         else
         {
@@ -303,8 +332,20 @@ public abstract class SharedEntityStorageSystem : EntitySystem
         if (!ResolveStorage(container, ref component))
             return false;
 
-        RemComp<InsideEntityStorageComponent>(toRemove);
         _container.Remove(toRemove, component.Contents);
+
+        if (_container.IsEntityInContainer(container))
+        {
+            if (_container.TryGetOuterContainer(container, Transform(container), out var outerContainer) &&
+                !HasComp<HandsComponent>(outerContainer.Owner))
+            {
+                _container.Insert(toRemove, outerContainer);
+                return true;
+            }
+        }
+
+        RemComp<InsideEntityStorageComponent>(toRemove);
+
         var pos = TransformSystem.GetWorldPosition(xform) + TransformSystem.GetWorldRotation(xform).RotateVec(component.EnteringOffset);
         TransformSystem.SetWorldPosition(toRemove, pos);
         return true;
@@ -333,9 +374,9 @@ public abstract class SharedEntityStorageSystem : EntitySystem
         return true;
     }
 
-    public bool TryCloseStorage(EntityUid target)
+    public bool TryCloseStorage(EntityUid target, EntityUid? user = null)
     {
-        if (!CanClose(target))
+        if (!CanClose(target, user))
         {
             return false;
         }
@@ -368,17 +409,6 @@ public abstract class SharedEntityStorageSystem : EntitySystem
             return false;
         }
 
-        if (_container.IsEntityInContainer(target))
-        {
-            if (_container.TryGetOuterContainer(target,Transform(target) ,out var container) &&
-                !HasComp<HandsComponent>(container.Owner))
-            {
-                Popup.PopupClient(Loc.GetString("entity-storage-component-already-contains-user-message"), user, user);
-
-                return false;
-            }
-        }
-
         //Checks to see if the opening position, if offset, is inside of a wall.
         if (component.EnteringOffset != new Vector2(0, 0) && !HasComp<WallMountComponent>(target)) //if the entering position is offset
         {
@@ -397,9 +427,9 @@ public abstract class SharedEntityStorageSystem : EntitySystem
         return !ev.Cancelled;
     }
 
-    public bool CanClose(EntityUid target, bool silent = false)
+    public bool CanClose(EntityUid target, EntityUid? user = null, bool silent = false)
     {
-        var ev = new StorageCloseAttemptEvent();
+        var ev = new StorageCloseAttemptEvent(user);
         RaiseLocalEvent(target, ref ev, silent);
 
         return !ev.Cancelled;

@@ -1,3 +1,12 @@
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Ed <96445749+TheShuEd@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Diagnostics.CodeAnalysis;
 using Content.Shared.Localizations;
 using Content.Shared.Players.PlayTimeTracking;
@@ -27,10 +36,14 @@ public sealed partial class RoleTimeRequirement : JobRequirement
     public override bool Check(IEntityManager entManager,
         IPrototypeManager protoManager,
         HumanoidCharacterProfile? profile,
-        IReadOnlyDictionary<string, TimeSpan> playTimes,
+        IReadOnlyDictionary<string, TimeSpan>? playTimes,
         [NotNullWhen(false)] out FormattedMessage? reason)
     {
         reason = new FormattedMessage();
+
+        // If playTimes is null, we're not going to check against playtime requirements
+        if (playTimes == null)
+            return true;
 
         string proto = Role;
 
@@ -40,13 +53,16 @@ public sealed partial class RoleTimeRequirement : JobRequirement
         var formattedRoleDiff = ContentLocalizationManager.FormatPlaytime(roleDiffSpan);
         var departmentColor = Color.Yellow;
 
-        if (entManager.EntitySysManager.TryGetEntitySystem(out SharedJobSystem? jobSystem))
-        {
-            var jobProto = jobSystem.GetJobPrototype(proto);
+        if (!entManager.EntitySysManager.TryGetEntitySystem(out SharedJobSystem? jobSystem))
+            return false;
 
-            if (jobSystem.TryGetDepartment(jobProto, out var departmentProto))
-                departmentColor = departmentProto.Color;
-        }
+        var jobProto = jobSystem.GetJobPrototype(proto);
+
+        if (jobSystem.TryGetDepartment(jobProto, out var departmentProto))
+            departmentColor = departmentProto.Color;
+
+        if (!protoManager.TryIndex<JobPrototype>(jobProto, out var indexedJob))
+            return false;
 
         if (!Inverted)
         {
@@ -56,7 +72,7 @@ public sealed partial class RoleTimeRequirement : JobRequirement
             reason = FormattedMessage.FromMarkupPermissive(Loc.GetString(
                 "role-timer-role-insufficient",
                 ("time", formattedRoleDiff),
-                ("job", Loc.GetString(proto)),
+                ("job", indexedJob.LocalizedName),
                 ("departmentColor", departmentColor.ToHex())));
             return false;
         }
@@ -66,7 +82,7 @@ public sealed partial class RoleTimeRequirement : JobRequirement
             reason = FormattedMessage.FromMarkupPermissive(Loc.GetString(
                 "role-timer-role-too-high",
                 ("time", formattedRoleDiff),
-                ("job", Loc.GetString(proto)),
+                ("job", indexedJob.LocalizedName),
                 ("departmentColor", departmentColor.ToHex())));
             return false;
         }

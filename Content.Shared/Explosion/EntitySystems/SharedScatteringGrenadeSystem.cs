@@ -1,4 +1,12 @@
-﻿using Content.Shared.Explosion.Components;
+// SPDX-FileCopyrightText: 2024 MilenVolf <63782763+MilenVolf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
+using Content.Shared.Explosion.Components;
 using Content.Shared.Interaction;
 using Content.Shared.Whitelist;
 using Robust.Shared.Containers;
@@ -49,6 +57,10 @@ public abstract class SharedScatteringGrenadeSystem : EntitySystem
         if (entity.Comp.Whitelist == null)
             return;
 
+        // Make sure there's room for another grenade to be added
+        if (entity.Comp.Count >= entity.Comp.Capacity)
+            return;
+
         if (args.Handled || !_whitelistSystem.IsValid(entity.Comp.Whitelist, args.Used))
             return;
 
@@ -65,6 +77,6 @@ public abstract class SharedScatteringGrenadeSystem : EntitySystem
         if (!TryComp<AppearanceComponent>(entity, out var appearanceComponent))
             return;
 
-        _appearance.SetData(entity, ClusterGrenadeVisuals.GrenadesCounter, entity.Comp.UnspawnedCount + entity.Comp.Container.ContainedEntities.Count, appearanceComponent);
+        _appearance.SetData(entity, ClusterGrenadeVisuals.GrenadesCounter, entity.Comp.Count, appearanceComponent);
     }
 }

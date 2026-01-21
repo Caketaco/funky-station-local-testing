@@ -1,3 +1,12 @@
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Emisse <99158783+Emisse@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Server.Shuttles.Systems;
 using Content.Shared.Dataset;
 using Content.Shared.Procedural;
@@ -62,7 +71,7 @@ public interface IGridSpawnGroup
 }
 
 [DataRecord]
-public sealed class DungeonSpawnGroup : IGridSpawnGroup
+public sealed partial class DungeonSpawnGroup : IGridSpawnGroup
 {
     /// <summary>
     /// Prototypes we can choose from to spawn.
@@ -97,7 +106,7 @@ public sealed class DungeonSpawnGroup : IGridSpawnGroup
 }
 
 [DataRecord]
-public sealed class GridSpawnGroup : IGridSpawnGroup
+public sealed partial class GridSpawnGroup : IGridSpawnGroup
 {
     public List<ResPath> Paths = new();
 

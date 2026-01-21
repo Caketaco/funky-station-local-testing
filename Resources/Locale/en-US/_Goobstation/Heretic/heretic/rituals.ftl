@@ -1,3 +1,15 @@
+# SPDX-FileCopyrightText: 2024 PJBot <pieterjan.briers+bot@gmail.com>
+# SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+# SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2024 username <113782077+whateverusername0@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 whateverusername0 <whateveremail>
+# SPDX-FileCopyrightText: 2025 Drywink <43855731+Drywink@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 PWJDM <158008238+PWJDM@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 heretic-ritual-unknown = Unknown Ritual
 heretic-ritual-switch = Selected {$name}
 heretic-ritual-success = Ritual successful
@@ -7,23 +19,24 @@ heretic-ritual-norituals = You don't know any rituals!
 heretic-ritual-noritual = No ritual chosen!
 
 heretic-ritual-basic-sacrifice = Heartbeat of the Mansus
-heretic-ritual-basic-sacrifice-desc = Bring one of your targets in critical or worse condition to sacrifice them to the Mansus, gibbing them and granting you one knowledge point. Heads of staff give an additional bonus point.
+heretic-ritual-basic-sacrifice-desc = Bring a target in critical or worse condition to sacrifice them to the Mansus, gibbing them and granting you one knowledge point. Heads of staff give an additional bonus point.
 
 heretic-ritual-basic-focus = Amber Focus
-heretic-ritual-basic-focus-desc = Transmute a glass shard and a pair of eyes into Amber Focus. A small necklace that allows you to cast advanced spells without the need of holding the codex in your hand.
+heretic-ritual-basic-focus-desc = Transmute a glass shard and a pair of eyes into an Amber Focus. A small necklace that allows you to cast advanced spells without holding the codex in your hand.
 
 heretic-ritual-basic-heart = Relentless Heartbeat
-heretic-ritual-basic-heart-desc = Bring one heart, a pen and a paper to reroll your targets. Be wary that you may roll the same targets as before. Use this only if absolutely necessary.
+heretic-ritual-basic-heart-desc = Bring a heart, a pen and a sheet of paper to reroll your targets. Beware that you may receive the same targets as before. Use this only when absolutely necessary.
 
 heretic-ritual-basic-codex = Codex Cicatrix
-heretic-ritual-basic-codex-desc = Transmute a pair of eyes, a book and a pen into Codex Cicatrix. It allows you to cast advanced spells while held open and gain twice as many influences from reality rifts. You're holding one right now.
+heretic-ritual-basic-codex-desc = Transmute a pair of eyes, a book and a pen into the Codex Cicatrix. It allows you to cast advanced spells when held open and gain twice as much influence from reality rifts. You're holding one right now.
 
-heretic-ritual-fail-sacrifice = There is no corpse to sacrifice.
+heretic-ritual-fail-sacrifice = There isn't a corpse to sacrifice.
 heretic-ritual-fail-sacrifice-ineligible = The rune refuses to accept this sacrifice.
-heretic-ritual-fail-reagentpuddle = There is no {$reagentname} present.
-heretic-ritual-fail-temperature-hot = It is too hot here.
-heretic-ritual-fail-temperature-cold = It is not cold enough here.
-heretic-ritual-fail-sacrifice-ash = There's either not enough of them dead, or burning.
+heretic-ritual-fail-reagentpuddle = There is no {$reagentname} here.
+heretic-ritual-fail-temperature-hot = It's too hot here.
+heretic-ritual-fail-temperature-cold = It isn't cold enough here.
+heretic-ritual-fail-sacrifice-ash = There are either too few dead, or burning.
+heretic-ritual-fail-ascension = You must complete your objectives first.
 
 ## side quests
 heretic-ritual-side-knowledge = Ritual of Knowledge

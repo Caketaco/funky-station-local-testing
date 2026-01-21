@@ -1,3 +1,10 @@
+// SPDX-FileCopyrightText: 2024 beck-thompson <107373427+beck-thompson@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Shared.Cargo.Components;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Interaction;
@@ -26,7 +33,7 @@ public abstract class SharedPriceGunSystem : EntitySystem
         {
             Act = () =>
             {
-                GetPriceOrBounty(uid, args.Target, args.User);
+                GetPriceOrBounty((uid, component), args.Target, args.User);
             },
             Text = Loc.GetString("price-gun-verb-text"),
             Message = Loc.GetString("price-gun-verb-message", ("object", Identity.Entity(args.Target, EntityManager)))
@@ -51,5 +58,5 @@ public abstract class SharedPriceGunSystem : EntitySystem
     ///     This is abstract for prediction. When the bounty system / cargo systems that are necessary are moved to shared,
     ///     combine all the server, client, and shared stuff into one non abstract file.
     /// </remarks>
-    protected abstract bool GetPriceOrBounty(EntityUid priceGunUid, EntityUid target, EntityUid user);
+    protected abstract bool GetPriceOrBounty(Entity<PriceGunComponent> entity, EntityUid target, EntityUid user);
 }

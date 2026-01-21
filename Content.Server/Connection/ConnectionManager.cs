@@ -1,9 +1,41 @@
+// SPDX-FileCopyrightText: 2021 Acruid <shatter66@gmail.com>
+// SPDX-FileCopyrightText: 2021 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Saphire Lattice <lattice@saphi.re>
+// SPDX-FileCopyrightText: 2021 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 moonheart08 <moonheart08@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Dylan Corrales <DeathCamel58@gmail.com>
+// SPDX-FileCopyrightText: 2022 Moony <moonheart08@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Morb <14136326+Morb0@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Rane <60792108+Elijahrane@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Kara <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Chief-Engineer <119664036+Chief-Engineer@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Hannah Giovanna Dawson <karakkaraz@gmail.com>
+// SPDX-FileCopyrightText: 2024 LankLTE <135308300+LankLTE@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 MilenVolf <63782763+MilenVolf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+// SPDX-FileCopyrightText: 2024 Repo <47093363+Titian3@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Simon <63975668+Simyon264@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 Vasilis <vasilis@pikachu.systems>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 nikthechampiongr <32041239+nikthechampiongr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using Content.Server.Administration.Managers;
 using Content.Server.Chat.Managers;
+using Content.Server.Connection.IPIntel;
 using Content.Server.Database;
 using Content.Server.GameTicking;
 using Content.Server.Preferences.Managers;
@@ -40,6 +72,8 @@ namespace Content.Server.Connection
         /// <param name="user">The user to give a temporary bypass.</param>
         /// <param name="duration">How long the bypass should last for.</param>
         void AddTemporaryConnectBypass(NetUserId user, TimeSpan duration);
+
+        void Update();
     }
 
     /// <summary>
@@ -57,15 +91,23 @@ namespace Content.Server.Connection
         [Dependency] private readonly IGameTiming _gameTiming = default!;
         [Dependency] private readonly ILogManager _logManager = default!;
         [Dependency] private readonly IChatManager _chatManager = default!;
+        [Dependency] private readonly IHttpClientHolder _http = default!;
         [Dependency] private readonly IAdminManager _adminManager = default!;
 
         private ISawmill _sawmill = default!;
         private readonly Dictionary<NetUserId, TimeSpan> _temporaryBypasses = [];
+        private IPIntel.IPIntel _ipintel = default!;
 
+        public void PostInit()
+        {
+            InitializeWhitelist();
+        }
 
         public void Initialize()
         {
             _sawmill = _logManager.GetSawmill("connections");
+
+            _ipintel = new IPIntel.IPIntel(new IPIntelApi(_http, _cfg), _db, _cfg, _logManager, _chatManager, _gameTiming);
 
             _netMgr.Connecting += NetMgrOnConnecting;
             _netMgr.AssignUserIdCallback = AssignUserIdCallback;
@@ -81,6 +123,18 @@ namespace Content.Server.Connection
             // Make sure we only update the time if we wouldn't shrink it.
             if (newTime > time)
                 time = newTime;
+        }
+
+        public async void Update()
+        {
+            try
+            {
+                await _ipintel.Update();
+            }
+            catch (Exception e)
+            {
+                _sawmill.Error("IPIntel update failed:" + e);
+            }
         }
 
         /*
@@ -197,6 +251,11 @@ namespace Content.Server.Connection
 
             var modernHwid = e.UserData.ModernHWIds;
 
+            if (modernHwid.Length == 0 && e.AuthType == LoginType.LoggedIn && _cfg.GetCVar(CCVars.RequireModernHardwareId))
+            {
+                return (ConnectionDenyReason.NoHwid, Loc.GetString("hwid-required"), null);
+            }
+
             var bans = await _db.GetServerBansAsync(addr, userId, hwId, modernHwid, includeUnbanned: false);
             if (bans.Count > 0)
             {
@@ -260,14 +319,6 @@ namespace Content.Server.Connection
                 }
             }
 
-            if (_cfg.GetCVar(CCVars.BabyJailEnabled) && adminData == null)
-            {
-                var result = await IsInvalidConnectionDueToBabyJail(userId, e);
-
-                if (result.IsInvalid)
-                    return (ConnectionDenyReason.BabyJail, result.Reason, null);
-            }
-
             var wasInGame = EntitySystem.TryGet<GameTicker>(out var ticker) &&
                             ticker.PlayerGameStatuses.TryGetValue(userId, out var status) &&
                             status == PlayerGameStatus.JoinedGame;
@@ -291,7 +342,7 @@ namespace Content.Server.Connection
                 {
                     _sawmill.Error("Whitelist enabled but no whitelists loaded.");
                     // Misconfigured, deny everyone.
-                    return (ConnectionDenyReason.Whitelist, Loc.GetString("whitelist-misconfigured"), null);
+                    return (ConnectionDenyReason.Whitelist, Loc.GetString("generic-misconfigured"), null);
                 }
 
                 foreach (var whitelist in _whitelists)
@@ -314,73 +365,16 @@ namespace Content.Server.Connection
                 }
             }
 
+            // ALWAYS keep this at the end, to preserve the API limit.
+            if (_cfg.GetCVar(CCVars.GameIPIntelEnabled) && adminData == null)
+            {
+                var result = await _ipintel.IsVpnOrProxy(e);
+
+                if (result.IsBad)
+                    return (ConnectionDenyReason.IPChecks, result.Reason, null);
+            }
+
             return null;
-        }
-
-        private async Task<(bool IsInvalid, string Reason)> IsInvalidConnectionDueToBabyJail(NetUserId userId, NetConnectingArgs e)
-        {
-            // If you're whitelisted then bypass this whole thing
-            if (await _db.GetWhitelistStatusAsync(userId))
-                return (false, "");
-
-            // Initial cvar retrieval
-            var showReason = _cfg.GetCVar(CCVars.BabyJailShowReason);
-            var reason = _cfg.GetCVar(CCVars.BabyJailCustomReason);
-            var maxAccountAgeMinutes = _cfg.GetCVar(CCVars.BabyJailMaxAccountAge);
-            var maxPlaytimeMinutes = _cfg.GetCVar(CCVars.BabyJailMaxOverallMinutes);
-
-            // Wait some time to lookup data
-            var record = await _db.GetPlayerRecordByUserId(userId);
-
-            // No player record = new account or the DB is having a skill issue
-            if (record == null)
-                return (false, "");
-
-            var isAccountAgeInvalid = record.FirstSeenTime.CompareTo(DateTimeOffset.UtcNow - TimeSpan.FromMinutes(maxAccountAgeMinutes)) <= 0;
-
-            if (isAccountAgeInvalid)
-            {
-                _sawmill.Debug($"Baby jail will deny {userId} for account age {record.FirstSeenTime}"); // Remove on or after 2024-09
-            }
-
-            if (isAccountAgeInvalid && showReason)
-            {
-                var locAccountReason = reason != string.Empty
-                    ? reason
-                    : Loc.GetString("baby-jail-account-denied-reason",
-                        ("reason",
-                            Loc.GetString(
-                                "baby-jail-account-reason-account",
-                                ("minutes", maxAccountAgeMinutes))));
-
-                return (true, locAccountReason);
-            }
-
-            var overallTime = ( await _db.GetPlayTimes(e.UserId)).Find(p => p.Tracker == PlayTimeTrackingShared.TrackerOverall);
-            var isTotalPlaytimeInvalid = overallTime != null && overallTime.TimeSpent.TotalMinutes >= maxPlaytimeMinutes;
-
-            if (isTotalPlaytimeInvalid)
-            {
-                _sawmill.Debug($"Baby jail will deny {userId} for playtime {overallTime!.TimeSpent}"); // Remove on or after 2024-09
-            }
-
-            if (isTotalPlaytimeInvalid && showReason)
-            {
-                var locPlaytimeReason = reason != string.Empty
-                    ? reason
-                    : Loc.GetString("baby-jail-account-denied-reason",
-                        ("reason",
-                            Loc.GetString(
-                                "baby-jail-account-reason-overall",
-                                ("minutes", maxPlaytimeMinutes))));
-
-                return (true, locPlaytimeReason);
-            }
-
-            if (!showReason && isTotalPlaytimeInvalid || isAccountAgeInvalid)
-                return (true, Loc.GetString("baby-jail-account-denied"));
-
-            return (false, "");
         }
 
         private bool HasTemporaryBypass(NetUserId user)

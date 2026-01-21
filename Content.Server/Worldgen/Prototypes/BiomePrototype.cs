@@ -1,4 +1,14 @@
-﻿using System.Numerics;
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Moony <moony@hellomouse.net>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Mervill <mervills.email@gmail.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
+using System.Numerics;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.Manager;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.Array;
@@ -14,12 +24,12 @@ public sealed partial class BiomePrototype : IPrototype, IInheritingPrototype
 {
     /// <inheritdoc />
     [ParentDataField(typeof(AbstractPrototypeIdArraySerializer<EntityPrototype>))]
-    public string[]? Parents { get; }
+    public string[]? Parents { get; private set; }
 
     /// <inheritdoc />
     [NeverPushInheritance]
     [AbstractDataField]
-    public bool Abstract { get; }
+    public bool Abstract { get; private set; }
 
     /// <inheritdoc />
     [IdDataField]
@@ -42,7 +52,7 @@ public sealed partial class BiomePrototype : IPrototype, IInheritingPrototype
     /// </summary>
     [DataField("chunkComponents")]
     [AlwaysPushInheritance]
-    public ComponentRegistry ChunkComponents { get; } = new();
+    public ComponentRegistry ChunkComponents = new();
 
     //TODO: Get someone to make this a method on componentregistry that does it Correctly.
     /// <summary>

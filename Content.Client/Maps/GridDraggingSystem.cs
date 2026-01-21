@@ -1,3 +1,17 @@
+// SPDX-FileCopyrightText: 2023 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Plykiya <58439124+Plykiya@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 TemporalOroboros <TemporalOroboros@gmail.com>
+// SPDX-FileCopyrightText: 2024 eoineoineoin <github@eoinrul.es>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Numerics;
 using Content.Shared.Maps;
 using Robust.Client.GameObjects;
@@ -102,7 +116,7 @@ public sealed class GridDraggingSystem : SharedGridDraggingSystem
             if (!_mapManager.TryFindGridAt(mousePos, out var gridUid, out var grid))
                 return;
 
-            StartDragging(gridUid, Vector2.Transform(mousePos.Position, Transform(gridUid).InvWorldMatrix));
+            StartDragging(gridUid, Vector2.Transform(mousePos.Position, _transformSystem.GetInvWorldMatrix(gridUid)));
         }
 
         if (!TryComp(_dragging, out TransformComponent? xform))
@@ -117,11 +131,11 @@ public sealed class GridDraggingSystem : SharedGridDraggingSystem
             return;
         }
 
-        var localToWorld = Vector2.Transform(_localPosition, xform.WorldMatrix);
+        var localToWorld = Vector2.Transform(_localPosition, _transformSystem.GetWorldMatrix(xform));
 
         if (localToWorld.EqualsApprox(mousePos.Position, 0.01f)) return;
 
-        var requestedGridOrigin = mousePos.Position - xform.WorldRotation.RotateVec(_localPosition);
+        var requestedGridOrigin = mousePos.Position - _transformSystem.GetWorldRotation(xform).RotateVec(_localPosition);
         _lastMousePosition = new MapCoordinates(requestedGridOrigin, mousePos.MapId);
 
         RaiseNetworkEvent(new GridDragRequestPosition()

@@ -1,3 +1,12 @@
+// SPDX-FileCopyrightText: 2024 Plykiya <58439124+Plykiya@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 deltanedas <39013340+deltanedas@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Shared.Actions;
 using Content.Shared.Coordinates;
 using Content.Shared.Damage;
@@ -44,6 +53,8 @@ public abstract class SharedChameleonProjectorSystem : EntitySystem
         SubscribeLocalEvent<ChameleonDisguiseComponent, InsertIntoEntityStorageAttemptEvent>(OnDisguiseInsertAttempt);
         SubscribeLocalEvent<ChameleonDisguiseComponent, ComponentShutdown>(OnDisguiseShutdown);
 
+        SubscribeLocalEvent<ChameleonDisguisedComponent, EntGotInsertedIntoContainerMessage>(OnDisguisedInserted);
+
         SubscribeLocalEvent<ChameleonProjectorComponent, AfterInteractEvent>(OnInteract);
         SubscribeLocalEvent<ChameleonProjectorComponent, GetVerbsEvent<UtilityVerb>>(OnGetVerbs);
         SubscribeLocalEvent<ChameleonProjectorComponent, DisguiseToggleNoRotEvent>(OnToggleNoRot);
@@ -72,11 +83,22 @@ public abstract class SharedChameleonProjectorSystem : EntitySystem
     {
         // stay parented to the user, not the storage
         args.Cancelled = true;
+        TryReveal(ent.Comp.User);
     }
 
     private void OnDisguiseShutdown(Entity<ChameleonDisguiseComponent> ent, ref ComponentShutdown args)
     {
         _actions.RemoveProvidedActions(ent.Comp.User, ent.Comp.Projector);
+    }
+
+    #endregion
+
+    #region Disguised player
+
+    private void OnDisguisedInserted(Entity<ChameleonDisguisedComponent> ent, ref EntGotInsertedIntoContainerMessage args)
+    {
+        // prevent player going into locker/mech/etc while disguised
+        TryReveal((ent, ent));
     }
 
     #endregion
@@ -111,7 +133,7 @@ public abstract class SharedChameleonProjectorSystem : EntitySystem
 
     public bool TryDisguise(Entity<ChameleonProjectorComponent> ent, EntityUid user, EntityUid target)
     {
-        if (_container.IsEntityInContainer(target))
+        if (_container.IsEntityInContainer(target) || _container.IsEntityInContainer(user))
         {
             _popup.PopupClient(Loc.GetString("chameleon-projector-inside-container"), target, user);
             return false;
@@ -281,19 +303,18 @@ public abstract class SharedChameleonProjectorSystem : EntitySystem
     /// <summary>
     /// Try to get a single component from the source entity/prototype.
     /// </summary>
-    private bool GetSrcComp<T>(ChameleonDisguiseComponent comp, [NotNullWhen(true)] out T? src) where T: Component
+    private bool GetSrcComp<T>(ChameleonDisguiseComponent comp, [NotNullWhen(true)] out T? src) where T : Component, new()
     {
-        src = null;
         if (TryComp(comp.SourceEntity, out src))
             return true;
 
-        if (comp.SourceProto is not {} protoId)
+        if (comp.SourceProto is not { } protoId)
             return false;
 
         if (!_proto.TryIndex<EntityPrototype>(protoId, out var proto))
             return false;
 
-        return proto.TryGetComponent(out src);
+        return proto.TryGetComponent(out src, EntityManager.ComponentFactory);
     }
 }
 

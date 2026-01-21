@@ -1,3 +1,12 @@
+# SPDX-FileCopyrightText: 2024 PJBot <pieterjan.briers+bot@gmail.com>
+# SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
 shuttle-pilot-start = Piloting ship
 shuttle-pilot-end = Stopped piloting
 
@@ -11,9 +20,13 @@ shuttle-console-static = Grid is static
 shuttle-console-display-label = Display
 
 shuttle-console-position = Position:
+shuttle-console-position-value = {$X}, {$Y}
 shuttle-console-orientation = Orientation:
+shuttle-console-orientation-value  = {$angle}
 shuttle-console-linear-velocity = Linear velocity:
+shuttle-console-linear-velocity-value = {$X}, {$Y}
 shuttle-console-angular-velocity = Angular velocity:
+shuttle-console-angular-velocity-value = {$angularVelocity}
 
 shuttle-console-unknown = Unknown
 shuttle-console-iff-label = {$name} ({$distance}m)

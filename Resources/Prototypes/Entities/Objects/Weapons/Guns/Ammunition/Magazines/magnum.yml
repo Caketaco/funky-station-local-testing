@@ -1,7 +1,34 @@
+# SPDX-FileCopyrightText: 2020 AJCM-git <60196617+AJCM-git@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2020 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2020 Paul Ritter <ritter.paul1@googlemail.com>
+# SPDX-FileCopyrightText: 2020 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+# SPDX-FileCopyrightText: 2021 BulletGrade <66234359+BulletGrade@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2021 Swept <sweptwastaken@protonmail.com>
+# SPDX-FileCopyrightText: 2022 Kara <lunarautomaton6@gmail.com>
+# SPDX-FileCopyrightText: 2022 Scribbles0 <91828755+Scribbles0@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 TaralGit <76408146+TaralGit@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Vordenburg <114301317+Vordenburg@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 lzk <124214523+lzk228@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 IProduceWidgets <107586145+IProduceWidgets@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+# SPDX-FileCopyrightText: 2024 Plykiya <58439124+Plykiya@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2024 Winkarst <74284083+Winkarst-cpu@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 username <113782077+whateverusername0@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 SigmaTheDragon <162711378+SigmaTheDragon@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+# SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 - type: entity
   id: BaseMagazineMagnum
   name: pistol magazine (.45 magnum)
-  parent: [ BaseMagazinePistol, BaseRestrictedContraband ]
+  parent: [ BaseMagazinePistol, BaseSecurityContraband ]
   abstract: true
   components:
   - type: Tag
@@ -16,7 +43,7 @@
 
 - type: entity
   id: BaseMagazineMagnumSubMachineGun
-  name: "Vector magazine (.45 magnum)"
+  name: SMG magazine (.45 magnum)
   parent: BaseItem
   abstract: true
   components:
@@ -52,6 +79,7 @@
   name: pistol magazine (.45 magnum any)
   suffix: empty
   parent: BaseMagazineMagnum
+  description: 7-round single stack pistol magazine.
   components:
   - type: BallisticAmmoProvider
     proto: null
@@ -59,11 +87,14 @@
     layers:
     - state: base
       map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
 
 - type: entity
   id: MagazineMagnum
   name: pistol magazine (.45 magnum)
   parent: BaseMagazineMagnum
+  description: 7-round single stack pistol magazine. Intended to hold general-purpose kinetic ammunition.
   components:
   - type: BallisticAmmoProvider
     proto: CartridgeMagnum
@@ -78,6 +109,7 @@
   id: MagazineMagnumPractice
   name: pistol magazine (.45 magnum practice)
   parent: BaseMagazineMagnum
+  description: 7-round single stack pistol magazine. Intended to hold non-harmful chalk ammunition.
   components:
   - type: BallisticAmmoProvider
     proto: CartridgeMagnumPractice
@@ -92,6 +124,7 @@
   id: MagazineMagnumUranium
   name: pistol magazine (.45 magnum uranium)
   parent: BaseMagazineMagnum
+  description: 7-round single stack pistol magazine. Intended to hold exotic uranium-core ammunition.
   components:
   - type: BallisticAmmoProvider
     proto: CartridgeMagnumUranium
@@ -106,6 +139,7 @@
   id: MagazineMagnumAP
   name: pistol magazine (.45 magnum armor-piercing)
   parent: BaseMagazineMagnum
+  description: 7-round single stack pistol magazine. Intended to hold rare armor-piercing ammunition.
   components:
   - type: BallisticAmmoProvider
     proto: CartridgeMagnumAP
@@ -117,8 +151,23 @@
       map: ["enum.GunVisualLayers.Mag"]
 
 - type: entity
+  id: MagazineMagnumSilver
+  name: pistol magazine (.45 magnum silver)
+  parent: BaseMagazineMagnum
+  description: 7-round single stack pistol magazine. Intended to hold blessed silver ammunition.
+  components:
+  - type: BallisticAmmoProvider
+    proto: CartridgeMagnumSilver
+  - type: Sprite
+    layers:
+    - state: silver
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+
+- type: entity
   id: MagazineMagnumSubMachineGunEmpty
-  name: "Vector magazine (.45 magnum any)"
+  name: SMG magazine (.45 magnum any)
   suffix: empty
   parent: BaseMagazineMagnumSubMachineGun
   components:
@@ -128,10 +177,12 @@
     layers:
     - state: base
       map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
 
 - type: entity
   id: MagazineMagnumSubMachineGun
-  name: "Vector magazine (.45 magnum)"
+  name: SMG magazine (.45 magnum)
   parent: BaseMagazineMagnumSubMachineGun
   components:
   - type: BallisticAmmoProvider
@@ -145,7 +196,7 @@
 
 - type: entity
   id: MagazineMagnumSubMachineGunPractice
-  name: "Vector magazine (.45 magnum practice)"
+  name: SMG magazine (.45 magnum practice)
   parent: BaseMagazineMagnumSubMachineGun
   components:
   - type: BallisticAmmoProvider
@@ -159,7 +210,7 @@
 
 - type: entity
   id: MagazineMagnumSubMachineGunUranium
-  name: "Vector magazine (.45 magnum uranium)"
+  name: SMG magazine (.45 magnum uranium)
   parent: BaseMagazineMagnumSubMachineGun
   components:
   - type: BallisticAmmoProvider
@@ -173,7 +224,7 @@
 
 - type: entity
   id: MagazineMagnumSubMachineGunPiercing
-  name: "Vector magazine (.45 magnum armor-piercing)"
+  name: SMG magazine (.45 magnum armour-piercing)
   parent: BaseMagazineMagnumSubMachineGun
   components:
   - type: BallisticAmmoProvider

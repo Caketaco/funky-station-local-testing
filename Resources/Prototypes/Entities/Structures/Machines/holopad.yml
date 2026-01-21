@@ -1,3 +1,13 @@
+# SPDX-FileCopyrightText: 2024 MilenVolf <63782763+MilenVolf@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 mkanke-real <mikekanke@gmail.com>
+# SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+# SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 - type: entity
   parent: [ BaseMachinePowered, ConstructibleMachine ]
   id: Holopad
@@ -13,16 +23,13 @@
           !type:PhysShapeCircle
           radius: 0.25
         mask:
-        - SubfloorMask
-        layer:
-        - LowImpassable
-        hard: false
+        - Impassable
   - type: ApcPowerReceiver
-    powerLoad: 300
+    powerLoad: 100
   - type: StationAiVision
   - type: Sprite
     sprite: Structures/Machines/holopad.rsi
-    drawdepth: FloorObjects
+    drawdepth: HighFloorObjects
     snapCardinals: true
     layers:
     - state: base
@@ -113,7 +120,11 @@
   suffix: For calls between maps
   components:
   - type: Telephone
-    transmissionRange: Long
+    transmissionRange: Map
+    compatibleRanges:
+    - Map
+    - Unlimited
+    ignoreTelephonesOnSameGrid: true
 
 - type: entity
   name: quantum entangling holopad
@@ -149,20 +160,19 @@
 # These are spawned by holopads
 - type: entity
   id: HolopadHologram
-  categories: [ HideSpawnMenu ]
-  suffix: DO NOT MAP
+  name: hologram
+  categories: [ HideSpawnMenu, DoNotMap ]
   components:
   - type: Transform
     anchored: true
-  - type: Sprite
-    noRot: true
-    drawdepth: Mobs
-    offset: -0.02, 0.45
-    overrideDir: South
-    enableOverrideDir: true
+  - type: Sprite # Sprite data is dynamically set in Client.HolopadSystem
   - type: Appearance
   - type: TypingIndicator
     proto: robot
+  - type: Speech
+    speechVerb: Robotic
+    speechSounds: Borg
+    speechBubbleOffset: 0.45
   - type: HolopadHologram
     rsiPath: Structures/Machines/holopad.rsi
     rsiState: icon_in_call
@@ -172,6 +182,7 @@
     alpha: 0.9
     intensity: 2
     scrollRate: 0.125
+    offset: -0.02, 0.45
   - type: Tag
     tags:
     - HideContextMenu
@@ -484,6 +495,14 @@
   components:
   - type: Label
     currentLabel: holopad-medical-breakroom
+
+- type: entity
+  parent: Holopad
+  id: HolopadMedicalClinic
+  suffix: Med Clinic
+  components:
+  - type: Label
+    currentLabel: holopad-medical-clinic
 
 # Cargo
 - type: entity

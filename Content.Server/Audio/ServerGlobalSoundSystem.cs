@@ -1,4 +1,18 @@
-﻿using Content.Server.Station.Systems;
+// SPDX-FileCopyrightText: 2022 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Moony <moonheart08@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Vera Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 ike709 <ike709@github.com>
+// SPDX-FileCopyrightText: 2022 ike709 <ike709@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Errant <35878406+Errant-4@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2026 Terkala <appleorange64@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
+using Content.Server.Station.Systems;
 using Content.Shared.Audio;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
@@ -19,9 +33,9 @@ public sealed class ServerGlobalSoundSystem : SharedGlobalSoundSystem
         _conHost.UnregisterCommand("playglobalsound");
     }
 
-    public void PlayAdminGlobal(Filter playerFilter, string filename, AudioParams? audioParams = null, bool replay = true)
+    public void PlayAdminGlobal(Filter playerFilter, ResolvedSoundSpecifier specifier, AudioParams? audioParams = null, bool replay = true)
     {
-        var msg = new AdminSoundEvent(filename, audioParams);
+        var msg = new AdminSoundEvent(specifier, audioParams);
         RaiseNetworkEvent(msg, playerFilter, recordReplay: replay);
     }
 
@@ -32,9 +46,9 @@ public sealed class ServerGlobalSoundSystem : SharedGlobalSoundSystem
         return stationFilter;
     }
 
-    public void PlayGlobalOnStation(EntityUid source, string filename, AudioParams? audioParams = null)
+    public void PlayGlobalOnStation(EntityUid source, ResolvedSoundSpecifier specifier, AudioParams? audioParams = null)
     {
-        var msg = new GameGlobalSoundEvent(filename, audioParams);
+        var msg = new GameGlobalSoundEvent(specifier, audioParams);
         var filter = GetStationAndPvs(source);
         RaiseNetworkEvent(msg, filter);
     }
@@ -52,13 +66,13 @@ public sealed class ServerGlobalSoundSystem : SharedGlobalSoundSystem
 
     public void DispatchStationEventMusic(EntityUid source, SoundSpecifier sound, StationEventMusicType type)
     {
-        DispatchStationEventMusic(source, _audio.GetSound(sound), type);
+        DispatchStationEventMusic(source, _audio.ResolveSound(sound), type);
     }
 
-    public void DispatchStationEventMusic(EntityUid source, string sound, StationEventMusicType type)
+    public void DispatchStationEventMusic(EntityUid source, ResolvedSoundSpecifier specifier, StationEventMusicType type, AudioParams? audioParams = null)
     {
-        var audio = AudioParams.Default.WithVolume(-8);
-        var msg = new StationEventMusicEvent(sound, type, audio);
+        var audio = audioParams ?? AudioParams.Default.WithVolume(-8);
+        var msg = new StationEventMusicEvent(specifier, type, audio);
 
         var filter = GetStationAndPvs(source);
         RaiseNetworkEvent(msg, filter);

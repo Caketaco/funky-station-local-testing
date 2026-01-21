@@ -1,3 +1,16 @@
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Plykiya <58439124+Plykiya@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 eoineoineoin <github@eoinrul.es>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 V <97265903+formlessnameless@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 corresp0nd <46357632+corresp0nd@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Linq;
 using Content.Shared.Administration.Logs;
 using Content.Shared.UserInterface;
@@ -9,6 +22,7 @@ using Content.Shared.Tag;
 using Robust.Shared.Player;
 using Robust.Shared.Audio.Systems;
 using static Content.Shared.Paper.PaperComponent;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared.Paper;
 
@@ -22,6 +36,9 @@ public sealed class PaperSystem : EntitySystem
     [Dependency] private readonly SharedUserInterfaceSystem _uiSystem = default!;
     [Dependency] private readonly MetaDataSystem _metaSystem = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
+
+    private static readonly ProtoId<TagPrototype> WriteIgnoreStampsTag = "WriteIgnoreStamps";
+    private static readonly ProtoId<TagPrototype> WriteTag = "Write";
 
     public override void Initialize()
     {
@@ -100,23 +117,26 @@ public sealed class PaperSystem : EntitySystem
     private void OnInteractUsing(Entity<PaperComponent> entity, ref InteractUsingEvent args)
     {
         // only allow editing if there are no stamps or when using a cyberpen
-        var editable = entity.Comp.StampedBy.Count == 0 || _tagSystem.HasTag(args.Used, "WriteIgnoreStamps");
-        if (_tagSystem.HasTag(args.Used, "Write") && editable)
+        var editable = entity.Comp.StampedBy.Count == 0 || _tagSystem.HasTag(args.Used, WriteIgnoreStampsTag);
+        if (_tagSystem.HasTag(args.Used, WriteTag))
         {
-            if (entity.Comp.EditingDisabled)
+            if (editable)
             {
-                var paperEditingDisabledMessage = Loc.GetString("paper-tamper-proof-modified-message");
-                _popupSystem.PopupEntity(paperEditingDisabledMessage, entity, args.User);
+                if (entity.Comp.EditingDisabled)
+                {
+                    var paperEditingDisabledMessage = Loc.GetString("paper-tamper-proof-modified-message");
+                    _popupSystem.PopupEntity(paperEditingDisabledMessage, entity, args.User);
 
-                args.Handled = true;
-                return;
+                    args.Handled = true;
+                    return;
+                }
+                var writeEvent = new PaperWriteEvent(entity, args.User);
+                RaiseLocalEvent(args.Used, ref writeEvent);
+
+                entity.Comp.Mode = PaperAction.Write;
+                _uiSystem.OpenUi(entity.Owner, PaperUiKey.Key, args.User);
+                UpdateUserInterface(entity);
             }
-            var writeEvent = new PaperWriteEvent(entity, args.User);
-            RaiseLocalEvent(args.Used, ref writeEvent);
-
-            entity.Comp.Mode = PaperAction.Write;
-            _uiSystem.OpenUi(entity.Owner, PaperUiKey.Key, args.User);
-            UpdateUserInterface(entity);
             args.Handled = true;
             return;
         }
@@ -147,7 +167,8 @@ public sealed class PaperSystem : EntitySystem
         return new StampDisplayInfo
         {
             StampedName = stamp.StampedName,
-            StampedColor = stamp.StampedColor
+            StampedColor = stamp.StampedColor,
+            StampLargeIcon = stamp.StampLargeIcon // imp
         };
     }
 
@@ -157,8 +178,10 @@ public sealed class PaperSystem : EntitySystem
         {
             SetContent(entity, args.Text);
 
+            var paperStatus = string.IsNullOrWhiteSpace(args.Text) ? PaperStatus.Blank : PaperStatus.Written;
+
             if (TryComp<AppearanceComponent>(entity, out var appearance))
-                _appearance.SetData(entity, PaperVisuals.Status, PaperStatus.Written, appearance);
+                _appearance.SetData(entity, PaperVisuals.Status, paperStatus, appearance);
 
             if (TryComp(entity, out MetaDataComponent? meta))
                 _metaSystem.SetEntityDescription(entity, "", meta);
@@ -199,6 +222,26 @@ public sealed class PaperSystem : EntitySystem
         return true;
     }
 
+    /// <summary>
+    ///     Copy any stamp information from one piece of paper to another.
+    /// </summary>
+    public void CopyStamps(Entity<PaperComponent?> source, Entity<PaperComponent?> target)
+    {
+        if (!Resolve(source, ref source.Comp) || !Resolve(target, ref target.Comp))
+            return;
+
+        target.Comp.StampedBy = new List<StampDisplayInfo>(source.Comp.StampedBy);
+        target.Comp.StampState = source.Comp.StampState;
+        Dirty(target);
+
+        if (TryComp<AppearanceComponent>(target, out var appearance))
+        {
+            // delete any stamps if the stamp state is null
+            _appearance.SetData(target, PaperVisuals.Stamp, target.Comp.StampState ?? "", appearance);
+        }
+    }
+
+
     public void SetContent(Entity<PaperComponent> entity, string content)
     {
         entity.Comp.Content = content;
@@ -215,7 +258,7 @@ public sealed class PaperSystem : EntitySystem
         _appearance.SetData(entity, PaperVisuals.Status, status, appearance);
     }
 
-    private void UpdateUserInterface(Entity<PaperComponent> entity)
+    public void UpdateUserInterface(Entity<PaperComponent> entity)
     {
         _uiSystem.SetUiState(entity.Owner, PaperUiKey.Key, new PaperBoundUserInterfaceState(entity.Comp.Content, entity.Comp.StampedBy, entity.Comp.Mode));
     }

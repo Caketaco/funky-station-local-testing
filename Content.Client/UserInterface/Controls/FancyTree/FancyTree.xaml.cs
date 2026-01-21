@@ -1,3 +1,12 @@
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using Content.Client.Resources;
@@ -7,7 +16,6 @@ using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
-using Robust.Shared.Graphics;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 
@@ -96,7 +104,6 @@ public sealed partial class FancyTree : Control
     private void LoadIcons()
     {
         IconColor = TryGetStyleProperty(StylePropertyIconColor, out Color color) ? color : Color.White;
-        string? path;
 
         if (!TryGetStyleProperty(StylePropertyIconExpanded, out IconExpanded))
             IconExpanded = _resCache.GetTexture(DefaultIconExpanded);

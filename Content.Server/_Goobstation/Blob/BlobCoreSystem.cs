@@ -1,3 +1,13 @@
+// SPDX-FileCopyrightText: 2024 John Space <bigdumb421@gmail.com>
+// SPDX-FileCopyrightText: 2024 fishbait <gnesse@gmail.com>
+// SPDX-FileCopyrightText: 2025 QueerCats <jansencheng3@gmail.com>
+// SPDX-FileCopyrightText: 2025 Rainbow <ev0lvkitten@gmail.com>
+// SPDX-FileCopyrightText: 2025 Skye <57879983+Rainbeon@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 using System.Linq;
 using System.Numerics;
 using System.Threading;
@@ -129,6 +139,7 @@ public sealed class BlobCoreSystem : EntitySystem
 
         var store = EnsureComp<StoreComponent>(uid);
         store.CurrencyWhitelist.Add(BlobMoney);
+        ChangeBlobPoint((uid, component), component.InitialPoints, store);
 
         UpdateAllAlerts((uid, component));
         ChangeChem(uid, component.DefaultChem, component);
@@ -242,7 +253,8 @@ public sealed class BlobCoreSystem : EntitySystem
         // This one for points
         var pt = store.Balance.GetValueOrDefault(BlobMoney);
         var pointsSeverity = (short) Math.Clamp(Math.Round(pt.Float() / 10f), 0, 51);
-        _alerts.ShowAlert(component.Observer.Value, BlobResource, pointsSeverity);
+        string? pointsMessage = "Points: " + pt;
+        _alerts.ShowAlert(component.Observer.Value, BlobResource, pointsSeverity, dynamicMessage: pointsMessage);
 
         // And this one for health.
         if (!TryComp<DamageableComponent>(core.Owner, out var damageComp))

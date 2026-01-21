@@ -1,3 +1,11 @@
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Thomas <87614336+Aeshus@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Linq;
 using Content.Client.Guidebook.Controls;
 using Pidgin;
@@ -109,7 +117,17 @@ public sealed partial class DocumentParsingManager
             .Cast<Control>()))
         .Labelled("subheader");
 
-    private static readonly Parser<char, Control> TryHeaderControl = OneOf(SubHeaderControlParser, HeaderControlParser);
+    private static readonly Parser<char, Control> TertiaryHeaderControlParser = Try(String("###"))
+        .Then(SkipWhitespaces.Then(Map(text => new Label
+                {
+                    Text = text,
+                    StyleClasses = { "LabelKeyText" }
+                },
+                AnyCharExcept('\n').AtLeastOnceString())
+            .Cast<Control>()))
+        .Labelled("tertiaryheader");
+
+    private static readonly Parser<char, Control> TryHeaderControl = OneOf(TertiaryHeaderControlParser, SubHeaderControlParser, HeaderControlParser);
 
     private static readonly Parser<char, Control> ListControlParser = Try(Char('-'))
         .Then(SkipWhitespaces)

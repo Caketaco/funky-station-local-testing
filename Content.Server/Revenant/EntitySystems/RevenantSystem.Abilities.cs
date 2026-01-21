@@ -1,3 +1,36 @@
+// SPDX-FileCopyrightText: 2022 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Flipp Syder <76629141+vulppine@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Paul Ritter <ritter.paul1@googlemail.com>
+// SPDX-FileCopyrightText: 2022 metalgearsloth <comedian_vs_clown@hotmail.com>
+// SPDX-FileCopyrightText: 2023 Alekshhh <44923899+Alekshhh@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <drsmugleaf@gmail.com>
+// SPDX-FileCopyrightText: 2023 Jezithyr <jezithyr@gmail.com>
+// SPDX-FileCopyrightText: 2023 Kara <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2023 LankLTE <135308300+LankLTE@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 deltanedas <39013340+deltanedas@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 keronshb <54602815+keronshb@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Plykiya <58439124+Plykiya@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 SoulFN <164462467+SoulFN@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 Tayrtahn <tayrtahn@gmail.com>
+// SPDX-FileCopyrightText: 2024 TemporalOroboros <TemporalOroboros@gmail.com>
+// SPDX-FileCopyrightText: 2024 Tornado Tech <54727692+Tornado-Technology@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 icekot8 <93311212+icekot8@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 nikthechampiongr <32041239+nikthechampiongr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 V <97265903+formlessnameless@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 corresp0nd <46357632+corresp0nd@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Shared.Popups;
 using Content.Shared.Damage;
 using Content.Shared.Revenant;
@@ -29,6 +62,10 @@ using Robust.Shared.Physics.Components;
 using Robust.Shared.Utility;
 using Robust.Shared.Map.Components;
 using Content.Shared.Whitelist;
+using Content.Shared.Hands.Components;
+using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Interaction.Components;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Revenant.EntitySystems;
 
@@ -36,14 +73,16 @@ public sealed partial class RevenantSystem
 {
     [Dependency] private readonly ThrowingSystem _throwing = default!;
     [Dependency] private readonly EntityStorageSystem _entityStorage = default!;
-    [Dependency] private readonly EmagSystem _emag = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly MobThresholdSystem _mobThresholdSystem = default!;
     [Dependency] private readonly GhostSystem _ghost = default!;
     [Dependency] private readonly TileSystem _tile = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
     [Dependency] private readonly SharedTransformSystem _transformSystem = default!;
+    [Dependency] private readonly SharedHandsSystem _handsSystem = default!;
     [Dependency] private readonly SharedMapSystem _mapSystem = default!;
+
+    private static readonly ProtoId<TagPrototype> WindowTag = "Window";
 
     private void InitializeAbilities()
     {
@@ -55,6 +94,7 @@ public sealed partial class RevenantSystem
         SubscribeLocalEvent<RevenantComponent, RevenantOverloadLightsActionEvent>(OnOverloadLightsAction);
         SubscribeLocalEvent<RevenantComponent, RevenantBlightActionEvent>(OnBlightAction);
         SubscribeLocalEvent<RevenantComponent, RevenantMalfunctionActionEvent>(OnMalfunctionAction);
+        SubscribeLocalEvent<RevenantComponent, RevenantBloodWritingEvent>(OnBloodWritingAction);
     }
 
     private void OnInteract(EntityUid uid, RevenantComponent component, UserActivateInWorldEvent args)
@@ -254,7 +294,7 @@ public sealed partial class RevenantSystem
         foreach (var ent in lookup)
         {
             //break windows
-            if (tags.HasComponent(ent) && _tag.HasTag(ent, "Window"))
+            if (tags.HasComponent(ent) && _tag.HasTag(ent, WindowTag))
             {
                 //hardcoded damage specifiers til i die.
                 var dspec = new DamageSpecifier();
@@ -343,7 +383,35 @@ public sealed partial class RevenantSystem
                 _whitelistSystem.IsBlacklistPass(component.MalfunctionBlacklist, ent))
                 continue;
 
-            _emag.DoEmagEffect(uid, ent); //it does not emag itself. adorable.
+            var ev = new GotEmaggedEvent(uid, EmagType.Interaction | EmagType.Access);
+            RaiseLocalEvent(ent, ref ev);
         }
     }
+
+    // begin imp
+    private void OnBloodWritingAction(EntityUid uid, RevenantComponent component, RevenantBloodWritingEvent args)
+    {
+        if (args.Handled)
+            return;
+
+        if (!TryComp<HandsComponent>(uid, out var hands))
+            return;
+
+        if (component.BloodCrayon != null)
+        {
+            // Disable blood writing
+            _handsSystem.RemoveHands(uid);
+            QueueDel(component.BloodCrayon);
+            component.BloodCrayon = null;
+        }
+        else
+        {
+            _handsSystem.AddHand(uid, "crayon", HandLocation.Middle);
+            var crayon = Spawn("CrayonBlood");
+            component.BloodCrayon = crayon;
+            _handsSystem.DoPickup(uid, hands.Hands["crayon"], crayon);
+            EnsureComp<UnremoveableComponent>(crayon);
+        }
+    }
+    // end imp
 }

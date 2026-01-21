@@ -1,3 +1,40 @@
+# SPDX-FileCopyrightText: 2020 AJCM <AJCM@tutanota.com>
+# SPDX-FileCopyrightText: 2020 AJCM-git <60196617+AJCM-git@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2020 FrostMando <68990565+FrostMando@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2020 Paul Ritter <ritter.paul1@googlemail.com>
+# SPDX-FileCopyrightText: 2020 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+# SPDX-FileCopyrightText: 2020 Swept <jamesurquhartwebb@gmail.com>
+# SPDX-FileCopyrightText: 2020 Swept <sweptwastaken@protonmail.com>
+# SPDX-FileCopyrightText: 2020 py01 <pyronetics01@gmail.com>
+# SPDX-FileCopyrightText: 2021 DmitriyRubetskoy <75271456+DmitriyRubetskoy@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2021 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2021 xRiriq <94037592+xRiriq@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2021 xRiriq <xRiriq.git@gmail.com>
+# SPDX-FileCopyrightText: 2022 Emisse <99158783+Emisse@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2022 Pancake <Pangogie@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2022 Ranger6012 <102882503+Ranger6012@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2022 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Ed <96445749+TheShuEd@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Puro <103608145+PuroSlavKing@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Tony <73495699+carteblanche4me@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 brainfood1183 <113240905+brainfood1183@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 metalgearsloth <comedian_vs_clown@hotmail.com>
+# SPDX-FileCopyrightText: 2023 nmajask <nmajask@gmail.com>
+# SPDX-FileCopyrightText: 2024 2013HORSEMEATSCANDAL <146540817+2013HORSEMEATSCANDAL@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Aexxie <codyfox.077@gmail.com>
+# SPDX-FileCopyrightText: 2024 Kara <lunarautomaton6@gmail.com>
+# SPDX-FileCopyrightText: 2024 NotSoDamn <75203942+NotSoDana@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2024 TherapyGoth <148295971+TherapyGoth@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Whisper <121047731+QuietlyWhisper@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Icepick <122653407+Icepicked@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 IronDragoon <8961391+IronDragoon@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Lachryphage <stuart.e.clough@gmail.com>
+# SPDX-FileCopyrightText: 2025 Xcybitt <197952719+Xcybitt@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 - type: entity
   parent: ClothingNeckBase
   id: ClothingNeckCloakCentcom
@@ -8,6 +45,11 @@
     sprite: Clothing/Neck/Cloaks/centcomcloakformal.rsi
   - type: StealTarget
     stealGroup: HeadCloak # leaving this here because I suppose it might be interesting?
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 5
+    bluntStaminaDamageFactor: 4 #it's heavy, it hits hard
 
 - type: entity
   parent: [ClothingNeckBase, BaseCommandContraband]
@@ -19,6 +61,11 @@
     sprite: Clothing/Neck/Cloaks/cap.rsi
   - type: StealTarget
     stealGroup: HeadCloak
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 5
+    bluntStaminaDamageFactor: 2
 
 - type: entity
   parent: [ClothingNeckBase, BaseCommandContraband]
@@ -30,6 +77,11 @@
     sprite: Clothing/Neck/Cloaks/hos.rsi
   - type: StealTarget
     stealGroup: HeadCloak
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 5
+    bluntStaminaDamageFactor: 2
 
 - type: entity
   parent: [ClothingNeckBase, BaseCommandContraband]
@@ -41,6 +93,11 @@
     sprite: Clothing/Neck/Cloaks/ce.rsi
   - type: StealTarget
     stealGroup: HeadCloak
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 5
+    bluntStaminaDamageFactor: 2
 
 - type: entity
   parent: [ClothingNeckBase, BaseCommandContraband]
@@ -52,6 +109,11 @@
     sprite: Clothing/Neck/Cloaks/cmo.rsi
   - type: StealTarget
     stealGroup: HeadCloak
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 5
+    bluntStaminaDamageFactor: 2
 
 - type: entity
   parent: [ClothingNeckBase, BaseCommandContraband]
@@ -63,6 +125,11 @@
     sprite: Clothing/Neck/Cloaks/rd.rsi
   - type: StealTarget
     stealGroup: HeadCloak
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 5
+    bluntStaminaDamageFactor: 2
 
 - type: entity
   parent: [ClothingNeckBase, BaseCommandContraband]
@@ -74,6 +141,11 @@
     sprite: Clothing/Neck/Cloaks/qm.rsi
   - type: StealTarget
     stealGroup: HeadCloak
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 5
+    bluntStaminaDamageFactor: 2
 
 - type: entity
   parent: [ClothingNeckBase, BaseCommandContraband]
@@ -85,6 +157,11 @@
     sprite: Clothing/Neck/Cloaks/hop.rsi
   - type: StealTarget
     stealGroup: HeadCloak
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 5
+    bluntStaminaDamageFactor: 2
 
 - type: entity
   parent: ClothingNeckBase
@@ -114,6 +191,11 @@
     sprite: Clothing/Neck/Cloaks/capcloakformal.rsi
   - type: StealTarget
     stealGroup: HeadCloak
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 5
+    bluntStaminaDamageFactor: 2
 
 - type: entity
   parent: ClothingNeckBase
@@ -134,15 +216,6 @@
   components:
   - type: Sprite
     sprite: Clothing/Neck/Cloaks/miner.rsi
-
-- type: entity
-  parent: ClothingNeckBase
-  id: ClothingNeckCloakTrans
-  name: vampire cloak
-  description: Worn by high ranking vampires of the transylvanian society of vampires.
-  components:
-  - type: Sprite
-    sprite: Clothing/Neck/Cloaks/trans.rsi
 
 - type: entity
   parent: ClothingNeckBase
@@ -208,11 +281,31 @@
   - type: TypingIndicatorClothing
     proto: alien
 
+## Changed by Funkystation.
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckCloakTrans
+  name: transgender pride cloak
+  description: A cloak representing transgender pride.
+  components:
+  - type: Sprite
+    sprite: Clothing/Neck/Cloaks/trans.rsi
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckCloakGenderfluid
+  name: genderfluid pride cloak
+  description: A cloak representing genderfluid pride.
+  components:
+  - type: Sprite
+    sprite: Clothing/Neck/Cloaks/genderfluid.rsi
+
 - type: entity
   parent: ClothingNeckBase
   id: ClothingNeckCloakAce
-  name: pilot's cloak
-  description: Cloak awarded to Nanotrasen's finest space aces.
+  name: asexual pride cloak
+  description: A cloak representing asexual pride.
   components:
   - type: Sprite
     sprite: Clothing/Neck/Cloaks/ace.rsi
@@ -220,8 +313,8 @@
 - type: entity
   parent: ClothingNeckBase
   id: ClothingNeckCloakAro
-  name: werewolf cloak
-  description: This cloak lets others know you're a lone wolf.
+  name: aromantic pride cloak
+  description: A cloak representing aromantic pride.
   components:
   - type: Sprite
     sprite: Clothing/Neck/Cloaks/aro.rsi
@@ -229,8 +322,8 @@
 - type: entity
   parent: ClothingNeckBase
   id: ClothingNeckCloakBi
-  name: poison cloak
-  description: The purple color is a clear indicator you are poisonous.
+  name: bisexual pride cloak
+  description: A cloak representing bisexual pride.
   components:
   - type: Sprite
     sprite: Clothing/Neck/Cloaks/bi.rsi
@@ -238,8 +331,8 @@
 - type: entity
   parent: ClothingNeckBase
   id: ClothingNeckCloakIntersex
-  name: cyclops cloak
-  description: The circle on this cloak represents a cyclops' eye.
+  name: intersex pride cloak
+  description: A cloak representing intersex pride.
   components:
   - type: Sprite
     sprite: Clothing/Neck/Cloaks/intersex.rsi
@@ -247,8 +340,8 @@
 - type: entity
   parent: ClothingNeckBase
   id: ClothingNeckCloakLesbian
-  name: poet cloak
-  description: This cloak belonged to an ancient poet, you forgot which one.
+  name: lesbian pride cloak
+  description: A cloak representing lesbian pride.
   components:
   - type: Sprite
     sprite: Clothing/Neck/Cloaks/les.rsi
@@ -256,8 +349,8 @@
 - type: entity
   parent: ClothingNeckBase
   id: ClothingNeckCloakGay
-  name: multi-level marketing cloak
-  description: This cloak is highly sought after in the Nanotrasen Marketing Offices.
+  name: gay pride cloak
+  description: A cloak representing gay pride.
   components:
   - type: Sprite
     sprite: Clothing/Neck/Cloaks/gay.rsi
@@ -265,8 +358,8 @@
 - type: entity
   parent: ClothingNeckBase
   id: ClothingNeckCloakEnby
-  name: treasure hunter cloak
-  description: This cloak belonged to a greedy treasure hunter.
+  name: non-binary pride cloak
+  description: A cloak representing non-binary pride.
   components:
   - type: Sprite
     sprite: Clothing/Neck/Cloaks/enby.rsi
@@ -274,8 +367,8 @@
 - type: entity
   parent: ClothingNeckBase
   id: ClothingNeckCloakPan
-  name: chef's cloak
-  description: Meant to be worn alongside a frying pan.
+  name: pansexual pride cloak
+  description: A cloak representing pansexual pride.
   components:
   - type: Sprite
     sprite: Clothing/Neck/Cloaks/pan.rsi

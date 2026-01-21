@@ -1,3 +1,12 @@
+// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Froffy025 <78222136+Froffy025@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 RiceMar1244 <138547931+RiceMar1244@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Shared.Wieldable;
 using Robust.Shared.GameStates;
 
@@ -6,7 +15,7 @@ namespace Content.Shared.Weapons.Ranged.Components;
 /// <summary>
 /// Applies an accuracy bonus upon wielding.
 /// </summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState, Access(typeof(WieldableSystem))]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState, Access(typeof(SharedWieldableSystem))]
 public sealed partial class GunWieldBonusComponent : Component
 {
     [ViewVariables(VVAccess.ReadWrite), DataField("minAngle"), AutoNetworkedField]

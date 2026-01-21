@@ -1,3 +1,34 @@
+// SPDX-FileCopyrightText: 2021 Acruid <shatter66@gmail.com>
+// SPDX-FileCopyrightText: 2021 Javier Guardia Fernández <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Leo <lzimann@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Saphire Lattice <lattice@saphi.re>
+// SPDX-FileCopyrightText: 2022 Julian Giebel <j.giebel@netrocks.info>
+// SPDX-FileCopyrightText: 2022 Kevin Zheng <kevinz5000@gmail.com>
+// SPDX-FileCopyrightText: 2022 Pieter-Jan Briers <pieterjan.briers@gmail.com>
+// SPDX-FileCopyrightText: 2022 ShadowCommander <10494922+ShadowCommander@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Vera Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Veritius <veritiusgaming@gmail.com>
+// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2023 Chief-Engineer <119664036+Chief-Engineer@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Riggle <27156122+RigglePrime@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Visne <39844191+Visne@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <comedian_vs_clown@hotmail.com>
+// SPDX-FileCopyrightText: 2024 AJCM-git <60196617+AJCM-git@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 DrSmugleaf <10968691+DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Julian Giebel <juliangiebel@live.de>
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
+// SPDX-FileCopyrightText: 2024 Simon <63975668+Simyon264@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Collections.Immutable;
 using System.IO;
 using System.Net;
@@ -36,14 +67,12 @@ namespace Content.Server.Database
             ICharacterProfile defaultProfile,
             CancellationToken cancel);
 
-        Task SaveSelectedCharacterIndexAsync(NetUserId userId, int index);
-
         Task SaveCharacterSlotAsync(NetUserId userId, ICharacterProfile? profile, int slot);
+
+        Task SaveJobPrioritiesAsync(NetUserId userId, Dictionary<ProtoId<JobPrototype>, JobPriority> newJobPriorities);
 
         Task SaveAdminOOCColorAsync(NetUserId userId, Color color);
 
-        // Single method for two operations for transaction.
-        Task DeleteSlotAndSetSelectedIndex(NetUserId userId, int deleteSlot, int newSlot);
         Task<PlayerPreferences?> GetPlayerPreferencesAsync(NetUserId userId, CancellationToken cancel);
         #endregion
 
@@ -217,6 +246,16 @@ namespace Content.Server.Database
         Task AddAdminAsync(Admin admin, CancellationToken cancel = default);
         Task UpdateAdminAsync(Admin admin, CancellationToken cancel = default);
 
+        /// <summary>
+        /// Update whether an admin has voluntarily deadminned.
+        /// </summary>
+        /// <remarks>
+        /// This does nothing if the player is not an admin.
+        /// </remarks>
+        /// <param name="userId">The user ID of the admin.</param>
+        /// <param name="deadminned">Whether the admin is deadminned or not.</param>
+        Task UpdateAdminDeadminnedAsync(NetUserId userId, bool deadminned, CancellationToken cancel = default);
+
         Task RemoveAdminRankAsync(int rankId, CancellationToken cancel = default);
         Task AddAdminRankAsync(AdminRank rank, CancellationToken cancel = default);
         Task UpdateAdminRankAsync(AdminRank rank, CancellationToken cancel = default);
@@ -272,7 +311,7 @@ namespace Content.Server.Database
         #region Rules
 
         Task<DateTimeOffset?> GetLastReadRules(NetUserId player);
-        Task SetLastReadRules(NetUserId player, DateTimeOffset time);
+        Task SetLastReadRules(NetUserId player, DateTimeOffset? time);
 
         #endregion
 
@@ -322,6 +361,14 @@ namespace Content.Server.Database
 
         #endregion
 
+        #region IPintel
+
+        Task<bool> UpsertIPIntelCache(DateTime time, IPAddress ip, float score);
+        Task<IPIntelCache?> GetIPIntelCache(IPAddress ip);
+        Task<bool> CleanIPIntelCache(TimeSpan range);
+
+        #endregion
+
         #region DB Notifications
 
         void SubscribeToNotifications(Action<DatabaseNotification> handler);
@@ -331,6 +378,15 @@ namespace Content.Server.Database
         /// </summary>
         /// <param name="notification">The notification to trigger</param>
         void InjectTestNotification(DatabaseNotification notification);
+
+        /// <summary>
+        /// Send a notification to all other servers connected to the same database.
+        /// </summary>
+        /// <remarks>
+        /// The local server will receive the sent notification itself again.
+        /// </remarks>
+        /// <param name="notification">The notification to send.</param>
+        Task SendNotification(DatabaseNotification notification);
 
         #endregion
     }
@@ -436,22 +492,17 @@ namespace Content.Server.Database
             return RunDbCommand(() => _db.InitPrefsAsync(userId, defaultProfile));
         }
 
-        public Task SaveSelectedCharacterIndexAsync(NetUserId userId, int index)
-        {
-            DbWriteOpsMetric.Inc();
-            return RunDbCommand(() => _db.SaveSelectedCharacterIndexAsync(userId, index));
-        }
-
         public Task SaveCharacterSlotAsync(NetUserId userId, ICharacterProfile? profile, int slot)
         {
             DbWriteOpsMetric.Inc();
             return RunDbCommand(() => _db.SaveCharacterSlotAsync(userId, profile, slot));
         }
 
-        public Task DeleteSlotAndSetSelectedIndex(NetUserId userId, int deleteSlot, int newSlot)
+        public Task SaveJobPrioritiesAsync(NetUserId userId,
+            Dictionary<ProtoId<JobPrototype>, JobPriority> newJobPriorities)
         {
             DbWriteOpsMetric.Inc();
-            return RunDbCommand(() => _db.DeleteSlotAndSetSelectedIndex(userId, deleteSlot, newSlot));
+            return RunDbCommand(() => _db.SaveJobPrioritiesAsync(userId, newJobPriorities));
         }
 
         public Task SaveAdminOOCColorAsync(NetUserId userId, Color color)
@@ -666,6 +717,12 @@ namespace Content.Server.Database
             return RunDbCommand(() => _db.UpdateAdminAsync(admin, cancel));
         }
 
+        public Task UpdateAdminDeadminnedAsync(NetUserId userId, bool deadminned, CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.UpdateAdminDeadminnedAsync(userId, deadminned, cancel));
+        }
+
         public Task RemoveAdminRankAsync(int rankId, CancellationToken cancel = default)
         {
             DbWriteOpsMetric.Inc();
@@ -797,7 +854,7 @@ namespace Content.Server.Database
             return RunDbCommand(() => _db.GetLastReadRules(player));
         }
 
-        public Task SetLastReadRules(NetUserId player, DateTimeOffset time)
+        public Task SetLastReadRules(NetUserId player, DateTimeOffset? time)
         {
             DbWriteOpsMetric.Inc();
             return RunDbCommand(() => _db.SetLastReadRules(player, time));
@@ -991,6 +1048,23 @@ namespace Content.Server.Database
             return RunDbCommand(() => _db.RemoveJobWhitelist(player, job));
         }
 
+        public Task<bool> UpsertIPIntelCache(DateTime time, IPAddress ip, float score)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.UpsertIPIntelCache(time, ip, score));
+        }
+
+        public Task<IPIntelCache?> GetIPIntelCache(IPAddress ip)
+        {
+            return RunDbCommand(() => _db.GetIPIntelCache(ip));
+        }
+
+        public Task<bool> CleanIPIntelCache(TimeSpan range)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.CleanIPIntelCache(range));
+        }
+
         public void SubscribeToNotifications(Action<DatabaseNotification> handler)
         {
             lock (_notificationHandlers)
@@ -1002,6 +1076,12 @@ namespace Content.Server.Database
         public void InjectTestNotification(DatabaseNotification notification)
         {
             HandleDatabaseNotification(notification);
+        }
+
+        public Task SendNotification(DatabaseNotification notification)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.SendNotification(notification));
         }
 
         private async void HandleDatabaseNotification(DatabaseNotification notification)

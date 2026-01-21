@@ -1,3 +1,61 @@
+# SPDX-FileCopyrightText: 2021 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+# SPDX-FileCopyrightText: 2021 Swept <sweptwastaken@protonmail.com>
+# SPDX-FileCopyrightText: 2021 Ygg01 <y.laughing.man.y@gmail.com>
+# SPDX-FileCopyrightText: 2022 CrudeWax <75271456+CrudeWax@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2022 Emisse <99158783+Emisse@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2022 Jessica M <jessica@jessicamaybe.com>
+# SPDX-FileCopyrightText: 2022 Julian Giebel <juliangiebel@live.de>
+# SPDX-FileCopyrightText: 2022 Kai Shiba <100050424+KaiShibaa@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2022 Moony <moonheart08@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2022 Myctai <108953437+Myctai@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2022 Peptide90 <78795277+Peptide90@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2022 Rane <60792108+Elijahrane@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2022 metalgearsloth <metalgearsloth@gmail.com>
+# SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
+# SPDX-FileCopyrightText: 2022 rolfero <45628623+rolfero@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Alekshhh <44923899+Alekshhh@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Brandon Hu <103440971+Brandon-Huu@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Ed <96445749+TheShuEd@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 GoodWheatley <109803540+GoodWheatley@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Guilherme Ornel <86210200+joshepvodka@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 IProduceWidgets <107586145+IProduceWidgets@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Interrobang01 <113810873+Interrobang01@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 JoeHammad1844 <130668733+JoeHammad1844@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 MisterMecky <mrmecky@hotmail.com>
+# SPDX-FileCopyrightText: 2023 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Nim <128169402+Nimfar11@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Psychpsyo <60073468+Psychpsyo@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Puro <103608145+PuroSlavKing@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Sailor <109166122+Equivocateur@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Vasilis <vasilis@pikachu.systems>
+# SPDX-FileCopyrightText: 2023 crazybrain23 <44417085+crazybrain23@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 deltanedas <39013340+deltanedas@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 dontbetank <59025279+dontbetank@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 liltenhead <104418166+liltenhead@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 metalgearsloth <comedian_vs_clown@hotmail.com>
+# SPDX-FileCopyrightText: 2023 vanx <61917534+Vaaankas@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
+# SPDX-FileCopyrightText: 2024 Kara <lunarautomaton6@gmail.com>
+# SPDX-FileCopyrightText: 2024 Plykiya <58439124+Plykiya@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2024 dffdff2423 <dffdff2423@gmail.com>
+# SPDX-FileCopyrightText: 2024 drteaspoon420 <87363733+drteaspoon420@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 lzk <124214523+lzk228@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 themias <89101928+themias@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Dragon232347 <122056448+Dragon232347@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Fenn <162015305+TooSillyFennec@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 SigmaTheDragon <162711378+SigmaTheDragon@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 ThatOneMoon <91613003+ThatOneMoon@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 ThatOneMoon <juozas.dringelis@gmail.com>
+# SPDX-FileCopyrightText: 2025 corresp0nd <46357632+corresp0nd@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+# SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 - type: entity
   name: hypospray
   parent: [BaseItem, BaseGrandTheftContraband]
@@ -6,7 +64,12 @@
   components:
   - type: Sprite
     sprite: Objects/Specific/Medical/hypospray.rsi
-    state: hypo
+    layers:
+      - state: hypo
+        map: ["enum.SolutionContainerLayers.Base"]
+      - state: hypo_fill1
+        map: ["enum.SolutionContainerLayers.Fill"]
+        visible: false
   - type: Item
     sprite: Objects/Specific/Medical/hypospray.rsi
   - type: SolutionContainerManager
@@ -28,16 +91,26 @@
     - HighRiskItem
   - type: StealTarget
     stealGroup: Hypospray
+  - type: Appearance
+  - type: SolutionContainerVisuals
+    maxFillLevels: 6
+    fillBaseName: hypo_fill
+    solutionName: hypospray
 
 - type: entity
   name: gorlex hypospray
-  parent: BaseItem
+  parent: [BaseItem, BaseSyndicateContraband]
   description: Using reverse engineered designs from NT, Cybersun produced these in limited quantities for Gorlex Marauder operatives.
   id: SyndiHypo
   components:
   - type: Sprite
     sprite: Objects/Specific/Medical/syndihypo.rsi
-    state: hypo
+    layers:
+      - state: hypo
+        map: ["enum.SolutionContainerLayers.Base"]
+      - state: hypo_fill1
+        map: ["enum.SolutionContainerLayers.Fill"]
+        visible: false
   - type: Item
     sprite: Objects/Specific/Medical/syndihypo.rsi
   - type: SolutionContainerManager
@@ -52,6 +125,11 @@
     onlyAffectsMobs: false
   - type: UseDelay
     delay: 0.5
+  - type: Appearance
+  - type: SolutionContainerVisuals
+    maxFillLevels: 4
+    fillBaseName: hypo_fill
+    solutionName: hypospray
 
 - type: entity
   name: borghypo
@@ -104,6 +182,17 @@
       map: ["enum.SolutionContainerLayers.Fill"]
   - type: Item
     sprite: Objects/Specific/Medical/medipen.rsi
+    inhandVisuals:
+      left:
+      - state: base-needle-inhand-left
+      - state: base-colorA-inhand-left
+        color: "#439822"
+      - state: base-colorB-inhand-left
+      right:
+      - state: base-needle-inhand-right
+      - state: base-colorA-inhand-right
+        color: "#439822"
+      - state: base-colorB-inhand-right
     size: Tiny
   - type: SolutionContainerManager
     solutions:
@@ -161,12 +250,24 @@
     tags:
     - EmergencyMedipen
 
-- type: entity
-  name: poison auto-injector
+- type: entity # Funkychem
+  name: poison medipen
   parent: ChemicalMedipen
   id: AntiPoisonMedipen
   description: A rapid dose of anti-poison. Contains ultravasculine and epinephrine.
   components:
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: base-needle-inhand-left
+      - state: base-colorA-inhand-left
+        color: "#573d9e"
+      - state: base-colorB-inhand-left
+      right:
+      - state: base-needle-inhand-right
+      - state: base-colorA-inhand-right
+        color: "#573d9e"
+      - state: base-colorB-inhand-right
   - type: Sprite
     sprite: Objects/Specific/Medical/medipen.rsi
     layers:
@@ -188,12 +289,24 @@
   - type: Tag
     tags: []
 
-- type: entity
-  name: brute auto-injector
+- type: entity # Funkychem
+  name: brute medipen
   parent: ChemicalMedipen
   id: BruteAutoInjector
-  description: A rapid dose of bicaridine and tranexamic acid, intended for combat applications.
+  description: A rapid dose of libital, salicylic acid and tranexamic acid, intended for combat applications.
   components:
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: base-needle-inhand-left
+      - state: base-colorA-inhand-left
+        color: "#c73333"
+      - state: base-colorB-inhand-left
+      right:
+      - state: base-needle-inhand-right
+      - state: base-colorA-inhand-right
+        color: "#c73333"
+      - state: base-colorB-inhand-right
   - type: Sprite
     sprite: Objects/Specific/Medical/medipen.rsi
     layers:
@@ -211,21 +324,35 @@
   - type: SolutionContainerManager
     solutions:
       pen:
-        maxVol: 20
+        maxVol: 30
         reagents:
-        - ReagentId: Bicaridine
-          Quantity: 15
+        - ReagentId: SalicylicAcid
+          Quantity: 10
         - ReagentId: TranexamicAcid
           Quantity: 5
+        - ReagentId: Libital
+          Quantity: 15
   - type: Tag
     tags: []
 
-- type: entity
-  name: burn auto-injector
+- type: entity # Funkychem
+  name: burn medipen
   parent: ChemicalMedipen
   id: BurnAutoInjector
-  description: A rapid dose of dermaline and leporazine, intended for combat applications.
+  description: A rapid dose of aiuri, oxandrolone and lenturi, intended for combat applications.
   components:
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: base-needle-inhand-left
+      - state: base-colorA-inhand-left
+        color: "#427485"
+      - state: base-colorB-inhand-left
+      right:
+      - state: base-needle-inhand-right
+      - state: base-colorA-inhand-right
+        color: "#427485"
+      - state: base-colorB-inhand-right
   - type: Sprite
     sprite: Objects/Specific/Medical/medipen.rsi
     layers:
@@ -243,21 +370,35 @@
   - type: SolutionContainerManager
     solutions:
       pen:
-        maxVol: 20
+        maxVol: 30
         reagents:
-        - ReagentId: Dermaline
+        - ReagentId: Aiuri
           Quantity: 10
-        - ReagentId: Leporazine
+        - ReagentId: Oxandrolone
+          Quantity: 10
+        - ReagentId: Lenturi
           Quantity: 10
   - type: Tag
     tags: []
 
-- type: entity
-  name: rad auto-injector
+- type: entity # Funkychem
+  name: rad medipen
   parent: ChemicalMedipen
   id: RadAutoInjector
-  description: A rapid dose of anti-radiation. Contains arithrazine and bicaridine.
+  description: A rapid dose of anti-radiation. Contains arithrazine and libital.
   components:
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: base-needle-inhand-left
+      - state: base-colorA-inhand-left
+        color: "#e3832f"
+      - state: base-colorB-inhand-left
+      right:
+      - state: base-needle-inhand-right
+      - state: base-colorA-inhand-right
+        color: "#e3832f"
+      - state: base-colorB-inhand-right
   - type: Sprite
     sprite: Objects/Specific/Medical/medipen.rsi
     layers:
@@ -279,17 +420,29 @@
         reagents:
         - ReagentId: Arithrazine
           Quantity: 15
-        - ReagentId: Bicaridine
+        - ReagentId: Libital
           Quantity: 5
   - type: Tag
     tags: []
 
 - type: entity
-  name: puncturase auto-injector
+  name: puncturase medipen
   parent: ChemicalMedipen
   id: PunctAutoInjector
   description: A rapid dose of puncturase and tranexamic acid, intended for combat applications.
   components:
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: base-needle-inhand-left
+      - state: base-colorA-inhand-left
+        color: "#c7be5d"
+      - state: base-colorB-inhand-left
+      right:
+      - state: base-needle-inhand-right
+      - state: base-colorA-inhand-right
+        color: "#c7be5d"
+      - state: base-colorB-inhand-right
   - type: Sprite
     sprite: Objects/Specific/Medical/medipen.rsi
     layers:
@@ -307,21 +460,33 @@
   - type: SolutionContainerManager
     solutions:
       pen:
-        maxVol: 15
+        maxVol: 20 # Funkychem
         reagents:
-        - ReagentId: Puncturase
-          Quantity: 10
+        - ReagentId: Puncturase # Funkychem
+          Quantity: 15
         - ReagentId: TranexamicAcid
           Quantity: 5
   - type: Tag
     tags: []
 
-- type: entity
-  name: pyrazine auto-injector
+- type: entity # Funkychem
+  name: pyrazine medipen
   parent: ChemicalMedipen
   id: PyraAutoInjector
-  description: A rapid dose of pyrazine and dermaline, intended for combat applications.
+  description: A rapid dose of pyrazine and aiuri, intended for combat applications.
   components:
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: base-needle-inhand-left
+      - state: base-colorA-inhand-left
+        color: "#c7a45d"
+      - state: base-colorB-inhand-left
+      right:
+      - state: base-needle-inhand-right
+      - state: base-colorA-inhand-right
+        color: "#c7a45d"
+      - state: base-colorB-inhand-right
   - type: Sprite
     sprite: Objects/Specific/Medical/medipen.rsi
     layers:
@@ -339,21 +504,33 @@
   - type: SolutionContainerManager
     solutions:
       pen:
-        maxVol: 20
+        maxVol: 25
         reagents:
         - ReagentId: Pyrazine
           Quantity: 10
-        - ReagentId: Dermaline
-          Quantity: 10
+        - ReagentId: Aiuri
+          Quantity: 15
   - type: Tag
     tags: []
 
-- type: entity
-  name: airloss auto-injector
+- type: entity # Funkychem
+  name: airloss medipen
   parent: ChemicalMedipen
   id: AirlossAutoInjector
-  description: A rapid dose of saline and dexalin plus, intended to get someone up quickly.
+  description: A rapid dose of saline and salbutamol, intended to get someone up quickly.
   components:
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: base-needle-inhand-left
+      - state: base-colorA-inhand-left
+        color: "#5d81c7"
+      - state: base-colorB-inhand-left
+      right:
+      - state: base-needle-inhand-right
+      - state: base-colorA-inhand-right
+        color: "#5d81c7"
+      - state: base-colorB-inhand-right
   - type: Sprite
     sprite: Objects/Specific/Medical/medipen.rsi
     layers:
@@ -371,12 +548,12 @@
   - type: SolutionContainerManager
     solutions:
       pen:
-        maxVol: 40
+        maxVol: 30
         reagents:
         - ReagentId: Saline
-          Quantity: 20
-        - ReagentId: DexalinPlus
-          Quantity: 20
+          Quantity: 15
+        - ReagentId: Salbutamol
+          Quantity: 15
   - type: Tag
     tags: []
 
@@ -386,6 +563,18 @@
   id: SpaceMedipen
   description: Contains a mix of chemicals that protect you from the deadly effects of space.
   components:
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: base-needle-inhand-left
+      - state: base-colorA-inhand-left
+        color: "#a84597"
+      - state: base-colorB-inhand-left
+      right:
+      - state: base-needle-inhand-right
+      - state: base-colorA-inhand-right
+        color: "#a84597"
+      - state: base-colorB-inhand-right
   - type: Sprite
     sprite: Objects/Specific/Medical/medipen.rsi
     layers:
@@ -420,6 +609,20 @@
   id: Stimpack
   description: Contains enough hyperzine for you to have the chemical's effect for 30 seconds. Use it when you're sure you're ready to throw down.
   components:
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: base-needle-inhand-left
+      - state: base-colorA-inhand-left
+        color: "#9a040e"
+      - state: base-colorB-inhand-left
+        color: "#c62933"
+      right:
+      - state: base-needle-inhand-right
+      - state: base-colorA-inhand-right
+        color: "#9a040e"
+      - state: base-colorB-inhand-right
+        color: "#c62933"
   - type: Sprite
     sprite: Objects/Specific/Medical/medipen.rsi
     layers:
@@ -452,6 +655,20 @@
   id: StimpackMini
   description: A microinjector of hyperzine that give you about 15 seconds of the chemical's effects.
   components:
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: base-needle-inhand-left
+      - state: base-colorA-inhand-left
+        color: "#9a040e"
+      - state: base-colorB-inhand-left
+        color: "#c62933"
+      right:
+      - state: base-needle-inhand-right
+      - state: base-colorA-inhand-right
+        color: "#9a040e"
+      - state: base-colorB-inhand-right
+        color: "#c62933"
   - type: Sprite
     sprite: Objects/Specific/Medical/medipen.rsi
     layers:
@@ -475,10 +692,22 @@
 
 - type: entity
   name: combat medipen
-  parent: [ChemicalMedipen, BaseSyndicateContraband]
+  parent: ChemicalMedipen
   id: CombatMedipen
   description: A single-use medipen containing chemicals that regenerate most types of damage.
   components:
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: base-needle-inhand-left
+      - state: base-colorA-inhand-left
+        color: "#5bcaca"
+      - state: base-colorB-inhand-left
+      right:
+      - state: base-needle-inhand-right
+      - state: base-colorA-inhand-right
+        color: "#5bcaca"
+      - state: base-colorB-inhand-right
   - type: Sprite
     sprite: Objects/Specific/Medical/medipen.rsi
     layers:
@@ -548,3 +777,33 @@
     - id: Hypopen
     sound:
       path: /Audio/Effects/unwrap.ogg
+
+- type: entity
+  name: weh medipen
+  parent: ChemicalMedipen
+  id: WehMedipen
+  description: A rapid dose of Weh. Contains juice that makes you Weh.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Medical/medipen.rsi
+    layers:
+    - state: medipen
+      map: [ "enum.SolutionContainerLayers.Fill" ]
+  - type: SolutionContainerVisuals
+    maxFillLevels: 1
+    changeColor: false
+    emptySpriteName: medipen_empty
+  - type: SolutionContainerManager
+    solutions:
+      pen:
+        maxVol: 60
+        reagents:
+        - ReagentId: JuiceThatMakesYouWeh
+          Quantity: 60
+  - type: Hypospray
+    solutionName: pen
+    transferAmount: 1
+    onlyAffectsMobs: false
+    injectOnly: true
+  - type: Tag
+    tags: []

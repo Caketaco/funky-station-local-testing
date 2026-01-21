@@ -1,4 +1,15 @@
+// SPDX-FileCopyrightText: 2024 MilenVolf <63782763+MilenVolf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 McBosserson <148172569+McBosserson@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 Winkarst-cpu <74284083+Winkarst-cpu@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using Content.Shared.Chat;
+using Content.Shared.Speech;
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
 using Robust.Shared.Serialization;
@@ -81,16 +92,16 @@ public sealed partial class TelephoneComponent : Component
     public float ListeningRange = 2;
 
     /// <summary>
-    /// Specifies whether this telephone require power to fucntion
-    /// </summary>
-    [DataField]
-    public bool RequiresPower = true;
-
-    /// <summary>
     /// This telephone does not appear on public telephone directories
     /// </summary>
     [DataField]
     public bool UnlistedNumber = false;
+
+    /// <summary>
+    /// Speech is relayed through this entity instead of the telephone
+    /// </summary>
+    [ViewVariables(VVAccess.ReadOnly)]
+    public Entity<SpeechComponent>? Speaker = null;
 
     /// <summary>
     /// Telephone number for this device
@@ -215,8 +226,7 @@ public enum TelephoneVolume : byte
 [Serializable, NetSerializable]
 public enum TelephoneRange : byte
 {
-    Grid,       // Can call grid/map range telephones that are on the same grid
-    Map,        // Can call grid/map range telephones that are on the same map
-    Long,       // Can only long range telephones that are on a different map
-    Unlimited   // Can call any telephone
+    Grid,       // Can only reach telephones that are on the same grid
+    Map,        // Can reach any telephone that is on the same map
+    Unlimited,  // Can reach any telephone, across any distance
 }

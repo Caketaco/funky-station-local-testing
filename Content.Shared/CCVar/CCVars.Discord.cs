@@ -1,4 +1,13 @@
-﻿using Robust.Shared.Configuration;
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 ssdaniel24 <107036969+ssdaniel24@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
+using Robust.Shared.Configuration;
+using Robust.Shared.Maths;
 
 namespace Content.Shared.CCVar;
 
@@ -58,4 +67,38 @@ public sealed partial class CCVars
     /// </summary>
     public static readonly CVarDef<string> DiscordRoundEndRoleWebhook =
         CVarDef.Create("discord.round_end_role", string.Empty, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     URL of the Discord webhook which will relay watchlist connection notifications. If left empty, disables the webhook.
+    /// </summary>
+    public static readonly CVarDef<string> DiscordWatchlistConnectionWebhook =
+        CVarDef.Create("discord.watchlist_connection_webhook", string.Empty, CVar.SERVERONLY | CVar.CONFIDENTIAL);
+
+    /// <summary>
+    ///     How long to buffer watchlist connections for, in seconds.
+    ///     All connections within this amount of time from the first one will be batched and sent as a single
+    ///     Discord notification. If zero, always sends a separate notification for each connection (not recommended).
+    /// </summary>
+    public static readonly CVarDef<float> DiscordWatchlistConnectionBufferTime =
+        CVarDef.Create("discord.watchlist_connection_buffer_time", 5f, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     URL of the Discord webhook which will receive station news acticles at the round end.
+    ///     If left empty, disables the webhook.
+    /// </summary>
+    public static readonly CVarDef<string> DiscordNewsWebhook =
+        CVarDef.Create("discord.news_webhook", string.Empty, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     HEX color of station news discord webhook's embed.
+    /// </summary>
+    public static readonly CVarDef<string> DiscordNewsWebhookEmbedColor =
+        CVarDef.Create("discord.news_webhook_embed_color", Color.LawnGreen.ToHex(), CVar.SERVERONLY);
+
+    /// <summary>
+    ///     Whether or not articles should be sent mid-round instead of all at once at the round's end
+    /// </summary>
+    public static readonly CVarDef<bool> DiscordNewsWebhookSendDuringRound =
+        CVarDef.Create("discord.news_webhook_send_during_round", false, CVar.SERVERONLY);
+
 }

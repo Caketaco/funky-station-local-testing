@@ -1,4 +1,22 @@
-﻿using System.Linq;
+// SPDX-FileCopyrightText: 2022 Chief-Engineer <119664036+Chief-Engineer@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Kevin Zheng <kevinz5000@gmail.com>
+// SPDX-FileCopyrightText: 2023 Hannah Giovanna Dawson <karakkaraz@gmail.com>
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2023 Pieter-Jan Briers <pieterjan.briers@gmail.com>
+// SPDX-FileCopyrightText: 2023 Rane <60792108+Elijahrane@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Vasilis <vasilis@pikachu.systems>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2024 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 QueerCats <jansencheng3@gmail.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
+using System.Linq;
 using Content.Server.Administration.Logs;
 using Content.Shared.Materials;
 using Content.Shared.Popups;
@@ -69,7 +87,7 @@ public sealed class MaterialStorageSystem : SharedMaterialStorageSystem
 
         if (material.StackEntity != null)
         {
-            if (!_prototypeManager.Index<EntityPrototype>(material.StackEntity).TryGetComponent<PhysicalCompositionComponent>(out var composition))
+            if (!_prototypeManager.Index<EntityPrototype>(material.StackEntity).TryGetComponent<PhysicalCompositionComponent>(out var composition, EntityManager.ComponentFactory))
                 return;
 
             var volumePerSheet = composition.MaterialComposition.FirstOrDefault(kvp => kvp.Key == msg.Material).Value;
@@ -102,14 +120,18 @@ public sealed class MaterialStorageSystem : SharedMaterialStorageSystem
         if (!base.TryInsertMaterialEntity(user, toInsert, receiver, storage, material, composition))
             return false;
         _audio.PlayPvs(storage.InsertingSound, receiver);
-        _popup.PopupEntity(Loc.GetString("machine-insert-item", ("user", user), ("machine", receiver),
-            ("item", toInsert)), receiver);
+        _popup.PopupEntity(Loc.GetString("machine-insert-item",
+                ("user", user),
+                ("machine", receiver),
+                ("item", toInsert)),
+            receiver);
         QueueDel(toInsert);
 
         // Logging
         TryComp<StackComponent>(toInsert, out var stack);
         var count = stack?.Count ?? 1;
-        _adminLogger.Add(LogType.Action, LogImpact.Low,
+        _adminLogger.Add(LogType.Action,
+            LogImpact.Low,
             $"{ToPrettyString(user):player} inserted {count} {ToPrettyString(toInsert):inserted} into {ToPrettyString(receiver):receiver}");
         return true;
     }
@@ -169,7 +191,7 @@ public sealed class MaterialStorageSystem : SharedMaterialStorageSystem
             return new List<EntityUid>();
 
         var entProto = _prototypeManager.Index<EntityPrototype>(materialProto.StackEntity);
-        if (!entProto.TryGetComponent<PhysicalCompositionComponent>(out var composition))
+        if (!entProto.TryGetComponent<PhysicalCompositionComponent>(out var composition, EntityManager.ComponentFactory))
             return new List<EntityUid>();
 
         var materialPerStack = composition.MaterialComposition[materialProto.ID];

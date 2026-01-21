@@ -1,4 +1,20 @@
+// SPDX-FileCopyrightText: 2021 Acruid <shatter66@gmail.com>
+// SPDX-FileCopyrightText: 2022 metalgearsloth <metalgearsloth@gmail.com>
+// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 DrSmugleaf <10968691+DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+// SPDX-FileCopyrightText: 2025 Toaster <mrtoastymyroasty@gmail.com>
+// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+//
+// SPDX-License-Identifier: MIT
+
 using System.Numerics;
+using Content.Shared.Movement.Components;
+using Content.Shared.Movement.Systems;
 using JetBrains.Annotations;
 using Robust.Shared.Network;
 using Robust.Shared.Serialization;
@@ -28,7 +44,7 @@ public abstract class SharedCameraRecoilSystem : EntitySystem
     /// </summary>
     protected const float KickMagnitudeMax = 1f;
 
-    [Dependency] private readonly SharedEyeSystem _eye = default!;
+    [Dependency] private readonly SharedContentEyeSystem _eye = default!;
     [Dependency] private readonly INetManager _net = default!;
 
     public override void Initialize()
@@ -56,6 +72,14 @@ public abstract class SharedCameraRecoilSystem : EntitySystem
 
         while (query.MoveNext(out var uid, out var recoil, out var eye))
         {
+            // Check for invalid (NaN/Infinity) values and reset to zero
+            if (!float.IsFinite(recoil.CurrentKick.X) || !float.IsFinite(recoil.CurrentKick.Y))
+            {
+                recoil.CurrentKick = Vector2.Zero;
+                recoil.LastKick = Vector2.Zero;
+                continue;
+            }
+
             var magnitude = recoil.CurrentKick.Length();
             if (magnitude <= 0.005f)
             {
@@ -64,15 +88,33 @@ public abstract class SharedCameraRecoilSystem : EntitySystem
             else // Continually restore camera to 0.
             {
                 var normalized = recoil.CurrentKick.Normalized();
+                // Check if normalized vector is valid (not NaN)
+                if (!float.IsFinite(normalized.X) || !float.IsFinite(normalized.Y))
+                {
+                    recoil.CurrentKick = Vector2.Zero;
+                    recoil.LastKick = Vector2.Zero;
+                    continue;
+                }
+
                 recoil.LastKickTime += frameTime;
                 var restoreRate = MathHelper.Lerp(RestoreRateMin, RestoreRateMax, Math.Min(1, recoil.LastKickTime / RestoreRateRamp));
                 var restore = normalized * restoreRate * frameTime;
                 var (x, y) = recoil.CurrentKick - restore;
-                if (Math.Sign(x) != Math.Sign(recoil.CurrentKick.X))
+                
+                // Check for valid values before calling Math.Sign
+                if (float.IsFinite(x) && float.IsFinite(recoil.CurrentKick.X) && Math.Sign(x) != Math.Sign(recoil.CurrentKick.X))
                     x = 0;
 
-                if (Math.Sign(y) != Math.Sign(recoil.CurrentKick.Y))
+                if (float.IsFinite(y) && float.IsFinite(recoil.CurrentKick.Y) && Math.Sign(y) != Math.Sign(recoil.CurrentKick.Y))
                     y = 0;
+
+                // Ensure final values are valid
+                if (!float.IsFinite(x) || !float.IsFinite(y))
+                {
+                    recoil.CurrentKick = Vector2.Zero;
+                    recoil.LastKick = Vector2.Zero;
+                    continue;
+                }
 
                 recoil.CurrentKick = new Vector2(x, y);
             }
@@ -81,9 +123,7 @@ public abstract class SharedCameraRecoilSystem : EntitySystem
                 continue;
 
             recoil.LastKick = recoil.CurrentKick;
-            var ev = new GetEyeOffsetEvent();
-            RaiseLocalEvent(uid, ref ev);
-            _eye.SetOffset(uid, ev.Offset, eye);
+            _eye.UpdateEyeOffset((uid, eye));
         }
     }
 

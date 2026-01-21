@@ -1,3 +1,25 @@
+# SPDX-FileCopyrightText: 2022 Kara <lunarautomaton6@gmail.com>
+# SPDX-FileCopyrightText: 2022 metalgearsloth <metalgearsloth@gmail.com>
+# SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 Nim <128169402+Nimfar11@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 coolmankid12345 <55817627+coolmankid12345@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 coolmankid12345 <coolmankid12345@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
+# SPDX-FileCopyrightText: 2024 John Space <bigdumb421@gmail.com>
+# SPDX-FileCopyrightText: 2024 MilenVolf <63782763+MilenVolf@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2024 Tadeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2024 fishbait <gnesse@gmail.com>
+# SPDX-FileCopyrightText: 2025 Mish <bluscout78@yahoo.com>
+# SPDX-FileCopyrightText: 2025 Tay <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 pa.pecherskij <pa.pecherskij@interfax.ru>
+# SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
+# SPDX-FileCopyrightText: 2025 Terkala <appleorange64@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later AND MIT
+
 - type: npcFaction
   id: Dragon
   hostile:
@@ -9,6 +31,9 @@
     - Revolutionary
     - Heretic # goob edit - heretics
     - Blob # Goobstation - Blob
+    - AllHostile
+    - Wizard
+    - BloodCultist # Blood cultists
 
 - type: npcFaction
   id: NanoTrasen
@@ -18,14 +43,19 @@
   - Xeno
   - Zombie
   - Revolutionary
+  - Dragon
+  - AllHostile
   - Changeling # goob edit - changelings
   - Heretic # goob edit - heretics
   - Blob # Goobstation - Blob
+  - Wizard
 
 - type: npcFaction
   id: Mouse
   hostile:
-    - PetsNT
+  - PetsNT
+  - AllHostile
+  - Wizard
 
 - type: npcFaction
   id: Passive
@@ -37,7 +67,9 @@
   - SimpleHostile
   - Zombie
   - Xeno
-  - Blob # Goobstation - Blob
+  - AllHostile
+  - Wizard
+  - Dragon
 
 - type: npcFaction
   id: SimpleHostile
@@ -50,6 +82,10 @@
   - Revolutionary
   - Heretic # goob edit - heretics
   - Blob # Goobstation - Blob
+  - AllHostile
+  - Wizard
+  - Dragon
+  - BloodCultist # Blood cultists
 
 - type: npcFaction
   id: SimpleNeutral
@@ -62,9 +98,13 @@
   - Xeno
   - PetsNT
   - Zombie
+  - Dragon
+  - AllHostile
   - Changeling # goob edit - changelings
   - Heretic # goob edit - heretics
   - Blob # Goobstation - Blob
+  - Wizard
+  - BloodCultist # Blood cultists
 
 - type: npcFaction
   id: Xeno
@@ -75,8 +115,12 @@
   - PetsNT
   - Zombie
   - Revolutionary
+  - AllHostile
   - Heretic # goob edit - heretics
   - Blob # Goobstation - Blob
+  - Wizard
+  - Dragon
+  - BloodCultist # Blood cultists
 
 - type: npcFaction
   id: Zombie
@@ -88,9 +132,14 @@
   - Passive
   - PetsNT
   - Revolutionary
+  - AllHostile
+  - Mouse #funkystation - need more mouse bites
   - Changeling # goob edit - changelings
   - Heretic # goob edit - heretics
   - Blob # Goobstation - Blob
+  - Wizard
+  - Dragon
+  - BloodCultist # Blood cultists
 
 - type: npcFaction
   id: Revolutionary
@@ -99,7 +148,10 @@
   - Zombie
   - SimpleHostile
   - Dragon
-  - Blob # Goobstation - Blob
+  - AllHostile
+  - Blob
+  - Wizard
+  - BloodCultist # Blood cultists
 
 - type: npcFaction
   id: AllHostile
@@ -118,3 +170,22 @@
   - Changeling # goob edit - changelings
   - Heretic # goob edit - heretics
   - Blob # Goobstation - Blob
+  - Wizard
+  - BloodCultist # Blood cultists
+
+- type: npcFaction
+  id: Wizard
+  hostile:
+  - NanoTrasen
+  - Dragon
+  - Mouse
+  - Passive
+  - PetsNT
+  - SimpleHostile
+  - SimpleNeutral
+  - Syndicate
+  - Xeno
+  - Zombie
+  - Revolutionary
+  - AllHostile
+  - BloodCultist # Blood cultists
